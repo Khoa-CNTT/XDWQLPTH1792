@@ -22,51 +22,6 @@ import { API_ROOT } from '~/utils/constants'
 //   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
 //   return response.data
 // }
-export const updateBoardDetailsAPI = async (boardId, updateData) => {
-  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/boards/${boardId}`, updateData)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
-  return response.data
-}
-
-export const moveCardToDifferentColumnAPI = async (updateData) => {
-  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/boards/supports/moving_card`, updateData)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
-  return response.data
-}
-
-export const fetchBoardsAPI = async (searchPath) => {
-  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/boards/${searchPath}`)
-  return response.data
-}
-
-export const createNewBoardAPI = async (data) => {
-  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/boards`, data)
-  toast.success('Board created successfully')
-  return response.data
-}
-
-
-// Columns
-export const createNewColumnAPI = async (newColumnData) => {
-  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/columns`, newColumnData)
-  return response.data
-}
-
-export const updateColumnDetailsAPI = async (columnId, updateData) => {
-  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/columns/${columnId}`, updateData)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
-  return response.data
-}
-export const deleteColumnDetailsAPI = async (columnId) => {
-  const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/columns/${columnId}`)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
-  return response.data
-}
-//Cards
-export const createNewCardAPI = async (newCardData) => {
-  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/cards`, newCardData)
-  return response.data
-}
 // User
 export const registerUserAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/users/register`, data)

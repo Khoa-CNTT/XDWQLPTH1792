@@ -4,7 +4,7 @@ import { activeHostelReducer } from './activeHostel/activeHostelSlice'
 /**
  * Cấu hình redux-persist
  * https://www.npmjs.com/package/redux-persist
- * 
+ *
  * Bài viết hướng dẫn này dễ hiểu hơn:
  * https://edvins.io/how-to-use-redux-persist-with-redux-toolkit
  */
@@ -21,7 +21,7 @@ const rootPersistConfig = {
 }
 // Combine các reducers trong dự án chúng ta ở đây
 const reducers = combineReducers({
-  activeHostel:activeHostelReducer,
+  activeHostel: activeHostelReducer,
   user: userReducer
 })
 // Thực hiện persist Reducer
@@ -30,5 +30,5 @@ export const store = configureStore({
   reducer: persistedReducers,
   //Fix warning error when implement redux-persist
   //https://stackoverflow.com/questions/61704805/getting-an-error-a-non-serializable-value-was-detected-in-the-state-when-using/63244831#63244831
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck:false})
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
 })

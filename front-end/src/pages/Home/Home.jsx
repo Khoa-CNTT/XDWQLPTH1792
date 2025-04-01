@@ -4,6 +4,7 @@ import BedsitBar from './BedsitBar/BedsitBar'
 import BedsitContent from './BedsitContent/BedsitContent'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import PageLoadingSpiner from '~/components/Loading/PageLoadingSpinner'
 
 // import { fetchHostelDetailsAPI } from '~/apis'
 import { fetchHostelDetailsAPI, updateCurrentActiveHostel, selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
@@ -21,6 +22,9 @@ function Home() {
     dispatch(fetchHostelDetailsAPI(hostelId))
   }, [dispatch, hostelId])
 
+  if (!hostel) {
+    return <PageLoadingSpiner caption="Loading......" />
+  }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar/>
