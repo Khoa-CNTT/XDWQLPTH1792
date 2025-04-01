@@ -20,11 +20,11 @@ import { ConfirmProvider } from 'material-ui-confirm'
 
 // Cấu hình Redux- Persist
 import { PersistGate } from 'redux-persist/integration/react' // Chặn giao diện hiển thị cho đến khi Redux Store được khôi phục từ LocalStorage.
-import { persistStore } from 'redux-persist' //Tạo một "persistor" giúp lưu Redux state vào LocalStorage.
+import { persistStore } from 'redux-persist' //Tạo một "persistor" giúp lưu Redux state vào LocalStorage. VD: Lưu trữ thông tin user tới các page khác
 
 // kỹ thuật InjectStore: là kỹ thuật khi cần sử dụng biến redux store ở các file ngoài phạm vi component
 import { injectStore } from '~/utils/authorizeAxios'
- 
+
 injectStore(store)//Kỹ thuật InjectStore giúp truyền store đến các module bên ngoài
 injectStore(store)
 const persistor = persistStore(store)

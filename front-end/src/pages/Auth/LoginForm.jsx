@@ -58,7 +58,7 @@ function LoginForm() {
             <Avatar sx={{ bgcolor: 'primary.main' }}><LockIcon /></Avatar>
           </Box>
           <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', color: theme => theme.palette.grey[500] }}>
-            Author: GiaHuy
+            Chào mừng đến với website Quản Lý Phòng Trọ
           </Box>
           <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
             {verifiedEmail &&

@@ -12,6 +12,12 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate } from 'react-router-dom' // Import useNavigate
 
+
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentUser, logoutUserAPI } from '~/redux/user/userSlice'
+import { useConfirm } from 'material-ui-confirm'
+
+import { Link } from 'react-router-dom'
 function Profiles() {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -27,9 +33,23 @@ function Profiles() {
 
   const handleProfileClick = () => {
     navigate('/profile') // Điều hướng đến trang Profile
-    setAnchorEl(null) // Đóng menu sau khi click
   }
 
+
+  const dispatch = useDispatch()
+  const currentUser = useSelector(selectCurrentUser)
+
+  const confirmLogout =useConfirm()
+  const handleLogout = ( ) => {
+    confirmLogout({
+      title: 'Log out your account? ',
+      confirmationText: 'Confirm',
+      cancellationText: 'Cancel'
+    }).then(() => {
+      // Thực hiện gọi API logout
+      dispatch(logoutUserAPI())
+    }).catch(() => {})
+  }
   return (
     <Box>
       <Tooltip title="Account settings">
@@ -44,7 +64,7 @@ function Profiles() {
           <Avatar
             sx={{ width: 36, height: 36 }}
             alt='GiaHuy'
-            src=''
+            src={currentUser?.avatar}
           />
         </IconButton>
       </Tooltip>
@@ -58,8 +78,10 @@ function Profiles() {
           'aria-labelledby': 'basic-button-profiles'
         }}
       >
-        <MenuItem onClick={handleProfileClick}>
-          <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> Profile
+        <MenuItem sx={{ ':hover': {
+          color:'success.light'
+        }}} onClick={handleProfileClick}>
+          <Avatar src={currentUser?.avatar} sx={{ width: 28, height: 28, mr: 2 }} /> Profile
         </MenuItem>
         <Divider />
         <MenuItem>
@@ -74,7 +96,7 @@ function Profiles() {
           </ListItemIcon>
           Setting
         </MenuItem>
-        <MenuItem sx={{
+        <MenuItem onClick={handleLogout} sx={{
           '&:hover': {
             color: 'warning.dark',
             '& .logout-icon': {
