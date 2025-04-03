@@ -116,6 +116,6 @@ authorizeAxiosInstance.interceptors.response.use((response) => {
   if (error.response?.status !== 410) {
     toast.error(errorMessage)
   }
-  return Promise.reject(error)
+  return Promise.reject(error)  
 })
 export default authorizeAxiosInstance
