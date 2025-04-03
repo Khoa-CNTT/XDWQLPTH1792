@@ -32,7 +32,7 @@ function Profile() {
     citizenId: currentUser?.citizenId
   }
 
-  const { register, handleSubmit, control, formState: { errors }, setValue } = useForm({
+  const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm({
     defaultValues: initialGeneralForm
   })
   // Hàm gọi update thông tin user
@@ -71,6 +71,18 @@ function Profile() {
     // }
 
     // Gọi API...
+    toast.promise(
+      dispatch(updateUserAPI(reqData)),
+      { pending: 'Updating....' }
+    ).then(res => {
+      // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
+      if (!res.error) {
+        toast.success('Update thành công')
+      }
+      // Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng 1 file liên
+      //tiếp được
+      e.target.value= ''
+    })
   }
 
   const validateBirthDate = (value) => {
@@ -105,7 +117,7 @@ function Profile() {
           <Box sx={{ backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#373647' : '#D4C9BE'), p: 2, borderRadius: 2 }}>
             <Typography variant="h4" gutterBottom>Thông tin cá nhân</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Avatar sx={{ width: 75, height: 75, mr: 2 }} />
+              <Avatar sx={{ width: 75, height: 75, mr: 2 }} src={currentUser?.avatar} />
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography variant="a" gutterBottom sx={{ fontFamily: 'Times New Roman', fontSize: '26px' }}>{currentUser?.displayName}</Typography>
                 <Button variant="outlined" component="label">
@@ -140,7 +152,8 @@ function Profile() {
                   <DatePicker
                     label="Ngày tháng năm sinh"
                     format='DD/MM/YYYY'
-                    defaultValue={dayjs(currentUser?.dateOfBirth)}
+                    defaultValue={dayjs(currentUser?.dateOfBirth, 'DD/MM/YYYY')}
+                    value={dayjs(watch('dateOfBirth'), 'DD/MM/YYYY')}
                     type='date'
                     {...register('dateOfBirth', {
                       required: FIELD_REQUIRED_MESSAGE,
@@ -166,7 +179,6 @@ function Profile() {
                         >
                           <FormControlLabel value="male" control={<Radio />} label="Nam" />
                           <FormControlLabel value="female" control={<Radio />} label="Nữ" />
-                          <FormControlLabel value="other" control={<Radio />} label="Khác" />
                         </RadioGroup>
                       </FormControl>
                     )

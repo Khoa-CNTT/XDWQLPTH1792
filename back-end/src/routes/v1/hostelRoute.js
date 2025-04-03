@@ -8,5 +8,5 @@ Router.route('/')
   .post(authMiddleware.isAuthorized, hostelValidation.createNew, hostelController.createNew )
 
 Router.route('/:id')
-  .get(authMiddleware.isAuthorized, hostelController.getDetails)
+  .get(hostelController.getDetails)
 export const hostelRoute = Router
