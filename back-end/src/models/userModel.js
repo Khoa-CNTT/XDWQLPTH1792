@@ -2,11 +2,11 @@
 /**
  * Updated by trungquandev.com's author on Oct 8 2023
  * YouTube: https://youtube.com/@trungquandev
- * "A bit of fragrance clings to the hand that gives flowers!"
+ * 'A bit of fragrance clings to the hand that gives flowers!'
  */
 
 import Joi from 'joi'
-import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PHONE_NUMBER_RULE, CITIZEN_NUMBER } from '~/utils/validators'
+import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PHONE_NUMBER_RULE, CITIZEN_NUMBER, DATE_RULE, DATE_RULE_MESSAGE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
 import { ObjectId } from 'mongodb'
 
@@ -28,7 +28,13 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   avatar: Joi.string().default(null),
   role: Joi.string().valid(USER_ROLES.CLIENT, USER_ROLES.ADMIM).default(USER_ROLES.CLIENT),
 
-  age: Joi.number().integer().min(0).max(120).default(0),
+  gender: Joi.string().valid('male', 'female').default(null),
+  // dateOfBirth: Joi.date().less('now').greater('1-1-1920').messages({
+  //   'date.less': 'Ngày sinh không thể ở tương lai!',
+  //   'date.greater': 'Ngày sinh phải từ năm 1920 trở đi!',
+  //   'any.required': 'Ngày sinh là bắt buộc!'
+  // }).default(() => new Date().toISOString().split('T')[0]),
+  dateOfBirth:Joi.string().pattern(DATE_RULE).message(DATE_RULE_MESSAGE),
   phone: Joi.string().pattern(PHONE_NUMBER_RULE).default(null),
   address: Joi.string().trim().default(null), // Không bắt buộc nhập
   citizenId: Joi.string().pattern(CITIZEN_NUMBER).default(null),
@@ -38,7 +44,7 @@ const USER_COLLECTION_SCHEMA = Joi.object({
 
 
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
-  updatedAt: Joi.date().timestamp('javascript').default(null),  
+  updatedAt: Joi.date().timestamp('javascript').default(null),
   _destroy: Joi.boolean().default(false)
 })
 const validateBeforeCreate = async (data) => {
