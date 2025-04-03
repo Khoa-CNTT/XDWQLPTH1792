@@ -14,7 +14,8 @@ import { ObjectId } from 'mongodb'
 // Define tạm 2 roles cho user, tùy việc mở rộng dự án như thế nào mà mọi người có thể thêm role tùy ý cho phù hợp
 const USER_ROLES = {
   CLIENT: 'client',
-  ADMIM: 'admin'
+  LANDLORD:'landlord',
+  ADMIN: 'admin'
 }
 // Define Collection (name & schema)
 const USER_COLLECTION_NAME = 'users'
@@ -26,7 +27,7 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   username: Joi.string().required().trim().strict(),
   displayName: Joi.string().required().trim().strict(),
   avatar: Joi.string().default(null),
-  role: Joi.string().valid(USER_ROLES.CLIENT, USER_ROLES.ADMIM).default(USER_ROLES.CLIENT),
+  role: Joi.string().valid(USER_ROLES.CLIENT, USER_ROLES.ADMIN, USER_ROLES.LANDLORD).default(USER_ROLES.CLIENT),
 
   gender: Joi.string().valid('male', 'female').default(null),
   // dateOfBirth: Joi.date().less('now').greater('1-1-1920').messages({

@@ -9,6 +9,7 @@ import { ObjectId, ReturnDocument } from 'mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE, PHONE_NUMBER_RULE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
 import { BOARD_TYPES } from '~/utils/constants'
+import { roomModel } from './roomModel'
 
 
 const HOSTEL_COLLECTION_NAME = 'Hostel'
@@ -23,7 +24,7 @@ const validateBeforeCreate = async (data) => {
   return await HOSTEL_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
 
-const createNew = async ( data) => {
+const createNew = async (data) => {
   try {
     const valiData = await validateBeforeCreate(data)
     console.log('valiData', valiData)
@@ -46,9 +47,37 @@ const findOneById = async (id) => {
 }
 const getDetails = async (id) => {
   try {
-    const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).findOne({
-      _id: new ObjectId(id)
-    })
+    // const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).findOne({
+    //   _id: new ObjectId(id)
+    // })
+    // return result
+    const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).aggregate([
+      {
+        $match: { _id: new ObjectId(id) }
+      },
+      {
+        $lookup: {
+          from: roomModel.ROOM_COLLECTION_NAME,
+          localField: '_id',
+          foreignField: 'hostelId',
+          as: 'rooms'
+        }
+      }
+    ]).toArray()
+    return result[0] || null
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+// Đẩy 1 phần tủ vào cuối mảng
+// Nhiệm vụ của function này là push 1 cái giá trị roomId vào cuối mảng roomOrderIds
+const pushRoomOrderIds = async (room) => {
+  try {
+    const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(room.hostelId), },
+      { $push: { roomOrderIds: new ObjectId(room._id) } },
+      { ReturnDocument: 'after' }
+    )
     return result
   } catch (error) {
     throw new Error(error)
@@ -57,5 +86,6 @@ const getDetails = async (id) => {
 export const hostelModel = {
   createNew,
   findOneById,
-  getDetails
+  getDetails,
+  pushRoomOrderIds
 }

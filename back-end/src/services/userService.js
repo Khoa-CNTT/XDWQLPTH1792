@@ -10,6 +10,8 @@ import { BrevoProvide } from '~/providers/BrevoProvider'
 import { env } from '~/config/environment'
 
 import { JwtProvider } from '~/providers/JwtProvider'
+
+import { CloudinaryProvider } from '~/providers/Cloudinary'
 const createNew = async (reqBody) => {
   try {
     // Kiểm tra xem email đã tồn tại trong hệ thống của chúng ta hay chưa
@@ -154,14 +156,14 @@ const update = async (userId, reqBody, userAvatarFile) => {
         password:  bcryptjs.hashSync(reqBody.new_password, 8)
       })
     } else if (userAvatarFile) {
-      // // Trường hợp upload file lên Cloud Storage, cụ thể là Cloudinary
-      // const uploadResult = await CloudinaryProvider.streamUpload(userAvatarFile.buffer, 'users')
-      // console.log('uploadResult:', uploadResult)
+      // Trường hợp upload file lên Cloud Storage, cụ thể là Cloudinary
+      const uploadResult = await CloudinaryProvider.streamUpload(userAvatarFile.buffer, 'users')
+      console.log('uploadResult:', uploadResult)
 
-      // // Lưu lại URL(secure_url) của cái file ảnh vào trong database
-      // updatedUser = await userModel.update(existUser._id, {
-      //   avatar: uploadResult.secure_url
-      // })
+      // Lưu lại URL(secure_url) của cái file ảnh vào trong database
+      updatedUser = await userModel.update(existUser._id, {
+        avatar: uploadResult.secure_url
+      })
     } else {
       // Trường hợp update các thông tin chung(vd: displayName)
       updatedUser = await userModel.update(existUser._id, reqBody)

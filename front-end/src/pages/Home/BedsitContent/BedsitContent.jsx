@@ -20,7 +20,7 @@ function BedsitContent() {
       <Divider sx={{
         height:'2px'
       }}/>
-      <ListBedsit/>
+      <ListBedsit room/>
     </Box>
   )
 }
