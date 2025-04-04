@@ -8,12 +8,11 @@ import Joi from 'joi'
 import { ObjectId, ReturnDocument } from 'mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE, PHONE_NUMBER_RULE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
-import { BOARD_TYPES } from '~/utils/constants'
 
 const STATUS_ROOM = {
-  EMPTY: 'empty',
-  OCCUPIED: 'occupied', //Đã thuê
-  RESERVED: 'reserved' // đã đặt cọc
+  EMPTY: 'Trống',
+  OCCUPIED: 'Đã thuê', //Đã thuê
+  RESERVED: 'Đã đặt cọc' // đã đặt cọc
 }
 const ROOM_COLLECTION_NAME = 'rooms'
 const ROOM_COLLECTION_SCHEMA = Joi.object({
@@ -24,6 +23,7 @@ const ROOM_COLLECTION_SCHEMA = Joi.object({
   utilities: Joi.string().max(50).trim().strict(),
   memberOrderIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
   billOrderIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
+  imagesOfRoom: Joi.array().items(Joi.string()).default([]),
   status: Joi.string().valid(STATUS_ROOM.EMPTY, STATUS_ROOM.OCCUPIED, STATUS_ROOM.RESERVED).default(STATUS_ROOM.EMPTY),
   price: Joi.number().required()
 })

@@ -9,4 +9,5 @@ Router.route('/')
 
 Router.route('/:id')
   .get(authMiddleware.isAuthorized, roomController.getDetails)
+  // .put(roomValidation.update, )
 export const roomRoute = Router

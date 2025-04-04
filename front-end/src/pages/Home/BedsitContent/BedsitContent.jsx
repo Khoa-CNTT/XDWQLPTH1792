@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import { capitalizeFirstLetter } from '~/utils/formatters'
 import Divider from '@mui/material/Divider'
 
-function BedsitContent() {
+function BedsitContent({hostel}) {
   return (
     <Box px={15} py={2} sx={{
       display: 'flex',
@@ -20,7 +20,7 @@ function BedsitContent() {
       <Divider sx={{
         height:'2px'
       }}/>
-      <ListBedsit room/>
+      <ListBedsit rooms={hostel?.rooms}/>
     </Box>
   )
 }

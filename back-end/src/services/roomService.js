@@ -25,11 +25,11 @@ const createNew = async (reqBody) => {
 }
 const getDetails = async (hostelId) => {
   try {
-    const hostel = await roomModel.getDetails(hostelId)
-    if (!hostel) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Hostel not found')
+    const room = await roomModel.getDetails(hostelId)
+    if (!room) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'room not found')
     }
-    return hostel
+    return room
   } catch (error) {
     throw error
   }
