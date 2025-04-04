@@ -35,7 +35,7 @@ function App() {
         <Route path='/manage/infor-user' element={<Manage />} />
         <Route path='/manage/Contracts' element={<Contracts />}/>
         <Route path='/manage/hostel' element={<Manage />} />
-        <Route path='/infor-room' element={<InforRoom />} />
+        <Route path='/infor-room/:roomId' element={<InforRoom />} />
         <Route path='/profile' element={<Profile />} />
       </Route>
       {/** Authentication */}

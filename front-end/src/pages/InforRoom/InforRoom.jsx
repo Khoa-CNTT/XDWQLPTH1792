@@ -12,6 +12,12 @@ import ImageListItem from '@mui/material/ImageListItem'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import theme from '~/theme'
 
+import { useParams } from 'react-router-dom'
+
+import { selectCurrentActiveRoom } from '~/redux/activeRoom/activeRoomSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchRoomDetailsAPI } from '~/redux/activeRoom/activeRoomSlice'
+import { useEffect } from 'react'
 // Rechart
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
@@ -70,6 +76,16 @@ const data = [
   { name: 'Tháng 5', doanhThu: 2000 },
 ];
 function InforRoom() {
+  const dispatch = useDispatch()
+  const room = useSelector(selectCurrentActiveRoom)
+  const { roomId } = useParams()
+  console.log('roomid', roomId)
+
+  // Gọi API
+  useEffect(() => {
+    // Call Api
+    dispatch(fetchRoomDetailsAPI(roomId))
+  }, [dispatch, roomId])
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />
@@ -113,7 +129,7 @@ function InforRoom() {
                 }}>
                   <PersonIcon />
                   <Typography variant="span" > Số phòng:</Typography>
-                  <Typography variant="span" > 101</Typography>
+                  <Typography variant="span" > {room?.roomName }</Typography>
                 </Box>
                 <Box sx={{
                   display: 'flex',
@@ -122,7 +138,7 @@ function InforRoom() {
                 }}>
                   <PersonIcon />
                   <Typography variant="span" > Diện tích:</Typography>
-                  <Typography variant="span" > 11 x 12 </Typography>
+                  <Typography variant="span" > {room?.length} x {room?.width } </Typography>
                 </Box>
                 <Box sx={{
                   display: 'flex',
@@ -131,7 +147,7 @@ function InforRoom() {
                 }}>
                   <AttachMoneyIcon />
                   <Typography variant="span" > Giá thuê:</Typography>
-                  <Typography variant="span" > 2000000 đồng </Typography>
+                  <Typography variant="span" > {room?.price } </Typography>
                 </Box>
                 <Box sx={{
                   display: 'flex',
@@ -140,7 +156,7 @@ function InforRoom() {
                 }}>
                   <PersonIcon />
                   <Typography variant="span" > Tiện ích:</Typography>
-                  <Typography variant="span" > Điều hòa, máy lạnh, wifi miễn phí </Typography>
+                  <Typography variant="span" > {room?.utilities } </Typography>
                 </Box>
                 <Box sx={{
                   display: 'flex',
@@ -149,7 +165,7 @@ function InforRoom() {
                 }}>
                   <PersonIcon />
                   <Typography variant="span" > Tình trạng:</Typography>
-                  <Typography variant="span" > Đã thuê</Typography>
+                  <Typography variant="span" > {room?.status } </Typography>
                 </Box>
               </Box>
               <Box sx={{

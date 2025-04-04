@@ -12,14 +12,15 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import BoyIcon from '@mui/icons-material/Boy'
 import AspectRatioIcon from '@mui/icons-material/AspectRatio'
 import { Link } from 'react-router-dom'
-function Bedsit() {
+function Bedsit({ room }) {
   return (
     <Box sx={{
       cursor: 'pointer'
     }}>
-      <Link to='/infor-room'>
+      <Link to={`/infor-room/${room._id}`}>
         <Card sx={{
-          maxWidth: 350,
+          width: 300,
+          height: 400,
           bgcolor: 'white',
           borderRadius: '0px',
           boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
@@ -62,14 +63,14 @@ function Bedsit() {
               fontWeight: 700,
               color: '#EE7942'
             }}>
-              2.0000.000 đồng
+              {room?.price} đồng
             </Typography>
             <Typography variant='span' sx={{
               fontWeight: 500,
               fontSize: '1.4rem',
               color: 'black'
             }}>
-              Phòng số 24
+              {room?.roomName}
             </Typography>
             <Box sx={{
               display: 'flex',
@@ -85,7 +86,7 @@ function Bedsit() {
                 fontSize: '1.4rem',
                 color: 'rgba(0, 0, 0, 0.6)'
               }}>
-                L: 10m W:4m
+                L: {room?.length}m W:{room?.width}m
               </Typography>
             </Box>
             <Box sx={{
@@ -103,7 +104,7 @@ function Bedsit() {
                 fontSize: '1.4rem',
                 color: 'rgba(0, 0, 0, 0.6)'
               }}>
-                2
+                { }
               </Typography>
             </Box>
             <Typography sx={{
@@ -111,14 +112,14 @@ function Bedsit() {
               fontSize: '1.4rem',
               color: 'rgba(0, 0, 0, 0.6)'
             }}>
-              Tiện ích: Điều hòa, máy nước nóng,...
+              Tiện ích: {room?.utilities}
             </Typography>
             <Typography sx={{
               fontWeight: 600,
               fontSize: '1.4rem',
               color: 'black'
             }}>
-              Tình trạng: Trống
+              Tình trạng: {room?.status}
             </Typography>
           </CardContent>
         </Card>
