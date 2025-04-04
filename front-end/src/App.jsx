@@ -6,6 +6,8 @@ import Home from './pages/Home/Home'
 import Manage from './pages/Manage/Manage'
 import InforRoom from './pages/InforRoom/InforRoom'
 import Profile from './pages/Home/Personal-Page/Personal-Page'
+import Contracts from './pages/Manage/Contracts/Contracts'
+
 
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from './redux/user/userSlice'
@@ -31,6 +33,7 @@ function App() {
       <Route element={<ProtectedRoute user={currentUser} />}>
         <Route path='/hostel/:hostelId' element={<Home />} />
         <Route path='/manage/infor-user' element={<Manage />} />
+        <Route path='/manage/Contracts' element={<Contracts />}/>
         <Route path='/manage/hostel' element={<Manage />} />
         <Route path='/infor-room' element={<InforRoom />} />
         <Route path='/profile' element={<Profile />} />
