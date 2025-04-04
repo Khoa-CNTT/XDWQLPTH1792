@@ -77,12 +77,14 @@ function Menu() {
             </ListItemButton>
           </List>
           <List disablePadding>
+          <Link to='/manage/Contracts' style={{ color: 'inherit' }}>
             <ListItemButton sx={{ pl: 4 }}>
               <ListItemIcon>
-                <FolderSharedIcon />
+                <ManageSearchIcon />
               </ListItemIcon>
               <ListItemText primary="Hợp đồng thuê & thời gian hết hạn" />
             </ListItemButton>
+            </Link>
           </List>
           <List disablePadding>
             <Link to='/manage/infor-user' style={{ color: 'inherit' }}>
