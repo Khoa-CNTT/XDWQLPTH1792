@@ -7,6 +7,7 @@ import Manage from './pages/Manage/Manage'
 import InforRoom from './pages/InforRoom/InforRoom'
 import Profile from './pages/Home/Personal-Page/Personal-Page'
 import Contracts from './pages/Manage/Contracts/Contracts'
+import HouesPage from './pages/Home'
 
 
 import { useSelector } from 'react-redux'
@@ -37,6 +38,7 @@ function App() {
         <Route path='/manage/hostel' element={<Manage />} />
         <Route path='/infor-room/:roomId' element={<InforRoom />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/houesPage' element={<HouesPage />} />
       </Route>
       {/** Authentication */}
       <Route path='/login' element={<Auth />} />

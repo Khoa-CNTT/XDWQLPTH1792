@@ -15,12 +15,17 @@ import { Link } from 'react-router-dom'
 function Bedsit({ room }) {
   return (
     <Box sx={{
-      cursor: 'pointer'
+      cursor: 'pointer',
+      transition: 'transform 0.3s, box-shadow 0.3s',
+      '&:hover': {
+        transform: 'scale(1.05)',
+        boxShadow: 6
+      },
     }}>
       <Link to={`/infor-room/${room._id}`}>
         <Card sx={{
           width: 300,
-          height: 400,
+          height: 450,
           bgcolor: 'white',
           borderRadius: '0px',
           boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
@@ -58,70 +63,68 @@ function Bedsit({ room }) {
               </IconButton>
             </Badge>
           </Box>
-          <CardContent>
+          <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Giá phòng */}
             <Typography sx={{
               fontWeight: 700,
-              color: '#EE7942'
+              color: '#EE7942',
+              fontSize: '1.6rem'
             }}>
-              {room?.price} đồng
+              {room?.price?.toLocaleString()} đồng
             </Typography>
-            <Typography variant='span' sx={{
-              fontWeight: 500,
-              fontSize: '1.4rem',
-              color: 'black'
+
+            {/* Tên phòng */}
+            <Typography sx={{
+              fontWeight: 600,
+              fontSize: '1.5rem',
+              color: '#333'
             }}>
               {room?.roomName}
             </Typography>
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}>
-              <AspectRatioIcon sx={{
-                fontSize: '18px',
-                color: 'rgba(0, 0, 0, 0.6)'
-              }} />
+
+            {/* Kích thước phòng */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <AspectRatioIcon sx={{ fontSize: 20, color: 'rgba(0, 0, 0, 0.6)' }} />
               <Typography sx={{
-                fontWeight: 600,
+                fontWeight: 500,
                 fontSize: '1.4rem',
                 color: 'rgba(0, 0, 0, 0.6)'
               }}>
-                L: {room?.length}m W:{room?.width}m
+                Diện tích: {room?.length}m x {room?.width}m
               </Typography>
             </Box>
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}>
-              <BoyIcon sx={{
-                fontSize: '25px',
-                color: 'rgba(0, 0, 0, 0.6)',
-                mx: -0.4
-              }} />
+
+            {/* Sức chứa */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <BoyIcon sx={{ fontSize: 22, color: 'rgba(0, 0, 0, 0.6)' }} />
               <Typography sx={{
-                fontWeight: 600,
+                fontWeight: 500,
                 fontSize: '1.4rem',
                 color: 'rgba(0, 0, 0, 0.6)'
               }}>
-                { }
+                Sức chứa: {room?.capacity || 'N/A'} người
               </Typography>
             </Box>
+
+            {/* Tiện ích */}
             <Typography sx={{
-              fontWeight: 600,
+              fontWeight: 500,
               fontSize: '1.4rem',
-              color: 'rgba(0, 0, 0, 0.6)'
+              color: 'rgba(0, 0, 0, 0.7)'
             }}>
-              Tiện ích: {room?.utilities}
+              Tiện ích: {room?.utilities || 'Không có thông tin'}
             </Typography>
+
+            {/* Tình trạng */}
             <Typography sx={{
               fontWeight: 600,
               fontSize: '1.4rem',
-              color: 'black'
+              color: room?.status === 'Còn trống' ? 'green' : 'red'
             }}>
               Tình trạng: {room?.status}
             </Typography>
           </CardContent>
+
         </Card>
       </Link>
     </Box>
