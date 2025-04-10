@@ -5,7 +5,7 @@ export const WHITELIST_DOMAINS = [
   //... ví dụ sau này chúng ta sẽ deploy lên domain chính thức
   'https://trello-web-wheat.vercel.app'
 ]
-export const BOARD_TYPES = {
+export const HOSTEL_TYPES = {
   PUBLIC: 'public',
   PRIVATE: 'private'
 }

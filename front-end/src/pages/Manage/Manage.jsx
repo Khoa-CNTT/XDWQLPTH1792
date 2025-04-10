@@ -35,14 +35,19 @@ function Manage() {
           value={value}
           onChange={handleChange}
           aria-label="Vertical tabs example"
-          sx={{ borderRight: 1, borderColor: 'divider' }}
+          sx={{
+            borderRight: 1,
+            borderColor: 'divider',
+            width: '18%', // Cố định chiều rộng của Tabs
+            flexShrink: 0 // Ngăn Tabs bị co lại
+          }}
         >
           <Tab label="Quản lý thông tin người thuê " value={TABS.INFOR_USER} component={Link} to='/manage/infor-user' />
           <Tab label="Quản lý thông tin phòng trọ" value={TABS.HOSTEL} component={Link} to='/manage/hostel' />
         </Tabs>
 
         {/* Tab Panels */}
-        <Box sx={{ flex: 1, p: 3 }}>
+        <Box sx={{ flex: 1, p: 3, width: '82%' }}>
           <TabContext value={value}>
             <TabPanel value={TABS.INFOR_USER}><InforUser /></TabPanel>
             <TabPanel value={TABS.HOSTEL}><Hostel /></TabPanel>

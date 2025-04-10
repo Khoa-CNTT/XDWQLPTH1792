@@ -22,6 +22,24 @@ import { API_ROOT } from '~/utils/constants'
 //   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
 //   return response.data
 // }
+// Hostel
+export const createNewHostelAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/hostel`, data)
+  return respone.data
+}
+export const fetchHostelsAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/hostel`)
+  return response.data
+}
+
+export const uploadImagesAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/hostel/uploadImages`, data)
+  return respone.data
+}
+export const updateHostelAPI = async (hostelId, updateData) => {
+  const respone = await authorizeAxiosInstance.put(`${API_ROOT}/v1/hostel/${hostelId}`, updateData)
+  return respone.data
+}
 // User
 export const registerUserAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/users/register`, data)
