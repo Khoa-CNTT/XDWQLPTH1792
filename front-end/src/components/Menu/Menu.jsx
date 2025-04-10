@@ -50,6 +50,7 @@ function Menu() {
       </List>
       <Divider />
       <List>
+      <Link to='/home/ManagerID' style={{ color: 'inherit' }}>
         <ListItem disablePadding>
           <ListItemButton>
             <ListItemIcon>
@@ -58,6 +59,7 @@ function Menu() {
             <ListItemText primary='Nhắn tin' />
           </ListItemButton>
         </ListItem>
+        </Link>
         <ListItem disablePadding>
           <ListItemButton onClick={handleClick}>
             <ListItemIcon>
