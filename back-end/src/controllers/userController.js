@@ -45,7 +45,6 @@ const login = async (req, res, next) => {
       sameSite: 'none',
       maxAge: ms('14 days')
     })
-    console.log('result', result)
     res.status(StatusCodes.OK).json(result)
   } catch (error) {
     next(error)

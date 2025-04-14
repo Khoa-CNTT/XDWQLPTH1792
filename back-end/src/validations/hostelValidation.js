@@ -13,6 +13,7 @@ const createNew = async (req, res, next) => {
       'string.trim': 'Name must not have leading or trailing whitespace'
     }),
     address: Joi.string().required().min(3).max(50).trim().strict(),
+    type: Joi.string().required().valid(HOSTEL_TYPES.PUBLIC, HOSTEL_TYPES.PRIVATE),
     images: Joi.string().required().messages({
       'any.required': 'Image is required',
       'string.empty': 'Image must not be an empty string'

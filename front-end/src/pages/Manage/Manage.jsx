@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import AppBar from '~/components/AppBar'
-import { Link, useLocation } from 'react-router-dom'
-import Hostel from './Hostel/Hostel'
+import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import Hostel from './Hostel/Hostels'
 import InforUser from './InforUser/InforUser'
 import Container from '@mui/material/Container'
 
@@ -11,6 +11,7 @@ import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
+import Rooms from './Rooms/Rooms'
 const TABS = {
   INFOR_USER: 'infor-user',
   HOSTEL: 'hostel'
@@ -19,6 +20,7 @@ function Manage() {
   const location = useLocation()
   const getDefaultTabFromURL = () => {
     if (location.pathname.includes(TABS.INFOR_USER)) return TABS.INFOR_USER
+    if (location.pathname.includes(TABS.HOSTEL)) return TABS.HOSTEL // Bao gồm cả URL động
     return TABS.HOSTEL
   }
   const [value, setValue] = useState(getDefaultTabFromURL())
@@ -50,7 +52,9 @@ function Manage() {
         <Box sx={{ flex: 1, p: 3, width: '82%' }}>
           <TabContext value={value}>
             <TabPanel value={TABS.INFOR_USER}><InforUser /></TabPanel>
-            <TabPanel value={TABS.HOSTEL}><Hostel /></TabPanel>
+            <TabPanel value={TABS.HOSTEL}>
+            {location.pathname === '/manage/hostel' ? <Hostel /> : <Rooms />}
+            </TabPanel>
           </TabContext>
         </Box>
       </Box>

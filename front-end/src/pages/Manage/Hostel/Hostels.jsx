@@ -10,28 +10,41 @@ import TextField from '@mui/material/TextField'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
-import LogoutIcon from '@mui/icons-material/Logout'
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import AddIcon from '@mui/icons-material/Add';
 import { useState, useEffect } from 'react'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Radio from '@mui/material/Radio'
 
 //Upload ảnh
 import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
 import { singleFileValidator } from '~/utils/validators'
 import { toast } from 'react-toastify'
 
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { INPUT_NAME, INPUT_NAME_MESSAGE, FIELD_REQUIRED_MESSAGE } from '~/utils/validators'
-import { uploadImagesAPI, createNewHostelAPI, fetchHostelsAPI, updateHostelAPI } from '~/apis'
+import { uploadImagesAPI, createNewHostelAPI, fetchHostelsAPI, updateHostelAPI, deleteHostelAPI } from '~/apis'
 
 import { useConfirm } from 'material-ui-confirm'
+import { useNavigate } from 'react-router-dom'
 
 const paginationModel = { page: 0, pageSize: 10 }
+const HOSTEL_TYPE = {
+  PUBLIC: 'public',
+  PRIVATE: 'private'
+}
 function Hostel() {
+  const navigate = useNavigate()
   const [rows, setRows] = useState([])
   const [previewUrl, setPreviewUrl] = useState('')
   const [open, setOpen] = useState(false) // Trạng thái mở/đóng của Dialog
+  // Lưu danh sách các nhà trọ cần xóa
+  const [selectedRows, setSelectedRows] = useState([])
+  // refesh lại danh sách nhà trọ sau khi gọi API
+  const [refresh, setRefresh] = useState(false)
 
   // OnClick của nút "Tạo phòng"
   const handleOpen = () => {
@@ -48,19 +61,19 @@ function Hostel() {
   const handleEdit = (hostel) => {
     setEditingHostel(hostel) // Lưu thông tin nhà trọ vào state
     setValue('hostelName', hostel.hostelName) // Điền dữ liệu vào form
-    setValue('address', hostel.address),
-      setValue('images', hostel.images) // Điền dữ liệu vào form
+    setValue('address', hostel.address)
+    setValue('images', hostel.images) // Điền dữ liệu vào form
+    setValue('type', hostel.type)
     setPreviewUrl(hostel.images) // Hiển thị ảnh xem trước
     setOpen(true) // Mở Dialog
   }
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm()
+  const { register, handleSubmit, setValue, reset, control, formState: { errors } } = useForm()
 
   // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
   const confirmUpdateOrDelete = useConfirm()
 
   const uploadAvatar = (e) => {
     // Lấy file thông qua e.target?.files[0] và validate nó trước khi xử lý
-    console.log('e.target?.files[0]: ', e.target?.files[0])
     const error = singleFileValidator(e.target?.files[0])
     if (error) {
       toast.error(error)
@@ -74,15 +87,14 @@ function Hostel() {
     const promise = uploadImagesAPI(reqData)
     toast.promise(
       promise,
-      { pending: 'Updating....' }
+      { pending: 'Đang tải ảnh lên....' }
     ).then(res => {
       // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
       if (!res.error) {
-        toast.success('Update thành công')
+        toast.success('Tải thành công')
       }
       // Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng 1 file liên
       //tiếp được
-      console.log('res: ', res)
       const url = `${res}`
       setPreviewUrl(url)
       setValue('images', url) // Lưu URL vào state hoặc form state nếu cần thiết
@@ -95,7 +107,7 @@ function Hostel() {
       confirmUpdateOrDelete({
         // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
         title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <LogoutIcon sx={{ color: 'warning.dark' }} /> Cập nhật nhà trọ
+          <SystemUpdateAltIcon sx={{ color: 'warning.dark' }} /> Cập nhật nhà trọ
         </Box>,
         description: 'Bạn có chắc chắn muốn cập nhật nhà trọ này không?',
         confirmationText: 'Confirm',
@@ -110,6 +122,7 @@ function Hostel() {
           if (!res.error) {
             toast.success('Cập nhật thành công')
           }
+          setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
           handleClose()
         })
       })
@@ -124,12 +137,32 @@ function Hostel() {
         if (!res.error) {
           toast.success('Tạo thành công')
         }
+        setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
         handleClose()
       })
     }
   }
-
-
+  // Xóa nhà trọ đã chọn
+  const handleDelete = (data) => {
+    confirmUpdateOrDelete({
+      title: 'Xóa nhà trọ',
+      description: 'Bạn có chắc chắn muốn xóa nhà trọ này không?',
+      confirmationText: 'Confirm',
+      cancellationText: 'Cancel'
+    }).then(() => {
+      //Update cho chuẩn dữ liệu state board
+      // Gọi API xử lý phía BE
+      if (data.length === 0) {
+        toast.error('Vui lòng chọn nhà trọ để xóa')
+        return
+      }
+      const ids = data
+      deleteHostelAPI({ ids }).then(res => {
+        toast.success(`Đã xóa thành công ${res.deletedCount} nhà trọ`)
+        setRefresh((prev) => !prev)
+      })
+    }).catch()
+  }
   useEffect(() => {
     fetchHostelsAPI().then(res => {
       const formattedData = res.map((item, index) => (
@@ -141,24 +174,43 @@ function Hostel() {
           createAt: new Intl.DateTimeFormat('vi-VN', {
             day: '2-digit',
             month: '2-digit',
-            year: 'numeric',
-          }).format(new Date(item.createAt)), // Định dạng ngày tạo
+            year: 'numeric'
+          }).format(new Date(item.createAt)) // Định dạng ngày tạo
         }))
       setRows(formattedData) // Lưu dữ liệu vào state
     })
-  }, [])
+  }, [refresh]) // Chỉ gọi API khi component được mount lần đầu tiên hoặc khi `refresh` thay đổi
 
   const columns = [
-    { field: 'stt', headerName: 'STT', flex: 1 },
-    { field: 'hostelName', headerName: 'Tên nhà trọ', flex: 2 },
-    { field: 'address', headerName: 'Địa chỉ', flex: 2 },
-    { field: 'ownerName', headerName: 'Chủ sở hữu', flex: 2 },
-    { field: 'roomIds', headerName: 'Tổng số phòng', flex: 2 },
-    { field: 'createAt', headerName: 'Ngày tạo', flex: 2 },
-    { field: 'type', headerName: 'Công khai', width: 100,},
+    { field: 'stt', headerName: 'STT', flex: 0.6 },
+    {
+      field: 'images',
+      headerName: 'Hình ảnh',
+      headerAlign: 'center',
+      width: 150,
+      renderCell: (params) => (
+        <img
+          src={params.value}
+          alt="Hình ảnh"
+          style={{
+            width: 'auto', // Tăng chiều rộng hình ảnh
+            height: '100%', // Đặt chiều cao hình ảnh bằng chiều cao của ô
+            maxHeight: '150px', // Đặt chiều cao tối đa
+            objectFit: 'cover',
+          }}
+        />
+      )
+    },
+    { field: 'hostelName', headerName: 'Tên nhà trọ', flex: 2, headerAlign: 'center' },
+    { field: 'address', headerName: 'Địa chỉ', flex: 2,headerAlign: 'center' },
+    { field: 'ownerName', headerName: 'Chủ sở hữu', flex: 2, headerAlign: 'center' },
+    { field: 'roomIds', headerName: 'Tổng số phòng', flex: 2, headerAlign: 'center' },
+    { field: 'createAt', headerName: 'Ngày tạo', flex: 2, headerAlign: 'center' },
+    { field: 'type', headerName: 'Công khai', width: 100, },
     {
       field: 'actions',
       headerName: 'Hành động',
+      headerAlign: 'center',
       width: 150,
       renderCell: (params) => (
         <Button
@@ -168,8 +220,8 @@ function Hostel() {
         >
           Cập nhật
         </Button>
-      ),
-    },
+      )
+    }
   ]
   return (
     <>
@@ -177,22 +229,27 @@ function Hostel() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        py: 1,
+        py: 1
       }}>
         < Box>
-          <Typography sx={{ color: '#473C8B' }} variant='h6'>{capitalizeFirstLetter('DANH SÁCH CÁC PHÒNG TRỌ')}</Typography>
+          <Typography sx={{ color: '#473C8B' }} variant='h6'>{capitalizeFirstLetter('DANH SÁCH CÁC NHÀ TRỌ')}</Typography>
         </Box>
         < Box sx={{
           display: 'flex',
           gap: 1
         }}>
-          <Button variant='contained' color='success' onClick={handleOpen}>
-            Tạo phòng
+          <Button variant='contained' color='success' onClick={handleOpen} startIcon={<AddIcon />}>
+            Tạo
           </Button>
-          <Button variant='outlined' color='error' sx={{
-            borderWidth: '2px'
-          }}>
-            Xóa phòng
+          <Button
+            variant='outlined'
+            color='error'
+            sx={{
+              borderWidth: '2px'
+            }}
+            onClick={() => handleDelete(selectedRows)}
+          >
+            Xóa
           </Button>
         </Box>
 
@@ -204,16 +261,29 @@ function Hostel() {
         <DataGrid
           rows={rows}
           columns={columns}
+          rowHeight={100} // Tăng chiều cao của hàng
           initialState={{ pagination: { paginationModel } }}
           pageSizeOptions={[5, 10]}
           checkboxSelection // checkbox vẫn hoạt động bình thường
-          sx={{ border: 0, cursor: 'pointer' }}
+          onRowSelectionModelChange={(newRowSelectionModel) => {
+            setSelectedRows(newRowSelectionModel)
+          }}
+          sx={{
+            border: 0, cursor: 'pointer', '& .MuiDataGrid-cell': {
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 0
+            }
+          }}
           disableRowSelectionOnClick // để tránh chọn hàng khi bấm vào bất kỳ đâu ngoài checkbox.
-          onRowClick={(params, event) => {
+          onRowDoubleClick={(params, event) => {
             // Kiểm tra nếu bấm vào checkbox thì không chạy sự kiện khác
             if (event.target.closest('.MuiDataGrid-cellCheckbox')) {
               return
             }
+            // Thay thế bằng hành động bạn muốn thực hiện
+            navigate(`/manage/hostel/${params.row.id}`) // Điều hướng đến trang chi tiết phòng
           }}
         />
       </Paper>
@@ -287,6 +357,32 @@ function Hostel() {
               }}
               {...register('address')}
             />
+            <Controller
+              name="type"
+              defaultValue={HOSTEL_TYPE.PUBLIC}
+              control={control}
+              render={({ field }) => (
+                <RadioGroup
+                  {...field}
+                  row
+                  onChange={(event, value) => field.onChange(value)}
+                  value={field.value}
+                >
+                  <FormControlLabel
+                    value={HOSTEL_TYPE.PUBLIC}
+                    control={<Radio size="small" />}
+                    label="Public"
+                    labelPlacement="start"
+                  />
+                  <FormControlLabel
+                    value={HOSTEL_TYPE.PRIVATE}
+                    control={<Radio size="small" />}
+                    label="Private"
+                    labelPlacement="start"
+                  />
+                </RadioGroup>
+              )}
+            />
             {/* Trường upload ảnh */}
             <Box
               sx={{
@@ -294,7 +390,7 @@ function Hostel() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: 2,
-                mt: 2,
+                mt: 2
               }}
             >
               <Button
