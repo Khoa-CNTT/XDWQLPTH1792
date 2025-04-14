@@ -34,7 +34,30 @@ const getDetails = async (hostelId) => {
     throw error
   }
 }
+const deleteRooms = async (userId, ids) => {
+  try {
+    // Cập nhật lại mảng columnOrderIds trong colecton boards
+    await hostelModel.deleteRoomOrderIds(userId, ids)
+    const room = await roomModel.deleteRooms(ids)
+    if (!room) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Room not found')
+    }
+    return room
+  } catch (error) {
+    throw error
+  }
+}
+const update = async (roomId, reqBody) => {
+  try {
+    const updatedRoom = await roomModel.update(roomId, reqBody)
+    return updatedRoom
+  } catch (error) {
+    throw error
+  }
+}
 export const roomService = {
   createNew,
-  getDetails
+  getDetails,
+  deleteRooms,
+  update
 }

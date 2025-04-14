@@ -63,10 +63,31 @@ const update = async (req, res, next) => {
     // })
   }
 }
+const deleteHostel = async (req, res, next) => {
+  try {
+    const userId = req.jwtDecoded._id
+    const ids = req.query.ids // Lấy dữ liệu từ query string
+    console.log('reqContro', ids)
+    // Chỉ lấy board thuộc về user nào đó thôi
+    const result = await hostelService.deleteHostel(userId, ids)
+    //kết quả trả về phía CLient
+    res.status(StatusCodes.OK).json({
+      message: 'Hostels deleted successfully',
+      deletedCount: result.deletedCount
+    })
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+  } catch (error) {
+    next(error)
+    // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    //     errors: new Error(error).message
+    // })
+  }
+}
 export const hostelController = {
   createNew,
   getDetails,
   uploadImages,
   getHostels,
-  update
+  update,
+  deleteHostel
 }

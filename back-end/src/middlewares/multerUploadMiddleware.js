@@ -6,7 +6,6 @@ import { LIMIT_COMMON_FILE_SIZE, ALLOW_COMMON_FILE_TYPES} from '~/utils/validato
 
 // Function Kiểm tra loại file nào được chấp nhận
 const customFileFilter = (req, file, callback) => {
-  console.log('Muilter File:', file)
 
   // Đối với thằng multer kiểm tra kiểu file thì sử dụng mimetype
   if (!ALLOW_COMMON_FILE_TYPES.includes(file.mimetype)) {

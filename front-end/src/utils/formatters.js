@@ -29,3 +29,7 @@ export const interceptorLoadingElements = (calling) => {
     }
   }
 }
+// Viết hoa tất cả chữ
+export const toUpperCaseAll = (str) => {
+  return str.toUpperCase()
+}

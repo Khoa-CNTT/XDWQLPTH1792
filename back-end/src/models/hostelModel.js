@@ -8,7 +8,6 @@ import Joi from 'joi'
 import { ObjectId, ReturnDocument } from 'mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE, PHONE_NUMBER_RULE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
-import { BOARD_TYPES } from '~/utils/constants'
 import { roomModel } from './roomModel'
 import { userModel } from './userModel'
 import { HOSTEL_TYPES } from '~/utils/constants'
@@ -27,7 +26,7 @@ const HOSTEL_COLLECTION_SCHEMA = Joi.object({
   }),
   tenantIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
   createAt: Joi.date().timestamp('javascript').default(Date.now()),
-  type: Joi.string().valid(HOSTEL_TYPES.PUBLIC, HOSTEL_TYPES.PRIVATE).default(HOSTEL_TYPES.PUBLIC)
+  type: Joi.string().required().valid(HOSTEL_TYPES.PUBLIC, HOSTEL_TYPES.PRIVATE).default(HOSTEL_TYPES.PUBLIC)
 })
 const validateBeforeCreate = async (data) => {
   return await HOSTEL_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
@@ -40,7 +39,6 @@ const createNew = async (userId, data) => {
       ...valiData,
       ownerId: new ObjectId(userId)
     }
-    console.log('valiData', valiData)
     const createdBoard = await GET_DB().collection(HOSTEL_COLLECTION_NAME).insertOne(newHostel)
     return createdBoard
   } catch (error) {
@@ -88,7 +86,7 @@ const pushRoomOrderIds = async (room) => {
   try {
     const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(room.hostelId), },
-      { $push: { roomOrderIds: new ObjectId(room._id) } },
+      { $push: { roomIds: new ObjectId(room._id) } },
       { ReturnDocument: 'after' }
     )
     return result
@@ -121,7 +119,6 @@ const getHostels = async (userId) => {
         }
       ]
     ).toArray()
-    console.log('result', result)
     return result || null
   } catch (error) {
     throw new Error(error)
@@ -150,11 +147,47 @@ const update = async (hostelId, updateData) => {
     throw new Error(error)
   }
 }
+const deleteHostel = async (userId, ids) => {
+  try {
+    // Chuyển đổi mảng `_id` thành ObjectId
+    const objectIds = ids.map(id => new ObjectId(id))
+    // Xóa các tài liệu có `_id` nằm trong mảng
+    const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).deleteMany({
+      _id: { $in: objectIds },
+      ownerId: new ObjectId(userId) // Chỉ xóa những hostel thuộc về user này thôi
+    })
+
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+const deleteRoomOrderIds = async (userId, ids) => {
+  try {
+    // Chuyển đổi mảng `_id` thành ObjectId
+    const objectIds = ids.map(id => new ObjectId(id))
+    const room = await roomModel.findOneById(ids[0])
+    console.log('first', room)
+    const { hostelId } = room
+    console.log('objectIds', objectIds)
+    // Xóa  có `_id` nằm trong mảng
+    const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).updateOne(
+      { _id: new ObjectId(hostelId) },
+      { $pull: { roomIds: { $in: objectIds } } }
+    )
+    console.log('result', result)
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 export const hostelModel = {
   createNew,
   findOneById,
   getDetails,
   pushRoomOrderIds,
   getHostels,
-  update
+  update,
+  deleteHostel,
+  deleteRoomOrderIds
 }

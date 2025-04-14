@@ -8,6 +8,7 @@ import InforRoom from './pages/InforRoom/InforRoom'
 import Profile from './pages/Home/Personal-Page/Personal-Page'
 import Contracts from './pages/Manage/Contracts/Contracts'
 import HouesPage from './pages/Home'
+import Rooms from './pages/Manage/Rooms/Rooms'
 
 
 import { useSelector } from 'react-redux'
@@ -33,9 +34,10 @@ function App() {
       {/* Protected Route( hiểu cách đơn giản của chúng là những route chỉ cho truy cập sau khi đã login) */}
       <Route element={<ProtectedRoute user={currentUser} />}>
         <Route path='/hostel/:hostelId' element={<Home />} />
-        <Route path='/manage/infor-user' element={<Manage />} />
         <Route path='/manage/Contracts' element={<Contracts />}/>
+        <Route path='/manage/infor-user' element={<Manage />} />
         <Route path='/manage/hostel' element={<Manage />} />
+        <Route path='/manage/hostel/:hostelId' element={<Manage />} />
         <Route path='/infor-room/:roomId' element={<InforRoom />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/houesPage' element={<HouesPage />} />
