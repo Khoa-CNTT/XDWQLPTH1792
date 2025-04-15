@@ -60,6 +60,66 @@ function Menu() {
           </ListItemButton>
         </ListItem>
         </Link>
+        <Link to='/home/DetailInforUser' style={{ color: 'inherit' }}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary='Quản lý thông tin người thuê' />
+          </ListItemButton>
+        </ListItem>
+        </Link>
+      <Link to='' style={{ color: 'inherit' }}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary='Quản lý tài khoản' />
+          </ListItemButton>
+        </ListItem>
+        </Link>
+      <Link to='/home/RoomStatus' style={{ color: 'inherit' }}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary='Quản lý trạng thái phòng' />
+          </ListItemButton>
+        </ListItem>
+        </Link>
+      <Link to='' style={{ color: 'inherit' }}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary='Quản lý tiện ích' />
+          </ListItemButton>
+        </ListItem>
+        </Link>
+      <Link to='' style={{ color: 'inherit' }}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary='Quản lý thanh toán' />
+          </ListItemButton>
+        </ListItem>
+        </Link>
+      <Link to='/home/emoji' style={{ color: 'inherit' }}>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary='Quản lý thống kê và báo cáo' />
+          </ListItemButton>
+        </ListItem>
+        </Link>
         <ListItem disablePadding>
           <ListItemButton onClick={handleClick}>
             <ListItemIcon>

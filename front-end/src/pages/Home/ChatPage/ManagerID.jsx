@@ -37,14 +37,20 @@ const ManagerID = () => {
     const diff = Math.floor((now - timestamp) / 60000); // Tính chênh lệch phút
     if (diff === 0) return 'Vừa xong';
     if (diff === 1) return '1 phút trước';
-    return `${diff} phút trước`;
+    if (diff < 60) return `${diff} phút trước`;
+    const hours = Math.floor(diff / 60);
+    if (hours < 24) return `${hours} giờ trước`;
+    const days = Math.floor(hours / 24);
+    return `${days} ngày trước`;
   };
 
+  // Hàm xử lý khi người dùng click vào một người dùng trong danh sách
   const handleUserClick = (user) => {
     setSelectedUser(user);
   };
 
-  const handleSendMessage = () => {
+   // Hàm gửi tin nhắn
+   const handleSendMessage = () => {
     if (inputMessage.trim() !== '') {
       const timestamp = new Date(); // Lưu thời gian gửi tin nhắn
       const updatedMessages = {
@@ -82,13 +88,37 @@ const ManagerID = () => {
 
     return () => clearInterval(interval); // Dọn dẹp interval khi component bị unmount
   }, []);
+  
+    // Xử lý xóa user
+    const handleDeleteUser = (userId) => {
+      setUsers(users.filter((user) => user.id !== userId)); // Xóa user
+      const updatedMessages = { ...messages };
+      delete updatedMessages[userId]; // Xóa tin nhắn của user
+      setMessages(updatedMessages);
+      setSelectedUser(users[0] || null); // Chọn user đầu tiên hoặc null
+    };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* AppBar */}
       <AppBar />
       <Box sx={{ display: 'flex', flex: 1 }}>
-        <ChatSidebar users={users} selectedUser={selectedUser} handleUserClick={handleUserClick} />
+        <ChatSidebar
+          users={users}
+          selectedUser={selectedUser}
+          handleUserClick={handleUserClick}
+          handleDeleteUser={(userId) => {
+            setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId)); // Xóa user khỏi danh sách
+            setMessages((prevMessages) => {
+              const updatedMessages = { ...prevMessages };
+              delete updatedMessages[userId]; // Xóa tin nhắn của user
+              return updatedMessages;
+            });
+            if (selectedUser?.id === userId) {
+              setSelectedUser(users[0] || null); // Chọn user đầu tiên hoặc null
+            }
+          }}
+        />
         <ChatPage
           selectedUser={selectedUser}
           messages={messages[selectedUser.id] || []}

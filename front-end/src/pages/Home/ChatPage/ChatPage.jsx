@@ -1,16 +1,83 @@
-import React from 'react';
-import { Box, Paper, Typography, Avatar, IconButton, TextField, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Paper, Typography, Avatar, IconButton, TextField, Button, Popover } from '@mui/material';
 import CallIcon from '@mui/icons-material/Call';
 import WarningIcon from '@mui/icons-material/Warning';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import SendIcon from '@mui/icons-material/Send';
+import { useTheme } from '@mui/material/styles';
+
+const EmojiPanel = ({ onSelectEmoji }) => {
+  const emojis = [
+    '😀', '😂', '😍', '😎', '😭', '😡', '👍', '👎', '🎉', '❤️', '🔥', '✨', '🎂', '🍕', '⚽', '🏀',
+  ];
+
+  return (
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(6, 1fr)',
+        gap: 1,
+        p: 2,
+        maxWidth: '300px',
+      }}
+    >
+      {emojis.map((emoji, index) => (
+        <IconButton
+          key={index}
+          onClick={() => onSelectEmoji(emoji)}
+          sx={{
+            fontSize: '20px',
+            padding: '5px',
+          }}
+        >
+          {emoji}
+        </IconButton>
+      ))}
+    </Box>
+  );
+};
 
 const ChatPage = ({ selectedUser, messages, inputMessage, setInputMessage, handleSendMessage }) => {
+  const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleOpenEmojiPanel = (event) => {
+    setAnchorEl(event.currentTarget); // Gán phần tử hiện tại làm anchor
+  };
+
+  const handleCloseEmojiPanel = () => {
+    setAnchorEl(null); // Đặt anchor về null để đóng Popover
+  };
+
+  const handleSelectEmoji = (emoji) => {
+    setInputMessage((prev) => prev + emoji); // Thêm emoji vào TextField
+    handleCloseEmojiPanel(); // Đóng bảng emoji sau khi chọn
+  };
+
+  const isEmojiPanelOpen = Boolean(anchorEl); // Kiểm tra xem Popover có đang mở không
+
   return (
-    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#f5f5f5' }}>
+    <Box
+      sx={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: theme.palette.mode === 'dark' ? '#121212' : '#ffffff',
+        color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+      }}
+    >
       {/* Header */}
-      <Paper elevation={1} sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Paper
+        elevation={1}
+        sx={{
+          p: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#ffffff',
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar src="user-avatar.jpg" sx={{ mr: 2 }} />
           <Box>
@@ -44,8 +111,15 @@ const ChatPage = ({ selectedUser, messages, inputMessage, setInputMessage, handl
             <Paper
               sx={{
                 p: 1,
-                backgroundColor: message.type === 'sent' ? '#007bff' : '#f0f0f0',
-                color: message.type === 'sent' ? 'white' : 'black',
+                backgroundColor:
+                  message.type === 'sent'
+                    ? theme.palette.mode === 'dark'
+                      ? '#007bff'
+                      : '#007bff'
+                    : theme.palette.mode === 'dark'
+                    ? '#333333'
+                    : '#f0f0f0',
+                color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
                 borderRadius: 2,
                 maxWidth: '60%',
               }}
@@ -72,9 +146,24 @@ const ChatPage = ({ selectedUser, messages, inputMessage, setInputMessage, handl
           }}
           sx={{ mr: 2 }}
         />
-        <IconButton>
+        <IconButton onClick={handleOpenEmojiPanel}>
           <EmojiEmotionsIcon />
         </IconButton>
+        <Popover
+          open={isEmojiPanelOpen}
+          anchorEl={anchorEl}
+          onClose={handleCloseEmojiPanel}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+        >
+          <EmojiPanel onSelectEmoji={handleSelectEmoji} />
+        </Popover>
         <IconButton>
           <PhotoCameraIcon />
         </IconButton>

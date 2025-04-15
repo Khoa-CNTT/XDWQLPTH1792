@@ -7,10 +7,16 @@ import Manage from './pages/Manage/Manage'
 import InforRoom from './pages/InforRoom/InforRoom'
 import Profile from './pages/Home/Personal-Page/Personal-Page'
 import Contracts from './pages/Manage/Contracts/Contracts'
+import DetailUser from './pages/Home/DetailUser/DetailInfroUser';
+import RoomStatus from './pages/Home/RoomStatus/RoomStatus';
+import DetailRoom from './pages/Home/RoomStatus/DetailRoom';
+import Emoji from './pages/Home/ChatPage/emoji';
+
 import ManagerID from './pages/Home/ChatPage/ManagerID';
 
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from './redux/user/userSlice'
+import SPDetailUser from './pages/Home/DetailUser/SPDetailUser'
 /**
 * Giải pháp Clean Code trong việc xác định các route nào cần đăng nhập tài khoản xong thì mới cho truy cập
 * Sử dụng <Outlet /> của react-router-dom để hiển thị các Child Route (xem cách sử dụng trong App() bên dưới)
@@ -37,6 +43,12 @@ function App() {
         <Route path='/home/ManagerID' element={<ManagerID />} />
         <Route path='/home/user-list' element={<ManagerID />} />
         <Route path='/home/chat' element={<ManagerID />} />
+        <Route path='/home/emoji' element={<Emoji />} />
+        <Route path='/home/DetailInforUser' element={<DetailUser />} />
+        <Route path='/home/SPDetailUser' element={<SPDetailUser />} />
+        <Route path='/home/RoomStatus' element={<RoomStatus />} />
+        <Route path="/room/:id" element={<DetailRoom />} />
+        <Route path="/room/new" element={<DetailRoom />} />
         <Route path='/manage/hostel' element={<Manage />} />
         <Route path='/infor-room/:roomId' element={<InforRoom />} />
         <Route path='/profile' element={<Profile />} />
