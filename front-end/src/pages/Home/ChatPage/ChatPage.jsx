@@ -38,6 +38,7 @@ const EmojiPanel = ({ onSelectEmoji }) => {
   );
 };
 
+
 const ChatPage = ({ selectedUser, messages, inputMessage, setInputMessage, handleSendMessage }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
