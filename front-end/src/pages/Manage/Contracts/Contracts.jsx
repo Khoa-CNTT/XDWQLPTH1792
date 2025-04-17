@@ -63,10 +63,10 @@ const columns = [
 ];
 
 const allRows = [
-  { id: 'T1', room: '101', role: 'Đã thuê' , tenant: 'Nguyễn Văn A', contractDuration: '12 tháng', startDate: '01/01/2023', endDate: '31/12/2023', deposit: '10,000,000 VND', roomCode: 'A101' },
-  { id: 'T2', room: '102', role: 'Đã thuê', tenant: 'Trần Thị B', contractDuration: '6 tháng', startDate: '01/06/2023', endDate: '30/11/2023', deposit: '5,000,000 VND', roomCode: 'A102' },
-  { id: 'D1', room: '103', role: 'Đã thuê', tenant: 'Lê Văn C', contractDuration: '3 tháng', startDate: '01/09/2023', endDate: '30/11/2023', deposit: '3,000,000 VND', roomCode: 'A103' },
-  { id: 'D2', room: '104', role: 'Cọc', tenant: 'Phạm Thị D', contractDuration: '1 tháng', startDate: '01/10/2023', endDate: '31/10/2023', deposit: '1,000,000 VND', roomCode: 'A104' },
+  { id: '1', room: '101', role: 'Đã thuê' , tenant: 'Nguyễn Văn A', contractDuration: '12 tháng', startDate: '01/01/2023', endDate: '31/12/2023', deposit: '10,000,000 VND', roomCode: 'A101' },
+  { id: '2', room: '102', role: 'Đã thuê', tenant: 'Trần Thị B', contractDuration: '6 tháng', startDate: '01/06/2023', endDate: '30/11/2023', deposit: '5,000,000 VND', roomCode: 'A102' },
+  { id: '3', room: '103', role: 'Đã thuê', tenant: 'Lê Văn C', contractDuration: '3 tháng', startDate: '01/09/2023', endDate: '30/11/2023', deposit: '3,000,000 VND', roomCode: 'A103' },
+  { id: '4', room: '104', role: 'Cọc', tenant: 'Phạm Thị D', contractDuration: '1 tháng', startDate: '01/10/2023', endDate: '31/10/2023', deposit: '1,000,000 VND', roomCode: 'A104' },
 ];
 
 const handleEdit = (row) => {
