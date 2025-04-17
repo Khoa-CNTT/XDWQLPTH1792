@@ -110,7 +110,7 @@ function Menu() {
           </ListItemButton>
         </ListItem>
         </Link>
-      <Link to='/home/emoji' style={{ color: 'inherit' }}>
+      <Link to='' style={{ color: 'inherit' }}>
         <ListItem disablePadding>
           <ListItemButton>
             <ListItemIcon>
