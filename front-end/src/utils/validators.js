@@ -4,7 +4,7 @@
 
 // Một vài biểu thức chính quy - Regular Expression và custom message.
 // Về Regular Expression khá hại não: https://viblo.asia/p/hoc-regular-expression-va-cuoc-doi-ban-se-bot-kho-updated-v22-Az45bnoO5xY
-export const FIELD_REQUIRED_MESSAGE = 'This field is required.'
+export const FIELD_REQUIRED_MESSAGE = 'Yêu cầu bắt buộc nhập.'
 export const EMAIL_RULE = /^\S+@\S+\.\S+$/
 export const EMAIL_RULE_MESSAGE = 'Email không hợp lệ.'
 export const PASSWORD_RULE = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d\W]{8,256}$/
@@ -16,6 +16,8 @@ export const PHONE_NUMBER_RULE = /^[0-9]{9,10}$/
 export const NUMBER_RULE_MESSAGE = 'Phải là chữ chữ số và 9 số'
 export const CITIZEN_NUMBER = /^\d{12}$/
 export const CITIZEN_NUMBER_MESSAGE = 'Phải là 12 số'
+export const POSITIVE_NUMBER_RULE = /^(?!0\d)\d*\.?\d+$/
+export const POSITIVE_NUMBER_RULE_MESSAGE = 'Vui lòng nhập số lớn hơn 0 (có thể là số thập phân)'
 
 // Liên quan đến Validate File
 export const LIMIT_COMMON_FILE_SIZE = 10485760 // byte = 10 MB
