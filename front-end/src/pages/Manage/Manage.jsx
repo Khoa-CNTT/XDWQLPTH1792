@@ -47,7 +47,7 @@ function Manage() {
             flexShrink: 0 // Ngăn Tabs bị co lại
           }}
         >
-          <Tab label="Quản lý thông tin người thuê " value={TABS.INFOR_USER} component={Link} to='/manage/infor-user' />
+          <Tab label="Quản lý thông tin người thuê" value={TABS.INFOR_USER} component={Link} to='/manage/infor-user' />
           <Tab label="Quản lý thông tin phòng trọ" value={TABS.HOSTEL} component={Link} to='/manage/hostel' />
           <Tab label="Quản lý hợp đồng phòng trọ" value={TABS.CONTRACTS} component={Link} to='/manage/contracts' />
         </Tabs>
