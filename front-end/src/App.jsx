@@ -6,7 +6,6 @@ import Home from './pages/Home/Home'
 import Manage from './pages/Manage/Manage'
 import InforRoom from './pages/InforRoom/InforRoom'
 import Profile from './pages/Home/Personal-Page/Personal-Page'
-import Contracts from './pages/Manage/Contracts/Contracts'
 import HouesPage from './pages/Home'
 import Rooms from './pages/Manage/Rooms/Rooms'
 import DetailUser from './pages/Home/DetailUser/DetailInfroUser';
@@ -34,12 +33,12 @@ function App() {
   const currentUser = useSelector(selectCurrentUser)
   return (
     <Routes>
-      <Route path='/' element={<Navigate to="/hostel/67e35e0682e1a9ceb069ce6c" replace={true} />} />
+      <Route path='/' element={<Navigate to="/hostel" replace={true} />} />
 
       {/* Protected Route( hiểu cách đơn giản của chúng là những route chỉ cho truy cập sau khi đã login) */}
       <Route element={<ProtectedRoute user={currentUser} />}>
         <Route path='/hostel/:hostelId' element={<Home />} />
-        <Route path='/manage/Contracts' element={<Contracts />}/>
+        <Route path='/manage/Contracts' element={<Manage />}/>
         <Route path='/manage/infor-user' element={<Manage />} />
         <Route path='/manage/hostel' element={<Manage />} />
         <Route path='/manage/hostel/:hostelId' element={<Manage />} />

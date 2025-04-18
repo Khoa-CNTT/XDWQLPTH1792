@@ -17,6 +17,7 @@ import { useState, useEffect } from 'react'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
+import InputAdornment from '@mui/material/InputAdornment'
 
 //Upload ảnh
 import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
@@ -25,7 +26,8 @@ import { toast } from 'react-toastify'
 
 import { useForm, Controller } from 'react-hook-form'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
-import { INPUT_NAME, INPUT_NAME_MESSAGE, FIELD_REQUIRED_MESSAGE } from '~/utils/validators'
+import { INPUT_NAME, INPUT_NAME_MESSAGE, FIELD_REQUIRED_MESSAGE, POSITIVE_NUMBER_RULE,
+  POSITIVE_NUMBER_RULE_MESSAGE } from '~/utils/validators'
 import { uploadImagesAPI, createNewHostelAPI, fetchHostelsAPI, updateHostelAPI, deleteHostelAPI } from '~/apis'
 
 import { useConfirm } from 'material-ui-confirm'
@@ -64,6 +66,8 @@ function Hostel() {
     setValue('address', hostel.address)
     setValue('images', hostel.images) // Điền dữ liệu vào form
     setValue('type', hostel.type)
+    setValue('electricity_price', hostel.electricity_price)
+    setValue('water_price', hostel.water_price)
     setPreviewUrl(hostel.images) // Hiển thị ảnh xem trước
     setOpen(true) // Mở Dialog
   }
@@ -146,7 +150,7 @@ function Hostel() {
   const handleDelete = (data) => {
     confirmUpdateOrDelete({
       title: 'Xóa nhà trọ',
-      description: 'Bạn có chắc chắn muốn xóa nhà trọ này không?',
+      description: 'Bạn có chắc chắn muốn xóa nhà trọ này không? (Sẽ xóa tất cả thông tin phòng trọ của bạn)',
       confirmationText: 'Confirm',
       cancellationText: 'Cancel'
     }).then(() => {
@@ -177,6 +181,7 @@ function Hostel() {
             year: 'numeric'
           }).format(new Date(item.createAt)) // Định dạng ngày tạo
         }))
+      console.log('formattedData', formattedData)
       setRows(formattedData) // Lưu dữ liệu vào state
     })
   }, [refresh]) // Chỉ gọi API khi component được mount lần đầu tiên hoặc khi `refresh` thay đổi
@@ -202,7 +207,7 @@ function Hostel() {
       )
     },
     { field: 'hostelName', headerName: 'Tên nhà trọ', flex: 2, headerAlign: 'center' },
-    { field: 'address', headerName: 'Địa chỉ', flex: 2,headerAlign: 'center' },
+    { field: 'address', headerName: 'Địa chỉ', flex: 2, headerAlign: 'center' },
     { field: 'ownerName', headerName: 'Chủ sở hữu', flex: 2, headerAlign: 'center' },
     { field: 'roomIds', headerName: 'Tổng số phòng', flex: 2, headerAlign: 'center' },
     { field: 'createAt', headerName: 'Ngày tạo', flex: 2, headerAlign: 'center' },
@@ -357,6 +362,70 @@ function Hostel() {
               }}
               {...register('address')}
             />
+            <Box sx={{
+              display: 'flex',
+              gap: 2, // Khoảng cách giữa các trường
+              justifyContent: 'space-between', // Căn giữa theo chiều ngang
+              alignItems: 'center', // Căn giữa theo chiều dọc
+              mt: 2 // Thêm khoảng cách phía trên
+            }}>
+              <Box sx={{
+                width: '43%'
+              }}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Số tiền nước"
+                  name="electricity_price"
+                  type="text"
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">đồng/số</InputAdornment> // Thêm đơn vị "m"
+                  }}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      borderRadius: '8px'
+                    }
+                  }}
+                  {...register('electricity_price', {
+                    required: FIELD_REQUIRED_MESSAGE,
+                    pattern: {
+                      value: POSITIVE_NUMBER_RULE,
+                      message: POSITIVE_NUMBER_RULE_MESSAGE
+                    }
+                  }
+                  )}
+                />
+                <FieldErrorAlert errors={errors} fieldName={'electricity_price'} />
+              </Box>
+              <Box sx={{
+                width: '46%'
+              }}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Số tiền điện"
+                  name="water_price"
+                  type="text"
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">đồng/chữ</InputAdornment> // Thêm đơn vị "m"
+                  }}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      borderRadius: '8px'
+                    }
+                  }}
+                  {...register('water_price', {
+                    required: FIELD_REQUIRED_MESSAGE,
+                    pattern: {
+                      value: POSITIVE_NUMBER_RULE,
+                      message: POSITIVE_NUMBER_RULE_MESSAGE
+                    }
+                  }
+                  )}
+                />
+                <FieldErrorAlert errors={errors} fieldName={'water_price'} />
+              </Box>
+            </Box>
             <Controller
               name="type"
               defaultValue={HOSTEL_TYPE.PUBLIC}

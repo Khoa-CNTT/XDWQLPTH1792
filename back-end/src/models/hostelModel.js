@@ -24,6 +24,8 @@ const HOSTEL_COLLECTION_SCHEMA = Joi.object({
     'any.required': 'Image is required',
     'string.empty': 'Image must not be an empty string'
   }),
+  electricity_price: Joi.number().required(),
+  water_price: Joi.number().required(),
   tenantIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
   createAt: Joi.date().timestamp('javascript').default(Date.now()),
   type: Joi.string().required().valid(HOSTEL_TYPES.PUBLIC, HOSTEL_TYPES.PRIVATE).default(HOSTEL_TYPES.PUBLIC)
@@ -73,6 +75,26 @@ const getDetails = async (id) => {
           foreignField: 'hostelId',
           as: 'rooms'
         }
+      },
+      {
+        $lookup: {
+          from: userModel.USER_COLLECTION_NAME, // Tên collection của user
+          localField: 'ownerId', // Trường trong hostel để nối
+          foreignField: '_id', // Trường trong user để nối
+          as: 'ownerInfo', // Tên trường chứa thông tin owner sau khi lookup
+          pipeline: [{ $project: { password: 0, verifyToken: 0, isActive: 0 } }]
+        }
+      },
+      {
+        $lookup: {
+          from: userModel.USER_COLLECTION_NAME,
+          localField: 'tenantIds',
+          foreignField: '_id',
+          as: 'tenants',
+          // pipeline trong lookup để xử lý 1 hoặc nhiều luồng cần thiết
+          // $project để chỉ định ra những field mà chúng ta cần lấy về hoawck ko muốn lấy về gán =0
+          pipeline: [{ $project: { password: 0, verifyToken: 0, isActive: 0 } }]
+        }
       }
     ]).toArray()
     return result[0] || null
@@ -98,7 +120,14 @@ const getHostels = async (userId) => {
   try {
     const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).aggregate(
       [
-        { $match: { ownerId: { $all: [new ObjectId(userId)] } } },
+        {
+          $match: {
+            $or: [
+              { ownerId: new ObjectId(userId) },
+              { tenantIds: { $all: [new ObjectId(userId)] } }
+            ]
+          }
+        },
         {
           $lookup: {
             from: userModel.USER_COLLECTION_NAME, // Tên collection của user
@@ -109,7 +138,8 @@ const getHostels = async (userId) => {
         },
         {
           $addFields: {
-            ownerPhone: { $arrayElemAt: ['$ownerInfo.phone', 0] } // Lấy số điện thoại từ mảng ownerInfo
+            ownerPhone: { $arrayElemAt: ['$ownerInfo.phone', 0] }, // Lấy số điện thoại từ mảng ownerInfo
+            ownerName: { $arrayElemAt: ['$ownerInfo.displayName', 0] } // Lấy số điện thoại từ mảng ownerInfo
           }
         },
         {
@@ -167,21 +197,33 @@ const deleteRoomOrderIds = async (userId, ids) => {
     // Chuyển đổi mảng `_id` thành ObjectId
     const objectIds = ids.map(id => new ObjectId(id))
     const room = await roomModel.findOneById(ids[0])
-    console.log('first', room)
     const { hostelId } = room
-    console.log('objectIds', objectIds)
     // Xóa  có `_id` nằm trong mảng
     const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).updateOne(
       { _id: new ObjectId(hostelId) },
-      { $pull: { roomIds: { $in: objectIds } } }
+      { $pull: { roomIds: { $in: objectIds } } },
+      { returnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
     )
-    console.log('result', result)
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+const pushTenantIds = async (hostelId, userId) => {
+  try {
+    const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(hostelId) },
+      { $push: { tenantIds: new ObjectId(userId) } },
+      { returnDocument: 'after' }
+    )
     return result
   } catch (error) {
     throw new Error(error)
   }
 }
 export const hostelModel = {
+  HOSTEL_COLLECTION_NAME,
+  HOSTEL_COLLECTION_SCHEMA,
   createNew,
   findOneById,
   getDetails,
@@ -189,5 +231,6 @@ export const hostelModel = {
   getHostels,
   update,
   deleteHostel,
-  deleteRoomOrderIds
+  deleteRoomOrderIds,
+  pushTenantIds
 }

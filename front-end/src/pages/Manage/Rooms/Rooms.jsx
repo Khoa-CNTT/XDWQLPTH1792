@@ -15,7 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Checkbox from '@mui/material/Checkbox'
 import FormGroup from '@mui/material/FormGroup'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from '@mui/icons-material/Add'
 import { useState, useEffect } from 'react'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -65,8 +65,6 @@ function Rooms() {
     setOpen(true) // Mở Dialog
   }
   const handleEdit = (room) => {
-    console.log('room', room)
-    console.log('ul',room.utilities.split(','))
     const [length, width] = room.acreage?.split('x').map((value) => value.trim()) || ['', ''];
     // Tách chiều dài và chiều rộng từ acreage
     setEditingRoom(room) // Lưu thông tin nhà trọ vào state
@@ -228,7 +226,6 @@ function Rooms() {
 
   // Xóa phòng trọ
   const handleDelete = (data) => {
-    console.log('data', data)
     confirmUpdateOrDelete({
       title: 'Xóa nhà trọ',
       description: 'Bạn có chắc chắn muốn xóa nhà trọ này không?',

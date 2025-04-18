@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { hostelModel } from '~/models/hostelModel'
 import ApiError from '~/utils/ApiError'
 import { CloudinaryProvider } from '~/providers/Cloudinary'
+import { roomModel } from '~/models/roomModel'
 
 const createNew = async (userId, reqBody) => {
   try {
@@ -53,6 +54,17 @@ const update = async (hostelId, reqBody) => {
 }
 const deleteHostel = async (userId, ids) => {
   try {
+    // Lấy danh sách các hostels dựa trên `ids` và `userId`
+    const hostels = await Promise.all(
+      ids.map(async (id) => {
+        return await hostelModel.findOneById(id) // Hàm này sẽ lấy hostel theo `id` và `userId`
+      })
+    )
+    // Gộp tất cả `roomIds` từ các hostels
+    const allRoomIds = hostels.flatMap((hostel) => hostel.roomIds || [])
+    if (allRoomIds.length > 0) {
+      await roomModel.deleteRooms(allRoomIds)
+    }
     const updatedBoard = await hostelModel.deleteHostel(userId, ids)
     return updatedBoard
   } catch (error) {

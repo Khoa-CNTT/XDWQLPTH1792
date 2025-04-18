@@ -14,7 +14,7 @@ const INVALID_UPDATE_FIELDS = ['_id']
 const ROOM_COLLECTION_NAME = 'rooms'
 const ROOM_COLLECTION_SCHEMA = Joi.object({
   hostelId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
-  roomName: Joi.string().required().max(50).trim().strict(),
+  roomName: Joi.string().required().max(50).trim(),
   length: Joi.number().required(),
   width: Joi.number().required(),
   utilities: Joi.array().items(Joi.string().max(50).trim().strict()).required(),

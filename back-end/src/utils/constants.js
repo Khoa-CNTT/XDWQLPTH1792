@@ -18,3 +18,12 @@ export const WEBSITE_DOMAIN = (env.BUILD_MODE=== 'production') ? env.WEBSITE_DOM
 
 export const DEFAULT_PAGE = 1
 export const DEFAULT_ITEMS_PER_PAGE = 12
+
+export const INVITATION_TYPES = {
+  HOSTEL_INVITATION: 'HOSTEL_INVITATION'
+}
+export const HOSTEL_INVITATION_STATUS = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED'
+}

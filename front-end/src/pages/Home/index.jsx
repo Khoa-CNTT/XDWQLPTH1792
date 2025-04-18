@@ -1,4 +1,3 @@
-import React from 'react'
 import AppBar from '~/components/AppBar'
 import { Box } from '@mui/material'
 import Container from '@mui/material/Container'
@@ -7,15 +6,15 @@ import Typography from '@mui/material/Typography'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import TextField from '@mui/material/TextField'
-import MenuItem from '@mui/material/MenuItem'
 import Grid from '@mui/material/Grid'
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import CardMedia from '@mui/material/CardMedia'
+import { getAllHostelPublic } from '~/apis'
 const categories = ['Apartment', 'House', 'Land', 'Commercial']
 import Divider from '@mui/material/Divider'
+import { useState, useEffect } from 'react'
 const mockHostels = [
   { id: 1, name: 'Nhà trọ A', location: 'Hà Nội', price: '2 triệu/tháng' },
   { id: 2, name: 'Nhà trọ B', location: 'Hồ Chí Minh', price: '3 triệu/tháng' },
@@ -23,7 +22,9 @@ const mockHostels = [
   { id: 4, name: 'Nhà trọ D', location: 'Hải Phòng', price: '2.5 triệu/tháng' },
 ];
 function HouesPage() {
-  const [tabValue, setTabValue] = React.useState(0)
+  const [tabValue, setTabValue] = useState(0)
+  const [hostels, setHostels] = useState(null)
+
   return (
     <>
       <AppBar />

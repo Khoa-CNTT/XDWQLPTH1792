@@ -119,7 +119,7 @@ function Bedsit({ room }) {
             <Typography sx={{
               fontWeight: 600,
               fontSize: '1.4rem',
-              color: room?.status === 'Còn trống' ? 'green' : 'red'
+              color: room?.status === 'available' ? 'green' : 'red'
             }}>
               Tình trạng: {room?.status}
             </Typography>
