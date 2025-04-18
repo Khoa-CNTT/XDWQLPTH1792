@@ -46,6 +46,11 @@ export const deleteHostelAPI = async (data) => {
   })
   return respone.data
 }
+export const getAllHostelPublic = async () => {
+  const respone = await authorizeAxiosInstance.get(`${API_ROOT}/v1/hostel/public`)
+  return respone.data
+}
+
 //Rooms
 export const createNeRoomAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/rooms`, data)
@@ -78,5 +83,11 @@ export const verifyUserAPI = async (data) => {
 }
 export const refreshTokenAPI = async () => {
   const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users/refresh_token`)
+  return response.data
+}
+// Invite API
+export const inviteUserToHostelAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/invitations/hostel`, data)
+  toast.success('Mời thành công')
   return response.data
 }

@@ -28,7 +28,7 @@ function Home() {
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar/>
-      <BedsitBar/>
+      <BedsitBar hostel= {hostel}/>
       <BedsitContent hostel={hostel}/>
     </Container>
   )

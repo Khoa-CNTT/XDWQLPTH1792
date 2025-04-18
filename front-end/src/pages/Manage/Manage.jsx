@@ -12,15 +12,18 @@ import Box from '@mui/material/Box'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
 import Rooms from './Rooms/Rooms'
+import Contracts from './Contracts/Contracts'
 const TABS = {
   INFOR_USER: 'infor-user',
-  HOSTEL: 'hostel'
+  HOSTEL: 'hostel',
+  CONTRACTS: 'contracts'
 }
 function Manage() {
   const location = useLocation()
   const getDefaultTabFromURL = () => {
     if (location.pathname.includes(TABS.INFOR_USER)) return TABS.INFOR_USER
     if (location.pathname.includes(TABS.HOSTEL)) return TABS.HOSTEL // Bao gồm cả URL động
+    if (location.pathname.includes(TABS.contracts)) return TABS.contracts // Bao gồm cả URL động
     return TABS.HOSTEL
   }
   const [value, setValue] = useState(getDefaultTabFromURL())
@@ -46,6 +49,7 @@ function Manage() {
         >
           <Tab label="Quản lý thông tin người thuê " value={TABS.INFOR_USER} component={Link} to='/manage/infor-user' />
           <Tab label="Quản lý thông tin phòng trọ" value={TABS.HOSTEL} component={Link} to='/manage/hostel' />
+          <Tab label="Quản lý hợp đồng phòng trọ" value={TABS.CONTRACTS} component={Link} to='/manage/contracts' />
         </Tabs>
 
         {/* Tab Panels */}
@@ -53,8 +57,9 @@ function Manage() {
           <TabContext value={value}>
             <TabPanel value={TABS.INFOR_USER}><InforUser /></TabPanel>
             <TabPanel value={TABS.HOSTEL}>
-            {location.pathname === '/manage/hostel' ? <Hostel /> : <Rooms />}
+              {location.pathname === '/manage/hostel' ? <Hostel /> : <Rooms />}
             </TabPanel>
+            <TabPanel value={TABS.CONTRACTS}><Contracts /></TabPanel>
           </TabContext>
         </Box>
       </Box>

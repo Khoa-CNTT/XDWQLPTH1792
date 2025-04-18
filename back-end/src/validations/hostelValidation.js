@@ -17,7 +17,9 @@ const createNew = async (req, res, next) => {
     images: Joi.string().required().messages({
       'any.required': 'Image is required',
       'string.empty': 'Image must not be an empty string'
-    })
+    }),
+    electricity_price: Joi.number().required(),
+    water_price: Joi.number().required()
   })
   try {
     await correctCondition.validateAsync(req.body, { abortEarly: false }) // trả về tất cả các lỗi, còn trả về lỗi đầu tiên thì true

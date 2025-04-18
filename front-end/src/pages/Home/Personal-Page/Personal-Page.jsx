@@ -37,7 +37,6 @@ function Profile() {
   })
   // Hàm gọi update thông tin user
   const submitChangeGeneralInformation = (data) => {
-    console.log('data', data)
     // So sánh dữ liệu mới với dữ liệu ban đầu
     const isDataUnchanged = JSON.stringify(data) === JSON.stringify(initialGeneralForm)
     if (isDataUnchanged) return
@@ -54,7 +53,6 @@ function Profile() {
   }
   const uploadAvatar = (e) => {
     // Lấy file thông qua e.target?.files[0] và validate nó trước khi xử lý
-    console.log('e.target?.files[0]: ', e.target?.files[0])
     const error = singleFileValidator(e.target?.files[0])
     if (error) {
       toast.error(error)

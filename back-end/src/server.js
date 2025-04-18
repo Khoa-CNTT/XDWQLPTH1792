@@ -13,6 +13,11 @@ import { env } from '~/config/environment'
 import { APIs_V1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from '~/middlewares/errorHandlingMiddleware'
 import cookieParser from 'cookie-parser'
+
+// Xử lý socket real-time với gói socket.io
+//https://socket.io/get-started/chat/#integrating-socketio
+import http from 'http'
+import socketIo from 'socket.io'
 const START_SERVER = () => {
   const app = express()
   // Fix cái vụ Cache from disk của ExpressJS
@@ -32,15 +37,29 @@ const START_SERVER = () => {
   //Middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware)
 
+  // Tạo 1 cái server mới bọc app của express để làm real-time với socket.io
+  const server = http.createServer(app)
+  // Khởi tạo  biến  io với server và cors
+  const io = socketIo(server, { cors: corsOptions })
+
+  io.on('connection', (socket) => {
+    // Lắng nghe sự kiện mà client emit lên có tên là FE_USER_INVITED_TO_HOSTEL
+    socket.on('FE_USER_INVITED_TO_HOSTEL', (invitation) => {
+      // Cách làm nhanh và đơn giản nhất: Emit ngược lại một sự kiện về cho mọi client khác ( Ngoại trừ chính cái thằng gửi req lên) rồi 
+      // để phía FE check
+      socket.broadcast.emit('BE_USER_INVITED_TO_HOSTEL', invitation)
+
+    })
+  })
   if (env.BUILD_MODE === 'production') {
     // Môi trường production( cụ thể là đang support render.com)
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       // eslint-disable-next-line no-console
       console.log(`3. Production: ${env.AUTHOR} , Back_End Server is running successfully at Port ${process.env.PORT}`)
     })
   } else {
     // Môi trường local Dev
-    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+    server.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
       // eslint-disable-next-line no-console
       console.log(`3. Hello ${env.AUTHOR} , I am running at http://${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT}/`)
     })

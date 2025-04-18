@@ -9,15 +9,15 @@ import {
   FormControl,
   Button,
   Divider,
-  Paper,
-} from '@mui/material';
+  Paper
+} from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 70, align: 'center', headerAlign: 'center' },
-  { field: 'room', headerName: 'Phòng', width: 130, align: 'center', headerAlign: 'center' },
+  { field: 'stt', headerName: 'ID', width: 70, align: 'center', headerAlign: 'center' },
+  { field: 'roomName', headerName: 'Phòng', width: 130, align: 'center', headerAlign: 'center' },
   { field: 'role', headerName: 'Vai trò', width: 90, align: 'center', headerAlign: 'center' },
   { field: 'tenant', headerName: 'Tên', width: 130, align: 'center', headerAlign: 'center' },
   { field: 'contractDuration', headerName: 'Thời hạn hợp đồng', width: 160, align: 'center', headerAlign: 'center' },
@@ -78,27 +78,26 @@ const handleDelete = (id) => {
 };
 
 export default function Contracts() {
-  const [contractType, setContractType] = useState('rent'); // Giá trị mặc định là "Thuê phòng"
-  const [filteredRows, setFilteredRows] = useState([]);
+  const [contractType, setContractType] = useState('rent') // Giá trị mặc định là "Thuê phòng"
+  const [filteredRows, setFilteredRows] = useState([])
 
   // Lọc dữ liệu khi giá trị contractType thay đổi
   useEffect(() => {
     if (contractType === 'rent') {
-      setFilteredRows(allRows.filter((row) => row.role.startsWith('Đã thuê')));
+      setFilteredRows(allRows.filter((row) => row.role.startsWith('Đã thuê')))
     } else if (contractType === 'deposit') {
-      setFilteredRows(allRows.filter((row) => row.role.startsWith('Cọc')));
+      setFilteredRows(allRows.filter((row) => row.role.startsWith('Cọc')))
     }
-  }, [contractType]);
+  }, [contractType])
 
   const handleContractTypeChange = (event) => {
-    setContractType(event.target.value);
+    setContractType(event.target.value)
   };
 
   return (
     <Box>
-      <AppBar />
-      <Box sx={{ pl: 10, pr: 10 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, my: 2 }}></Box>
+      <Box >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}></Box>
         <Typography variant="h5" sx={{ fontWeight: '600' }}>
           Hợp đồng thuê phòng
         </Typography>
@@ -111,7 +110,7 @@ export default function Contracts() {
 
         {/* Bảng hợp đồng */}
         <Divider sx={{ my: 2 }} />
-        <Paper sx={{ height: 310, width: '100%' }}>
+        <Paper sx={{ height: 480, width: '100%' }}>
           <DataGrid
             rows={filteredRows}
             columns={columns}

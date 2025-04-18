@@ -6,7 +6,7 @@ import { STATUS_ROOM } from '~/utils/constants'
 const createNew = async (req, res, next) => {
   const correctCondition = Joi.object({ // biến tên điều kiện đúng
     hostelId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
-    roomName: Joi.string().required().max(50).trim().strict(),
+    roomName: Joi.string().required().max(50).trim(),
     length: Joi.number().required(),
     width: Joi.number().required(),
     utilities: Joi.array().items(Joi.string().max(50).trim().strict()),

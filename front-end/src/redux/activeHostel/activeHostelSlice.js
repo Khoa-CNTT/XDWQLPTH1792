@@ -27,7 +27,6 @@ export const activeHostelSlice = createSlice({
     updateCurrentActiveHostel: (state, action) => {
       //action.payload là chuẩn đặt tên nhận dữ liệu vào reducer, ở đây chúng ta gán nó vào 1 biến có ý nghĩa hơn
       let hostel = action.payload
-
       // Xử lý dữ liệu nếu cần thiết...
 
       // Update lại dữ liệu của currentActiveHostel
@@ -39,7 +38,7 @@ export const activeHostelSlice = createSlice({
     builder.addCase(fetchHostelDetailsAPI.fulfilled, (state, action) => {
       // action.payload ở đây chính là cái response.data trả về ở trên fetchHostelDetailsAPI
       const hostel = action.payload
-
+      hostel.FE_allUsers = hostel.ownerInfo.concat(hostel.tenants)
       // Xử lý dữ liệu nếu cần thiết...
 
       // Update lại dữ liệu của currentActiveHostel

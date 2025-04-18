@@ -67,7 +67,6 @@ const deleteHostel = async (req, res, next) => {
   try {
     const userId = req.jwtDecoded._id
     const ids = req.query.ids // Lấy dữ liệu từ query string
-    console.log('reqContro', ids)
     // Chỉ lấy board thuộc về user nào đó thôi
     const result = await hostelService.deleteHostel(userId, ids)
     //kết quả trả về phía CLient
