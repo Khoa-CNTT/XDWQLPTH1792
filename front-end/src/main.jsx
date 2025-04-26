@@ -28,6 +28,8 @@ import { injectStore } from '~/utils/authorizeAxios'
 injectStore(store)//Kỹ thuật InjectStore giúp truyền store đến các module bên ngoài
 injectStore(store)
 const persistor = persistStore(store)
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter basename='/'>
     <Provider store={store}>

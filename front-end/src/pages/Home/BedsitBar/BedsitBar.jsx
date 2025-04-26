@@ -8,6 +8,8 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 import { useSelector } from 'react-redux'
 import { selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
+import InviteHostelUser from './InviteHostelUser'
+import HostelUserGroup from './HostelUserGroup'
 const MENU_STYLES = {
   color: 'white', bgcolor: 'transparent', border: 'none', paddingX: '5px', borderRadius: '5px',
   '.MuiSvgIcon-root': {
@@ -17,8 +19,7 @@ const MENU_STYLES = {
     bgcolor: 'primary.50'
   }
 }
-function BedsitBar() {
-  const hostel = useSelector(selectCurrentActiveHostel)
+function BedsitBar({ hostel}) {
   return (
     <Box sx={{
       width: '100%',
@@ -52,50 +53,8 @@ function BedsitBar() {
           icon={<FilterListIcon />} label="Filters" clickable /> */}
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button variant="outlined" startIcon={<PersonAddIcon />}
-          sx={{
-            color: 'white',
-            borderColor: 'white',
-            ': hover': {
-              borderColor: 'white'
-            }
-          }}
-        >Invite</Button>
-        {/* <AvatarGroup
-          max={4}
-          sx={{
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              fontSize: '16px',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              '&:first-of-type': {
-                bgcolor: '#a4b0de'
-              }
-            }
-          }}
-        >
-          <Tooltip title='title' >
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Tooltip>
-          <Tooltip >
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Tooltip>
-          <Tooltip >
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Tooltip>
-          <Tooltip >
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Tooltip>
-          <Tooltip >
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Tooltip>
-          <Tooltip >
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Tooltip>
-        </AvatarGroup> */}
+        <InviteHostelUser hostelId={hostel._id}/>
+        <HostelUserGroup hostelUsers={hostel?.FE_allUsers}/>
         {/** Xử lý hiển thị danh sách thành viên của board */}
       </Box>
     </Box>

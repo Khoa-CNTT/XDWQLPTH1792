@@ -112,14 +112,14 @@ function Bedsit({ room }) {
               fontSize: '1.4rem',
               color: 'rgba(0, 0, 0, 0.7)'
             }}>
-              Tiện ích: {room?.utilities || 'Không có thông tin'}
+              Tiện ích: {room?.utilities.join(', ') || 'Không có thông tin'}
             </Typography>
 
             {/* Tình trạng */}
             <Typography sx={{
               fontWeight: 600,
               fontSize: '1.4rem',
-              color: room?.status === 'Còn trống' ? 'green' : 'red'
+              color: room?.status === 'available' ? 'green' : 'red'
             }}>
               Tình trạng: {room?.status}
             </Typography>

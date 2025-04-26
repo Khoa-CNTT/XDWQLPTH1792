@@ -15,7 +15,6 @@ function Home() {
   // const [hostel, setHostel] = useState(null)
   const hostel = useSelector(selectCurrentActiveHostel)
   const { hostelId } = useParams()
-  console.log( hostelId)
   useEffect(() => {
     // const hostelId = '67e35e0682e1a9ceb069ce6c'
     // Call API
@@ -28,7 +27,7 @@ function Home() {
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar/>
-      <BedsitBar/>
+      <BedsitBar hostel= {hostel}/>
       <BedsitContent hostel={hostel}/>
     </Container>
   )

@@ -89,7 +89,6 @@ function InforRoom() {
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />
-      <BedsitBar />
       <Box p={3} sx={{
         display: 'flex',
         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#F5F5F5'),

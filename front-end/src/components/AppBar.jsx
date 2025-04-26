@@ -14,6 +14,8 @@ import { useState } from 'react'
 import Menu from './Menu/Menu'
 import Profiles from './Menu/Profiles'
 import { Link } from 'react-router-dom'
+import Notifications from './Notifications/Notifications'
+// import SvgIcon from '@mui/material/SvgIcon'
 function AppBar() {
   const [searchValue, setSearchValue] = useState('')
   return (
@@ -37,6 +39,7 @@ function AppBar() {
         </Tooltip>
         <Link to='/'>
           <Tooltip title='Trang Chủ'>
+            {/* <SvgIcon component={Logo} fontSize="large" inheritViewBox sx={{ color: 'white' }} /> */}
             <HomeIcon sx={{
               color: 'white',
               cursor: 'pointer',
@@ -73,9 +76,9 @@ function AppBar() {
                   cursor: 'pointer',
                   fontSize: '1.3rem'
                 }}
-                onClick={() => {
-                  setSearchValue('')
-                }} />
+                  onClick={() => {
+                    setSearchValue('')
+                  }} />
               </InputAdornment>
             )
           }}
@@ -105,11 +108,7 @@ function AppBar() {
 
           }} />
         <ModeSelect />
-        <Tooltip title="Notification" >
-          <Badge color="warning" variant="dot" sx={{ cursor: 'pointer' }}>
-            <NotificationsIcon sx={{ color: 'white' }} />
-          </Badge>
-        </Tooltip>
+        <Notifications />
         <Tooltip title="Help" >
           <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'white' }} />
         </Tooltip>
