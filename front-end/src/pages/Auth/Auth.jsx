@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux'
 import { useLocation, Navigate } from 'react-router-dom'
 function Auth() {
   const location = useLocation()
-  // console.log(location)
   const isLogin = location.pathname === '/login'
   const isRegister = location.pathname === '/register'
 

@@ -50,6 +50,9 @@ const START_SERVER = () => {
       socket.broadcast.emit('BE_USER_INVITED_TO_HOSTEL', invitation)
 
     })
+    socket.on('FE_USER_MESSAGE', (coversation) => {
+      socket.broadcast.emit('BE_USER_MESSAGE', coversation)
+    })
   })
   if (env.BUILD_MODE === 'production') {
     // Môi trường production( cụ thể là đang support render.com)

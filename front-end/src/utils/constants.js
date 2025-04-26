@@ -7,8 +7,8 @@ if (process.env.BUILD_MODE === 'production') {
 }
 export const API_ROOT = apiRoot
 
-export const DEFAULT_PAGE = 1
-export const DEFAULT_ITEMS_PER_PAGE = 12
+export const DEFAULT_MESSAGES = 1
+export const DEFAULT_ITEMS_PER_MESSAGES = 10
 export const USER_ROLES = {
   CLIENT: 'client',
   LANDLORD:'landlord',

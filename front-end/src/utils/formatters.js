@@ -33,3 +33,15 @@ export const interceptorLoadingElements = (calling) => {
 export const toUpperCaseAll = (str) => {
   return str.toUpperCase()
 }
+
+// Hàm tính thời gian hiển thị
+export const calculateTimeAgo = (timestamp) => {
+  const now = new Date()
+  const diff = Math.floor((now - new Date(timestamp)) / 60000) // Tính chênh lệch phút
+  if (diff < 1) return 'Vừa xong'
+  if (diff < 60) return `${diff} phút trước`
+  const hours = Math.floor(diff / 60)
+  if (hours < 24) return `${hours} giờ trước`
+  const days = Math.floor(hours / 24)
+  return `${days} ngày trước`
+}

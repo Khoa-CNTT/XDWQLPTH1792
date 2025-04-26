@@ -3,6 +3,7 @@ import { userReducer } from './user/userSlice'
 import { activeHostelReducer } from './activeHostel/activeHostelSlice'
 import { activeRoomReducer } from './activeRoom/activeRoomSlice'
 import { notificationsReducer } from './notifications/notificationsSlice'
+import { conversationReducer } from './conversation/conversationSlice'
 /**
  * Cấu hình redux-persist
  * https://www.npmjs.com/package/redux-persist
@@ -26,7 +27,8 @@ const reducers = combineReducers({
   activeHostel: activeHostelReducer,
   user: userReducer,
   activeRoom:activeRoomReducer,
-  notifications: notificationsReducer
+  notifications: notificationsReducer,
+  conversation: conversationReducer
 })
 // Thực hiện persist Reducer
 const persistedReducers = persistReducer(rootPersistConfig, reducers)

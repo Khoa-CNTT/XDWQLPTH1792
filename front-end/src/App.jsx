@@ -7,7 +7,6 @@ import Manage from './pages/Manage/Manage'
 import InforRoom from './pages/InforRoom/InforRoom'
 import Profile from './pages/Home/Personal-Page/Personal-Page'
 import HouesPage from './pages/Home'
-import Rooms from './pages/Manage/Rooms/Rooms'
 import DetailUser from './pages/Home/DetailUser/DetailInfroUser';
 import RoomStatus from './pages/Home/RoomStatus/RoomStatus';
 import DetailRoom from './pages/Home/RoomStatus/DetailRoom';
@@ -44,10 +43,9 @@ function App() {
         <Route path='/manage/hostel/:hostelId' element={<Manage />} />
         <Route path='/infor-room/:roomId' element={<InforRoom />} />
         <Route path='/profile' element={<Profile />} />
-        <Route path='/houesPage' element={<HouesPage />} />
-        <Route path='/home/ManagerID' element={<ManagerID />} />
-        <Route path='/home/user-list' element={<ManagerID />} />
-        <Route path='/home/chat' element={<ManagerID />} />
+        <Route path='/hostel' element={<HouesPage />} />
+        <Route path='/home/message' element={<ManagerID />} />
+        <Route path='/home/message/:conversationId' element={<ManagerID />} />
         <Route path='/home/DetailInforUser' element={<DetailUser />} />
         <Route path='/home/SPDetailUser' element={<SPDetailUser />} />
         <Route path='/home/RoomStatus' element={<RoomStatus />} />
