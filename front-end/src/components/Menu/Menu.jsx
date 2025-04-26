@@ -28,7 +28,6 @@ import { USER_ROLES } from '~/utils/constants'
 function Menu() {
 
   const user = useSelector(selectCurrentUser)
-  console.log('first', user)
   const [open, setOpen] = useState(false);
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen)
@@ -60,75 +59,75 @@ function Menu() {
       </List>
       <Divider />
       <List>
-      <Link to='/home/ManagerID' style={{ color: 'inherit' }}>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary='Nhắn tin' />
-          </ListItemButton>
-        </ListItem>
+        <Link to='/home/message' style={{ color: 'inherit' }}>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary='Nhắn tin' />
+            </ListItemButton>
+          </ListItem>
         </Link>
         <Link to='/home/DetailInforUser' style={{ color: 'inherit' }}>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary='Quản lý thông tin người thuê' />
-          </ListItemButton>
-        </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary='Quản lý thông tin người thuê' />
+            </ListItemButton>
+          </ListItem>
         </Link>
-      <Link to='' style={{ color: 'inherit' }}>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary='Quản lý tài khoản' />
-          </ListItemButton>
-        </ListItem>
+        <Link to='' style={{ color: 'inherit' }}>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary='Quản lý tài khoản' />
+            </ListItemButton>
+          </ListItem>
         </Link>
-      <Link to='/home/RoomStatus' style={{ color: 'inherit' }}>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary='Quản lý trạng thái phòng' />
-          </ListItemButton>
-        </ListItem>
+        <Link to='/home/RoomStatus' style={{ color: 'inherit' }}>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary='Quản lý trạng thái phòng' />
+            </ListItemButton>
+          </ListItem>
         </Link>
-      <Link to='' style={{ color: 'inherit' }}>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary='Quản lý tiện ích' />
-          </ListItemButton>
-        </ListItem>
+        <Link to='' style={{ color: 'inherit' }}>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary='Quản lý tiện ích' />
+            </ListItemButton>
+          </ListItem>
         </Link>
-      <Link to='' style={{ color: 'inherit' }}>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary='Quản lý thanh toán' />
-          </ListItemButton>
-        </ListItem>
+        <Link to='' style={{ color: 'inherit' }}>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary='Quản lý thanh toán' />
+            </ListItemButton>
+          </ListItem>
         </Link>
-      <Link to='' style={{ color: 'inherit' }}>
-        <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <ListItemText primary='Quản lý thống kê và báo cáo' />
-          </ListItemButton>
-        </ListItem>
+        <Link to='' style={{ color: 'inherit' }}>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary='Quản lý thống kê và báo cáo' />
+            </ListItemButton>
+          </ListItem>
         </Link>
         <ListItem disablePadding>
           <ListItemButton onClick={handleClick}>

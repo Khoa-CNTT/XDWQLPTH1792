@@ -15,7 +15,6 @@ function Home() {
   // const [hostel, setHostel] = useState(null)
   const hostel = useSelector(selectCurrentActiveHostel)
   const { hostelId } = useParams()
-  console.log( hostelId)
   useEffect(() => {
     // const hostelId = '67e35e0682e1a9ceb069ce6c'
     // Call API

@@ -68,6 +68,7 @@ function Hostel() {
     setValue('type', hostel.type)
     setValue('electricity_price', hostel.electricity_price)
     setValue('water_price', hostel.water_price)
+    setValue('description', hostel.description)
     setPreviewUrl(hostel.images) // Hiển thị ảnh xem trước
     setOpen(true) // Mở Dialog
   }
@@ -181,7 +182,6 @@ function Hostel() {
             year: 'numeric'
           }).format(new Date(item.createAt)) // Định dạng ngày tạo
         }))
-      console.log('formattedData', formattedData)
       setRows(formattedData) // Lưu dữ liệu vào state
     })
   }, [refresh]) // Chỉ gọi API khi component được mount lần đầu tiên hoặc khi `refresh` thay đổi
@@ -452,6 +452,22 @@ function Hostel() {
                 </RadioGroup>
               )}
             />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Mô tả"
+              type="text"
+              sx={{
+                '& .MuiInputBase-root': {
+                  borderRadius: '8px' // Bo góc cho ô nhập liệu
+                }
+              }}
+              {...register('description', {
+                required: FIELD_REQUIRED_MESSAGE
+              })}
+              error={!!errors['description']}
+            />
+            <FieldErrorAlert errors={errors} fieldName={'description'} />
             {/* Trường upload ảnh */}
             <Box
               sx={{

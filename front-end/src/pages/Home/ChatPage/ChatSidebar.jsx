@@ -1,70 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  Typography,
-  TextField,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Divider,
-  Avatar,
-  Checkbox,
-  Button,
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { useTheme } from '@mui/material/styles';
+import React, { useState } from 'react'
+import { Box } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Divider from '@mui/material/Divider'
+import Avatar from '@mui/material/Avatar'
+import SearchIcon from '@mui/icons-material/Search'
+import SettingsIcon from '@mui/icons-material/Settings'
+import { useTheme } from '@mui/material/styles'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { deleteConversationAPI } from '~/redux/conversation/conversationSlice'
+import { calculateTimeAgo } from '~/utils/formatters'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Fade from '@mui/material/Fade'
 
-const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser }) => {
-  const theme = useTheme();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedUserIds, setSelectedUserIds] = useState([]);
-  const [timeAgo, setTimeAgo] = useState({});
+import { useConfirm } from 'material-ui-confirm'
+const ChatSidebar = ({ conversations }) => {
+  // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
+  const confirmUpdateOrDelete = useConfirm()
+  const navigate = useNavigate()
 
-  // Lọc danh sách users dựa trên searchTerm
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const dispatch = useDispatch()
+  const theme = useTheme()
+  const [searchTerm, setSearchTerm] = useState('')
 
-  // Hàm tính thời gian hiển thị
-  const calculateTimeAgo = (timestamp) => {
-    const now = new Date();
-    const diff = Math.floor((now - new Date(timestamp)) / 60000); // Tính chênh lệch phút
-    if (diff < 1) return 'Vừa xong';
-    if (diff < 60) return `${diff} phút trước`;
-    const hours = Math.floor(diff / 60);
-    if (hours < 24) return `${hours} giờ trước`;
-    const days = Math.floor(hours / 24);
-    return `${days} ngày trước`;
-  };
+  // state mở menu
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+  const allOtherUsers = conversations?.flatMap(conversation => {
+    const { currentUser, lastMessage, _id } = conversation
+    // Lọc tất cả user khác currentUser trong inforUsers của mỗi phần tử
+    return conversation.inforUsers.filter(user => user._id !== currentUser).map(user => ({
+      ...user,
+      lastMessage: lastMessage,
+      conversationId: _id
+    }))
+  })
+  // // Lọc danh sách users dựa trên searchTerm
+  const filteredUsers = allOtherUsers?.filter((user) =>
+    user.displayName.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  const [selectedUser, setSelectedUser] = useState(null)
 
-  // Cập nhật thời gian đếm ngược cho từng user
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const updatedTimeAgo = {};
-      users.forEach((user) => {
-        if (user.lastMessageTime) {
-          updatedTimeAgo[user.id] = calculateTimeAgo(user.lastMessageTime);
-        }
-      });
-      setTimeAgo(updatedTimeAgo);
-    }, 60000); // Cập nhật mỗi phút
-
-    return () => clearInterval(interval); // Dọn dẹp interval khi component bị unmount
-  }, [users]);
-
-  // Hàm xử lý khi chọn/deselect user
-  const handleCheckboxChange = (userId) => {
-    setSelectedUserIds((prevSelected) =>
-      prevSelected.includes(userId)
-        ? prevSelected.filter((id) => id !== userId)
-        : [...prevSelected, userId]
-    );
-  };
-
+  // Xóa 1 conversation
+  const deleteConversation = (conversationId) => {
+    confirmUpdateOrDelete({
+      title: 'Xóa hộp thoại này',
+      description: 'Bạn có chắc chắn muốn xóa hộp thoại này không? (Sẽ xóa tất cả tin nhắn của bạn)',
+      confirmationText: 'Có',
+      cancellationText: 'Hủy'
+    }).then(() => {
+      dispatch(deleteConversationAPI(conversationId))
+    }).catch()
+  }
   return (
     <Box
       sx={{
@@ -74,7 +77,7 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
         display: 'flex',
         flexDirection: 'column',
         maxHeight: '100vh',
-        overflowY: 'hidden',
+        overflowY: 'hidden'
       }}
     >
       {/* Header */}
@@ -82,7 +85,7 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
         position="static"
         sx={{
           backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : 'white',
-          height: '83px',
+          height: '83px'
         }}
       >
         <Toolbar
@@ -90,7 +93,7 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingTop: 2,
+            paddingTop: 2
           }}
         >
           <Typography
@@ -98,7 +101,7 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
             sx={{
               fontFamily: 'Times New Roman',
               fontWeight: 'bold',
-              color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+              color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000'
             }}
           >
             Messeger Nhà Trọ
@@ -107,7 +110,7 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
             sx={{
               color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
               cursor: 'pointer',
-              ml: 2,
+              ml: 2
             }}
           />
         </Toolbar>
@@ -123,24 +126,24 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
-            startAdornment: <SearchIcon sx={{ mr: 1 }} />,
+            startAdornment: <SearchIcon sx={{ mr: 1 }} />
           }}
           sx={{
             backgroundColor:
               theme.palette.mode === 'dark'
                 ? 'rgba(255, 255, 255, 0.1)'
                 : 'hsla(224, 100.00%, 50.00%, 0.20)',
-            borderRadius: 1,
+            borderRadius: 1
           }}
         />
       </Box>
 
-      {/* User List */}
+      {/* Conversaation List */}
       <List
         sx={{
           flex: 1,
           overflowY: 'auto',
-          maxHeight: 'calc(100vh - 150px)',
+          maxHeight: 'calc(100vh - 150px)'
         }}
       >
         <Divider
@@ -148,14 +151,13 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
             backgroundColor:
               theme.palette.mode === 'dark'
                 ? 'rgba(255, 255, 255, 0.2)'
-                : 'rgba(0, 0, 0, 0.1)',
+                : 'rgba(0, 0, 0, 0.1)'
           }}
         />
-        {filteredUsers.map((user) => (
-          <React.Fragment key={user.id}>
+        {filteredUsers?.map((user) => (
+          <React.Fragment key={user.conversationId}>
             <ListItem
               button
-              onClick={() => handleUserClick(user)}
               sx={{
                 display: 'flex',
                 alignItems: 'center',
@@ -163,7 +165,7 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
                   selectedUser?.id === user.id
                     ? theme.palette.mode === 'dark'
                       ? '#333333'
-                      : 'rgba(100, 100, 100, 0.41)'
+                      : 'rgba(226, 222, 222, 0.41)'
                     : 'transparent',
                 color: selectedUser?.id === user.id ? '' : 'inherit',
                 '&:hover': {
@@ -171,19 +173,22 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
                     theme.palette.mode === 'dark'
                       ? 'rgba(255, 255, 255, 0.41)'
                       : 'rgba(74, 73, 73, 0.3)',
-                },
+                  '.hover-menu': {
+                    display: 'block' // Hiển thị nút ba chấm khi hover
+                  }
+                }
               }}
+              onClick={() => {
+                setSelectedUser(user)
+                navigate(`/home/message/${user.conversationId}`)
+              }
+              }
             >
-              <Checkbox
-                checked={selectedUserIds.includes(user.id)}
-                onChange={() => handleCheckboxChange(user.id)}
-                sx={{ mr: 2 }}
-              />
               <ListItemAvatar>
                 <Avatar src={user.avatar || 'user-avatar.jpg'} />
               </ListItemAvatar>
               <ListItemText
-                primary={user.name}
+                primary={user.displayName}
                 secondary={
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography
@@ -191,49 +196,79 @@ const ChatSidebar = ({ users, selectedUser, handleUserClick, handleDeleteUser })
                       variant="body2"
                       color="textSecondary"
                       sx={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-                      >
-        {user.lastMessage || ''}
-        </Typography>
+                    >
+                      {user._id !== user?.lastMessage?.senderId && 'Bạn: '}
+                      {user?.lastMessage?.content}
+                    </Typography>
                     <Typography
                       component="span"
                       variant="body2"
                       color="textSecondary"
                       sx={{ marginLeft: 1, whiteSpace: 'nowrap' }}
-      >
-        {user.time || 'Không có hoạt động gần đây'}
+                    >
+                      {user?.lastMessage?.createAt
+                        ? calculateTimeAgo(user?.lastMessage?.createAt)
+                        : 'Không có hoạt động gần đây'}
                     </Typography>
                   </Box>
                 }
               />
+              {/* Nút ba chấm */}
+              <IconButton
+                className="hover-menu"
+                sx={{
+                  position: 'absolute',
+                  right: 16,
+                  display: 'none' // Ẩn mặc định
+                }}
+                id="fade-button"
+                aria-controls={open ? 'fade-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={(e) => {
+                  e.stopPropagation() // Ngăn sự kiện click lan ra ngoài
+                  handleClick(e)
+                }}
+              >
+                <MoreHorizIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                id="fade-menu"
+                MenuListProps={{
+                  'aria-labelledby': 'fade-button'
+                }}
+                open={open}
+                onClose={handleClose}
+                TransitionComponent={Fade}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleClose()
+                    deleteConversation(user.conversationId)
+                  }}
+                  sx={{
+                    padding: '4px 16px', // Giảm padding
+                    minHeight: '32px', // Giảm chiều cao tối thiểu
+                    fontSize: '0.875rem', // Giảm kích thước chữ (nếu cần)
+                    width:'4rem'
+                  }}
+                >Xóa</MenuItem>
+              </Menu>
             </ListItem>
             <Divider
               sx={{
                 backgroundColor:
                   theme.palette.mode === 'dark'
                     ? 'rgba(255, 255, 255, 0.2)'
-                    : 'rgba(0, 0, 0, 0.1)',
+                    : 'rgba(0, 0, 0, 0.1)'
               }}
             />
           </React.Fragment>
         ))}
       </List>
-
-      {/* Delete Button */}
-      <Box sx={{ p: 2 }}>
-        <Button
-          variant="contained"
-          color="error"
-          disabled={selectedUserIds.length === 0}
-          onClick={() => {
-            selectedUserIds.forEach((userId) => handleDeleteUser(userId));
-            setSelectedUserIds([]);
-          }}
-        >
-          Xóa User
-        </Button>
-      </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default ChatSidebar;
+export default ChatSidebar

@@ -47,6 +47,14 @@ const getHostels = async (req, res, next) => {
     next(error)
   }
 }
+const getHostelsPublic = async (req, res, next) => {
+  try {
+    const results = await hostelService.getHostelsPublic()
+    res.status(StatusCodes.OK).json(results)
+  } catch (error) {
+    next(error)
+  }
+}
 
 const update = async (req, res, next) => {
   try {
@@ -82,11 +90,27 @@ const deleteHostel = async (req, res, next) => {
     // })
   }
 }
+const findHostels = async (req, res, next) => {
+  try {
+    const result = await hostelService.findHostels(req.body)
+    //kết quả trả về phía CLient
+    res.status(StatusCodes.OK).json(result)
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+  } catch (error) {
+    next(error)
+    // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    //     errors: new Error(error).message
+    // })
+  }
+}
 export const hostelController = {
   createNew,
   getDetails,
   uploadImages,
   getHostels,
   update,
-  deleteHostel
+  deleteHostel,
+  getHostelsPublic,
+  findHostels
+
 }

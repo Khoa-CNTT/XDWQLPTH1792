@@ -50,7 +50,10 @@ export const getAllHostelPublic = async () => {
   const respone = await authorizeAxiosInstance.get(`${API_ROOT}/v1/hostel/public`)
   return respone.data
 }
-
+export const findHostelsAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/hostel/public`, data)
+  return respone.data
+}
 //Rooms
 export const createNeRoomAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/rooms`, data)
@@ -89,5 +92,25 @@ export const refreshTokenAPI = async () => {
 export const inviteUserToHostelAPI = async (data) => {
   const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/invitations/hostel`, data)
   toast.success('Mời thành công')
+  return response.data
+}
+// Conversation Api
+export const createNewConversationAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/conversations`, data)
+  return response.data
+}
+export const fetchConversationsAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/conversations`)
+  return response.data
+}
+// Message API
+export const createNewMessaggeAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/messages`, data)
+  return response.data
+}
+export const fetchMessagesAPI = async (data) => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/messages`, {
+    params: data
+  })
   return response.data
 }

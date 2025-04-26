@@ -16,9 +16,9 @@ import NotInterestedIcon from '@mui/icons-material/NotInterested'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchInvitationsAPI, selectCurrentNotifications, updateHostelInvitationAPI, addNotification } from '~/redux/notifications/notificationsSlice'
 import { useNavigate } from 'react-router-dom'
-// import { socketIoInstance } from '~/socketClient'
+
 import { selectCurrentUser } from '~/redux/user/userSlice'
-import { socketIoInstance } from '~/main'
+import { socketIoInstance } from '~/socketClient'
 const HOSTEL_INVITATION_STATUS = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -46,14 +46,12 @@ function Notifications() {
   const [newNotification, setNewNotification] = useState(false)
   // Lấy dữ liệu user từ trong redux
   const currentUser = useSelector(selectCurrentUser)
-  console.log('currentUser', currentUser._id)
   useEffect(() => {
     dispatch(fetchInvitationsAPI())
     //Tạo 1 cái function sử lý khi nhận được xự kiện realtime, docs hướng dẫn
     //https://socket.io/how-to/use-with-react
 
     const onReceiveNewInvitation = (invitation) => {
-      console.log('thông báo', invitation)
       // Nếu thằng user đang đăng nhập hiện tại trong redux chính là thằng invitee trong bản ghi invitation
       if (invitation.inviteeId === currentUser._id) {
         //B1: Thêm bản ghi ivitation mới vào trong redux
@@ -74,8 +72,6 @@ function Notifications() {
   const navigate = useNavigate()
   // Cập nhật trạng thái của lời mời join hostel
   const updateHostelInvitation = (status, invitationId) => {
-    console.log('status: ', status)
-    console.log('status: ', invitationId)
     dispatch(updateHostelInvitationAPI({ status, invitationId })).them(res => {
       if (res.payload.hostelInvitation.status === HOSTEL_INVITATION_STATUS.ACCEPTED) {
         navigate(`/hostel/${res.payload.hostelInvitation.hostelId}`)

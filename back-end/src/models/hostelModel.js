@@ -5,8 +5,8 @@
  */
 import Joi from 'joi'
 
-import { ObjectId, ReturnDocument } from 'mongodb'
-import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE, PHONE_NUMBER_RULE } from '~/utils/validators'
+import { ObjectId } from 'mongodb'
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
 import { roomModel } from './roomModel'
 import { userModel } from './userModel'
@@ -26,6 +26,7 @@ const HOSTEL_COLLECTION_SCHEMA = Joi.object({
   }),
   electricity_price: Joi.number().required(),
   water_price: Joi.number().required(),
+  description: Joi.string().required(),
   tenantIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
   createAt: Joi.date().timestamp('javascript').default(Date.now()),
   type: Joi.string().required().valid(HOSTEL_TYPES.PUBLIC, HOSTEL_TYPES.PRIVATE).default(HOSTEL_TYPES.PUBLIC)
@@ -168,7 +169,7 @@ const update = async (hostelId, updateData) => {
       updateData.roomIds = updateData.roomIds.map(_id => (new ObjectId(_id)))
     }
     const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).findOneAndUpdate(
-      { _id: new ObjectId(hostelId), },
+      { _id: new ObjectId(hostelId) },
       { $set: updateData },
       { ReturnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
     )
@@ -221,6 +222,65 @@ const pushTenantIds = async (hostelId, userId) => {
     throw new Error(error)
   }
 }
+const getHostelsPublic = async (find) => {
+  try {
+    // Bước 1: tạo query cơ bản
+    const baseMatch = {}
+    if (find?.type) baseMatch.type = find.type;
+    if (find?.address) {
+      baseMatch.address = { $regex: find.address, $options: 'i' }
+    }
+    const pipeline = [
+      { $match: baseMatch },
+      {
+        $lookup: {
+          from: userModel.USER_COLLECTION_NAME,
+          localField: 'ownerId',
+          foreignField: '_id',
+          as: 'ownerInfo'
+        }
+      },
+      {
+        $lookup: {
+          from: roomModel.ROOM_COLLECTION_NAME,
+          localField: '_id',
+          foreignField: 'hostelId',
+          as: 'rooms'
+        }
+      },
+      {
+        $addFields: {
+          minPrice: { $min: '$rooms.price' },
+          maxPrice: { $max: '$rooms.price' }
+        }
+      }
+    ]
+
+    if (find?.price) {
+      const price = parseFloat(find.price);
+      pipeline.push({
+        $match: {
+          $expr: {
+            $and: [
+              { $lte: ['$minPrice', price] },
+              { $gte: ['$maxPrice', price] }
+            ]
+          }
+        }
+      });
+    }
+
+    const result = await GET_DB()
+      .collection(HOSTEL_COLLECTION_NAME)
+      .aggregate(pipeline)
+      .toArray()
+
+    return result
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const hostelModel = {
   HOSTEL_COLLECTION_NAME,
   HOSTEL_COLLECTION_SCHEMA,
@@ -232,5 +292,6 @@ export const hostelModel = {
   update,
   deleteHostel,
   deleteRoomOrderIds,
-  pushTenantIds
+  pushTenantIds,
+  getHostelsPublic
 }

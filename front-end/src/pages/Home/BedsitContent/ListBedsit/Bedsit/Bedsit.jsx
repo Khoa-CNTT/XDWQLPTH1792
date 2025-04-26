@@ -112,7 +112,7 @@ function Bedsit({ room }) {
               fontSize: '1.4rem',
               color: 'rgba(0, 0, 0, 0.7)'
             }}>
-              Tiện ích: {room?.utilities || 'Không có thông tin'}
+              Tiện ích: {room?.utilities.join(', ') || 'Không có thông tin'}
             </Typography>
 
             {/* Tình trạng */}

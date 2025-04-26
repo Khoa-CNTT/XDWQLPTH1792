@@ -10,8 +10,8 @@ export const EMAIL_RULE_MESSAGE = 'Email không hợp lệ.'
 export const PASSWORD_RULE = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d\W]{8,256}$/
 export const PASSWORD_RULE_MESSAGE = 'Password phải bao gồm chữ, số và ít nhất 8 kí tự.'
 export const PASSWORD_CONFIRMATION_MESSAGE = 'Password Confirmation does not match!'
-export const INPUT_NAME =/^[a-zA-ZÀ-ỹ\s]+$/
-export const INPUT_NAME_MESSAGE = 'Họ và tên không được nhập số.'
+export const INPUT_NAME = /^[a-zA-ZÀ-ỹ0-9\s]+$/
+export const INPUT_NAME_MESSAGE = 'Tên không được nhập ký tự đặc biệt.'
 export const PHONE_NUMBER_RULE = /^[0-9]{9,10}$/
 export const NUMBER_RULE_MESSAGE = 'Phải là chữ chữ số và 9 số'
 export const CITIZEN_NUMBER = /^\d{12}$/

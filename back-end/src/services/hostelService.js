@@ -43,6 +43,17 @@ const getHostels = async (userId) => {
     throw error
   }
 }
+const getHostelsPublic = async () => {
+  try {
+    const find ={
+      type: 'public'
+    }
+    const hostel = await hostelModel.getHostelsPublic(find)
+    return hostel
+  } catch (error) {
+    throw error
+  }
+}
 
 const update = async (hostelId, reqBody) => {
   try {
@@ -71,11 +82,26 @@ const deleteHostel = async (userId, ids) => {
     throw error
   }
 }
+const findHostels = async ( reqBody) => {
+  try {
+    // Lấy danh sách các hostels dựa trên `ids` và `userId`
+    const dataFind = {
+      ...reqBody,
+      type: 'public'
+    }
+    const updatedBoard = await hostelModel.getHostelsPublic(dataFind)
+    return updatedBoard
+  } catch (error) {
+    throw error
+  }
+}
 export const hostelService = {
   createNew,
   getDetails,
   uploadImages,
   getHostels,
   update,
-  deleteHostel
+  deleteHostel,
+  getHostelsPublic,
+  findHostels
 }

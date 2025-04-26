@@ -20,7 +20,6 @@ const MENU_STYLES = {
   }
 }
 function BedsitBar({ hostel}) {
-  console.log('hostel', hostel)
   return (
     <Box sx={{
       width: '100%',
