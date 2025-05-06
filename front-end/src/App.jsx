@@ -7,10 +7,11 @@ import Manage from './pages/Manage/Manage'
 import InforRoom from './pages/InforRoom/InforRoom'
 import Profile from './pages/Home/Personal-Page/Personal-Page'
 import HouesPage from './pages/Home'
-import DetailUser from './pages/Home/DetailUser/DetailInfroUser';
-import RoomStatus from './pages/Home/RoomStatus/RoomStatus';
-import DetailRoom from './pages/Home/RoomStatus/DetailRoom';
-import ManagerID from './pages/Home/ChatPage/ManagerID';
+import DetailUser from './pages/Home/DetailUser/DetailInfroUser'
+import RoomStatus from './pages/Home/RoomStatus/RoomStatus'
+import DetailRoom from './pages/Home/RoomStatus/DetailRoom'
+import ManagerID from './pages/Home/ChatPage/ManagerID'
+import SecurityTab from './pages/Securiry/Security'
 
 
 import { useSelector } from 'react-redux'
@@ -51,6 +52,7 @@ function App() {
         <Route path='/home/RoomStatus' element={<RoomStatus />} />
         <Route path="/room/:id" element={<DetailRoom />} />
         <Route path="/room/new" element={<DetailRoom />} />
+        <Route path="/security" element={<SecurityTab />} />
       </Route>
       {/** Authentication */}
       <Route path='/login' element={<Auth />} />

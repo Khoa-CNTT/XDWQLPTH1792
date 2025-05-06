@@ -5,11 +5,15 @@ import ChatPage from './ChatPage'
 import AppBar from '~/components/AppBar' // Đảm bảo đường dẫn import đúng
 import { fetchConversationsAPI } from '~/apis'
 import { socketIoInstance } from '~/socketClient'
+import { moveToTop } from '~/utils/formatters'
 function ManagerID() {
   const [conversations, setConversations] = useState(null)
 
-  const refreshConversations = () => {
-    fetchConversationsAPI().then((res) => setConversations(res))
+  const refreshConversations = (conversation) => {
+    fetchConversationsAPI().then((res) =>{
+      const listConversation = moveToTop(res, conversation._id)
+      console.log('list',listConversation )
+      setConversations(listConversation)})
   }
   useEffect(() => {
     fetchConversationsAPI().then( res => setConversations(res)

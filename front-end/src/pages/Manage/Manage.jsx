@@ -23,7 +23,7 @@ function Manage() {
   const getDefaultTabFromURL = () => {
     if (location.pathname.includes(TABS.INFOR_USER)) return TABS.INFOR_USER
     if (location.pathname.includes(TABS.HOSTEL)) return TABS.HOSTEL // Bao gồm cả URL động
-    if (location.pathname.includes(TABS.contracts)) return TABS.contracts // Bao gồm cả URL động
+    if (location.pathname.includes(TABS.CONTRACTS)) return TABS.CONTRACTS // Bao gồm cả URL động
     return TABS.HOSTEL
   }
   const [value, setValue] = useState(getDefaultTabFromURL())
@@ -56,10 +56,10 @@ function Manage() {
         <Box sx={{ flex: 1, p: 3, width: '82%' }}>
           <TabContext value={value}>
             <TabPanel value={TABS.INFOR_USER}><InforUser /></TabPanel>
+            <TabPanel value={TABS.CONTRACTS}><Contracts /></TabPanel>
             <TabPanel value={TABS.HOSTEL}>
               {location.pathname === '/manage/hostel' ? <Hostel /> : <Rooms />}
             </TabPanel>
-            <TabPanel value={TABS.CONTRACTS}><Contracts /></TabPanel>
           </TabContext>
         </Box>
       </Box>

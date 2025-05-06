@@ -47,7 +47,7 @@ const EmojiPanel = ({ onSelectEmoji }) => {
 }
 
 
-function ChatPage({refreshConversations}) {
+function ChatPage({ refreshConversations }) {
   const { conversationId } = useParams()
 
   const dispatch = useDispatch()

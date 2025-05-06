@@ -39,8 +39,8 @@ function Profiles() {
   const dispatch = useDispatch()
   const currentUser = useSelector(selectCurrentUser)
 
-  const confirmLogout =useConfirm()
-  const handleLogout = ( ) => {
+  const confirmLogout = useConfirm()
+  const handleLogout = () => {
     confirmLogout({
       title: 'Log out your account? ',
       confirmationText: 'Confirm',
@@ -48,7 +48,7 @@ function Profiles() {
     }).then(() => {
       // Thực hiện gọi API logout
       dispatch(logoutUserAPI())
-    }).catch(() => {})
+    }).catch(() => { })
   }
   return (
     <Box>
@@ -78,9 +78,11 @@ function Profiles() {
           'aria-labelledby': 'basic-button-profiles'
         }}
       >
-        <MenuItem sx={{ ':hover': {
-          color:'success.light'
-        }}} onClick={handleProfileClick}>
+        <MenuItem sx={{
+          ':hover': {
+            color: 'success.light'
+          }
+        }} onClick={handleProfileClick}>
           <Avatar src={currentUser?.avatar} sx={{ width: 28, height: 28, mr: 2 }} /> Profile
         </MenuItem>
         <Divider />
@@ -90,7 +92,9 @@ function Profiles() {
           </ListItemIcon>
           Add another account
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => {
+          navigate('/security')
+        }}>
           <ListItemIcon>
             <SettingsIcon fontSize="small" />
           </ListItemIcon>

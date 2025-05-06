@@ -167,7 +167,6 @@ function Profile() {
                   control={control}
                   name="gender"
                   render={({ field, fieldState }) => {
-                    console.log(fieldState?.error?.message)
                     return (
                       <FormControl component="fieldset" margin="normal" sx={{ flex: 1 }}>
                         <FormLabel component="legend">Giới tính</FormLabel>

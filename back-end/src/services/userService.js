@@ -141,7 +141,7 @@ const update = async (userId, reqBody, userAvatarFile) => {
     // Query User và kiểm tra chắc chắn
     const existUser = await userModel.findOneById(userId)
     if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found')
-    if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your accont is not active')
+    if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Tài khoản của bạn chưa được mở khóa')
     // Khởi tạo kết quả updated User ban đầu is empty
     let updatedUser = {}
 
@@ -149,7 +149,7 @@ const update = async (userId, reqBody, userAvatarFile) => {
     if (reqBody.current_password && reqBody.new_password) {
       // Kiểm tra xem current_password có đúng hay không
       if (!bcryptjs.compareSync(reqBody.current_password, existUser.password)) {
-        throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your current password is incorrect')
+        throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Mật khẩu hiện tại của ban không chính xác')
       }
       // Nếu như current_password là đúng chungs ta sẽ hash một cái mật khẩu mới và update lại database
       updatedUser = await userModel.update(existUser._id, {

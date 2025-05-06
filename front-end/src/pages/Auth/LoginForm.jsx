@@ -63,16 +63,16 @@ function LoginForm() {
           <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
             {verifiedEmail &&
               <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-                Your email&nbsp;
+                Email của bạn&nbsp;
                 <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{verifiedEmail}</Typography>
-                &nbsp;has been verified.<br />Now you can login to enjoy our services! Have a good day!
+                &nbsp;đã được xác thưc.<br />Bây giờ bạn có thể đăng nhập để sử dụng dịch vụ của chúng tôi! Chúc một ngày tốt lành!
               </Alert>
             }
             {registeredEmail &&
               <Alert severity="info" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-                An email has been sent to&nbsp;
+                Một email đã được gởi đến&nbsp;
                 <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{registeredEmail}</Typography>
-                <br />Please check and verify your account before logging in!
+                <br />Hãy kiểm tra và xác thực tài khoản của bạn trước khi đăng nhập!
               </Alert>
             }
           </Box>
@@ -125,13 +125,13 @@ function LoginForm() {
               size="large"
               fullWidth
             >
-              Login
+              Đăng nhập
             </Button>
           </CardActions>
           <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
-            <Typography>New to account?</Typography>
+            <Typography>Bạn cần tạo tài khoản mới ?</Typography>
             <Link to="/register" style={{ textDecoration: 'none' }}>
-              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Create account!</Typography>
+              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Tạo tài khoản !</Typography>
             </Link>
           </Box>
         </MuiCard>

@@ -24,7 +24,6 @@ function InviteHostelUser({ hostelId }) {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm()
   const submitInviteUserToBoard = (data) => {
     const { inviteeEmail } = data
-  
 
     // Gọi API invite user vào board
     inviteUserToHostelAPI({ inviteeEmail, hostelId }).then((invitation) => {

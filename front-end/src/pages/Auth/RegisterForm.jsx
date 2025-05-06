@@ -47,7 +47,7 @@ function RegisterForm() {
             <Avatar sx={{ bgcolor: 'primary.main' }}><LockIcon /></Avatar>
           </Box>
           <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', color: theme => theme.palette.grey[500] }}>
-            Author: GiaHuy
+            Chào mừng đến với website Quản Lý Phòng Trọ
           </Box>
           <Box sx={{ padding: '0 1em 1em 1em' }}>
             <Box sx={{ marginTop: '1em' }}>
@@ -114,13 +114,13 @@ function RegisterForm() {
               size="large"
               fullWidth
             >
-              Register
+              Đăng ký
             </Button>
           </CardActions>
           <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
-            <Typography>Already have an account?</Typography>
+            <Typography>Bạn đã có tài khoản ?</Typography>
             <Link to="/login" style={{ textDecoration: 'none' }}>
-              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Log in!</Typography>
+              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Đăng nhập!</Typography>
             </Link>
           </Box>
         </MuiCard>

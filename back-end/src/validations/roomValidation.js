@@ -14,8 +14,7 @@ const createNew = async (req, res, next) => {
     images: Joi.string().required().messages({
       'any.required': 'Image is required',
       'string.empty': 'Image must not be an empty string'
-    }),
-    status: Joi.string().valid(STATUS_ROOM.AVAILABLE, STATUS_ROOM.OCCUPIED, STATUS_ROOM.MAINTENCANCE)
+    })
   })
   try {
     await correctCondition.validateAsync(req.body, { abortEarly: false }) // trả về tất cả các lỗi, còn trả về lỗi đầu tiên thì true
@@ -50,7 +49,7 @@ const update = async (req, res, next) => {
       'any.required': 'Image is required',
       'string.empty': 'Image must not be an empty string'
     }),
-    status: Joi.string().valid(STATUS_ROOM.AVAILABLE, STATUS_ROOM.OCCUPIED, STATUS_ROOM.MAINTENCANCE)
+    status: Joi.string().valid(STATUS_ROOM.AVAILABLE, STATUS_ROOM.OCCUPIED, STATUS_ROOM.MAINTENANCE)
   })
   try {
     await correctCondition.validateAsync(req.body, { abortEarly: false }) // trả về tất cả các lỗi, còn trả về lỗi đầu tiên thì true

@@ -18,7 +18,7 @@ import HeatPumpIcon from '@mui/icons-material/HeatPump'
 import HotTubIcon from '@mui/icons-material/HotTub'
 import MessageIcon from '@mui/icons-material/Message'
 import { createNewConversationAPI } from '~/apis'
-import { useNavigate } from 'react-router-dom' 
+import { useNavigate } from 'react-router-dom'
 const style = {
   position: 'absolute',
   top: '50%',
@@ -61,7 +61,6 @@ const ModalHostel = ({ open, handleClose, hostel }) => {
   const createNewConversation = async (ownerID) => {
     const participants = [ownerID]
     const res = await createNewConversationAPI({participants})
-    console.log('ressss', res)
     navigate(`/home/message/${res._id}`)
   }
   return (
