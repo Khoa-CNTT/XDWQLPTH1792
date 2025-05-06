@@ -1,93 +1,240 @@
-
 import { DataGrid } from '@mui/x-data-grid'
-import Paper from '@mui/material/Paper'
-import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
 import { Box } from '@mui/material'
-import { capitalizeFirstLetter } from '~/utils/formatters'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 90,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-  },
-];
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import ModalUser from '~/components/Modal/ModalUser'
+import { toast } from 'react-toastify'
+import { useState, useEffect } from 'react'
+import { useTheme } from '@mui/material/styles'
+import { fetchHostelsAPI } from '~/apis'
+import { fetchHostelDetailsAPI, updateCurrentActiveHostel, selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { createNewConversationAPI, updateHostelAPI } from '~/apis'
+import { useNavigate } from 'react-router-dom'
+import { useConfirm } from 'material-ui-confirm'
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
 
-const paginationModel = { page: 0, pageSize: 10 };
 function InforUser() {
+  const navigate = useNavigate()
+  // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
+  const confirmDelete = useConfirm()
+
+  const theme = useTheme() // Lấy thông tin theme
+  const [hostels, setHostels] = useState([])
+  const [user, setUser] = useState(null)
+
+  // Mở modal user
+  const [open, setOpen] = useState(false)
+
+  const [selectedHostel, setSelectedHostel] = useState(null)
+  const dispatch = useDispatch()
+
+  const handleHostelChange = (event) => {
+    setSelectedHostel(event.target.value)
+  }
+  useEffect(() => {
+    fetchHostelsAPI().then(res => {
+
+      setHostels(res)
+      if (res.length > 0) {
+        setSelectedHostel(res[0]._id) // Đặt nhà trọ đầu tiên làm mặc định
+      }
+    }
+    )
+  }, []) // Chỉ gọi API khi component được mount lần đầu tiên hoặc khi `refresh` thay đổi
+  useEffect(() => {
+    // Call API
+    if (selectedHostel) {
+      dispatch(fetchHostelDetailsAPI(selectedHostel))
+    }
+  }, [dispatch, selectedHostel])
+  const hostel = useSelector(selectCurrentActiveHostel)
+  const columns = [
+    { field: 'stt', headerName: 'STT', flex: 0.6 },
+    {
+      field: 'avatar',
+      headerName: 'Hình ảnh',
+      headerAlign: 'center',
+      width: 150,
+      renderCell: (params) => (
+        <img
+          src={params.value}
+          alt="Hình ảnh"
+          style={{
+            width: 'auto', // Tăng chiều rộng hình ảnh
+            height: '100%', // Đặt chiều cao hình ảnh bằng chiều cao của ô
+            maxHeight: '150px', // Đặt chiều cao tối đa
+            objectFit: 'cover'
+          }}
+        />
+      )
+    },
+    { field: 'displayName', headerName: 'Tên', flex: 2, headerAlign: 'center' },
+    { field: 'phone', headerName: 'SDT', flex: 1.5, headerAlign: 'center' },
+    { field: 'address', headerName: 'Địa chỉ', flex: 2, headerAlign: 'center' },
+    { field: 'gender', headerName: 'Giới tính', flex: 1.5, headerAlign: 'center' },
+    { field: 'dateOfBirth', headerName: 'Ngày sinh', flex: 2, headerAlign: 'center' },
+    { field: 'roomName', headerName: 'Phòng trọ', flex: 1.5, headerAlign: 'center' },
+    {
+      field: 'actions',
+      headerName: 'Hành động',
+      headerAlign: 'center',
+      width: 200, // Tăng chiều rộng để chứa cả hai nút
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => removeTenant(params.row.id)}
+          >
+            Xóa khỏi trọ
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => createNewConversation(params.row.id)}
+          >
+            Liên hệ
+          </Button>
+        </Box>
+      )
+    }
+  ]
+  const filteredUsers = hostel?.tenants?.map((user, index) => ({
+    id: user?._id,
+    stt: index + 1,
+    avatar: user?.avatar,
+    displayName: user?.displayName,
+    phone: user?.phone,
+    address: user?.address,
+    gender: user?.gender === 'male' ? 'Nữ' : 'Nam',
+    dateOfBirth: user?.dateOfBirth,
+    roomName: user?.roomName || 'Chưa có',
+    ...user
+  }))
+  const createNewConversation = async (userId) => {
+    const participants = [userId]
+    const res = await createNewConversationAPI({ participants })
+    navigate(`/home/message/${res._id}`)
+  }
+
+  const removeTenant = (data) => {
+    const tenantId = data
+    confirmDelete({
+      // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
+      title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <SystemUpdateAltIcon sx={{ color: 'warning.dark' }} /> Xóa người thuê
+      </Box>,
+      description: 'Bạn có chắc chắn muốn xóa người này ra khỏi trọ không?',
+      confirmationText: 'Chấp nhận',
+      cancellationText: 'Hủy'
+    }).then(() => {
+      // Gọi API cập nhật nhà trọ ở đây
+      const promise = updateHostelAPI(hostel._id, {tenantId})
+      toast.promise(
+        promise,
+        { pending: 'Đang xóa....' }
+      ).then(res => {
+        if (!res.error) {
+          toast.success('Xóa thành công')
+        }
+        dispatch(updateCurrentActiveHostel(res))
+      })
+    })
+  }
   return (
     <>
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        py: 1
-      }}>
-        < Box>
-          <Typography sx={{ color: '#473C8B' }} variant='h6'>{capitalizeFirstLetter('DANH SÁCH CÁC NGƯỜI THUÊ')}</Typography>
-        </Box>
-        < Box sx={{
+      <Box
+        sx={{
+          mb: 2,
           display: 'flex',
-          gap: 1
-        }}>
-          <Button variant='contained' color='success'>
-            Mời thành viên
-          </Button>
-          <Button variant='outlined' color='error' sx={{
-            borderWidth: '2px'
-          }}>
-            Xóa thành viên
-          </Button>
-        </Box>
-
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f5f5f5',
+          padding: 2,
+          borderRadius: 2,
+          boxShadow: theme.palette.mode === 'dark' ? '0px 4px 10px rgba(0, 0, 0, 0.5)' : '0px 4px 10px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 'bold',
+            color: theme.palette.mode === 'dark' ? '#fff' : '#333',
+          }}
+        >
+          Chọn nhà trọ: {hostel?.hostelName}
+        </Typography>
+        <Select
+          value={selectedHostel}
+          onChange={handleHostelChange}
+          sx={{
+            width: 200,
+            backgroundColor: theme.palette.mode === 'dark' ? '#444' : '#fff',
+            color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+            borderRadius: 1,
+            boxShadow: theme.palette.mode === 'dark' ? '0px 2px 5px rgba(0, 0, 0, 0.5)' : '0px 2px 5px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          {hostels?.map((hostel) => (
+            <MenuItem key={hostel._id} value={hostel._id}>
+              {hostel.hostelName}
+            </MenuItem>
+          ))}
+        </Select>
       </Box>
-      <Divider sx={{
-        height: '2px'
-      }} />
-      <Paper sx={{ height: 510, width: '100%' }}>
+      <Paper
+        sx={{
+          height: 510,
+          width: '100%',
+          borderRadius: 2,
+          overflow: 'hidden',
+          boxShadow: theme.palette.mode === 'dark' ? '0px 4px 10px rgba(0, 0, 0, 0.5)' : '0px 4px 10px rgba(0, 0, 0, 0.1)',
+          backgroundColor: theme.palette.mode === 'dark' ? '#222' : '#fff',
+        }}
+      >
         <DataGrid
-          rows={rows}
+          rows={filteredUsers}
           columns={columns}
-          initialState={{ pagination: { paginationModel } }}
+          rowHeight={80} // Tăng chiều cao của hàng
           pageSizeOptions={[5, 10]}
-          checkboxSelection // checkbox vẫn hoạt động bình thường
-          sx={{ border: 0, cursor: 'pointer' }}
-          disableRowSelectionOnClick // để tránh chọn hàng khi bấm vào bất kỳ đâu ngoài checkbox.
-          onRowClick={(params, event) => {
-            // Kiểm tra nếu bấm vào checkbox thì không chạy sự kiện khác
-            if (event.target.closest('.MuiDataGrid-cellCheckbox')) {
-              return;
+          sx={{
+            border: 0,
+            cursor: 'pointer',
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: theme.palette.mode === 'dark' ? '#444' : '#f5f5f5',
+              color: theme.palette.mode === 'dark' ? '#fff' : '#333',
+              fontWeight: 'bold',
+              fontSize: '1rem'
+            },
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f0f0f0'
+            },
+            '& .MuiDataGrid-cell': {
+              fontSize: '0.9rem',
+              color: theme.palette.mode === 'dark' ? '#ddd' : '#555',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 0
             }
-            alert(`Bạn đã nhấn vào hàng có ID: ${params.id}`);
+          }}
+          onRowDoubleClick={(params, event) => {
+            if (event.target.closest('.MuiDataGrid-cellCheckbox')) {
+              return
+            }
+            setUser(params.row)
+            setOpen(true)
           }}
         />
       </Paper>
+      <ModalUser open={open} handleClose={() => setOpen(false)} user={user} />
     </>
   )
 }
+
 export default InforUser

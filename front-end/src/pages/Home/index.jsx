@@ -11,6 +11,7 @@ import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
+import MenuItem from '@mui/material/MenuItem'
 import { getAllHostelPublic, findHostelsAPI } from '~/apis'
 import Divider from '@mui/material/Divider'
 import { useState, useEffect } from 'react'
@@ -18,13 +19,10 @@ import { useState, useEffect } from 'react'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useForm } from 'react-hook-form'
 import {
-  INPUT_NAME,
-  INPUT_NAME_MESSAGE,
-  FIELD_REQUIRED_MESSAGE,
   POSITIVE_NUMBER_RULE,
   POSITIVE_NUMBER_RULE_MESSAGE
 } from '~/utils/validators'
-
+import { districtsInDaNang } from '~/utils/constants'
 import ModalHostel from '~/components/Modal/ModalHostel'
 function HouesPage() {
   const [tabValue, setTabValue] = useState(0)
@@ -32,6 +30,9 @@ function HouesPage() {
 
   const [open, setOpen] = useState(false)
   const [selectedHostel, setSelectedHostel] = useState(null) // Lưu thông tin nhà trọ được chọn
+  const [selectedDistrict, setSelectedDistrict] = useState('')
+  const [wards, setWards] = useState([])
+  const [selectedWard, setSelectedWard] = useState('')
 
   const listData = (data) =>
     data?.map((hostel) => ({
@@ -40,7 +41,6 @@ function HouesPage() {
     }))
   useEffect(() => {
     getAllHostelPublic().then((res) => {
-      console.log('res', res)
       const mockHostels = listData(res)
       setHostels(mockHostels)
     })
@@ -73,7 +73,7 @@ function HouesPage() {
         >
           <Container maxWidth='md' sx={{ background: 'rgba(255, 255, 255, 0.9)', p: 4, borderRadius: 2, boxShadow: 3 }}>
             <Typography color='black' variant='h4' fontWeight='bold' gutterBottom>
-              Bạn muốn tìm một nhà trọ rẻ và tốt?
+              Bạn muốn tìm một nhà trọ rẻ và tốt ở Đà Nẵng?
             </Typography>
             <Typography variant='subtitle1' color='rgba(48, 42, 42, 0.9)' gutterBottom>
               Chúng tôi cung cấp các nhà trọ tốt nhất với giá cả phải chăng và dịch vụ tuyệt vời.
@@ -95,29 +95,29 @@ function HouesPage() {
 
             <form onSubmit={handleSubmit(searchHostel)}>
               <Box display='flex' gap={2} mt={2}>
-                <Box sx={{ width: '60%' }}>
+                <Box flex={2}>
                   <TextField
                     InputLabelProps={{
                       style: { color: '#333' } // Màu chữ cố định cho label
                     }}
                     sx={{
                       '& .MuiInputLabel-root': {
-                        color: '#333', // Màu chữ cố định cho label
+                        color: '#333' // Màu chữ cố định cho label
                       },
                       '& .MuiInputLabel-root.Mui-focused': {
-                        color: '#1976d2', // Màu chữ khi focus
+                        color: '#1976d2' // Màu chữ khi focus
                       },
                       '& .MuiInputBase-input': {
-                        color: '#333', // Màu chữ cố định cho nội dung nhập
+                        color: '#333' // Màu chữ cố định cho nội dung nhập
                       },
                       '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#333', // Màu viền cố định
+                        borderColor: '#333' // Màu viền cố định
                       },
                       '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#555', // Màu viền khi hover
+                        borderColor: '#555' // Màu viền khi hover
                       },
                       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: '#1976d2', // Màu viền khi focus
+                        borderColor: '#1976d2' // Màu viền khi focus
                       },
                     }}
                     fullWidth
@@ -133,40 +133,137 @@ function HouesPage() {
                   />
                   <FieldErrorAlert errors={errors} fieldName={'price'} />
                 </Box>
-                <TextField
-                  fullWidth
-                  label='Địa điểm'
-                  variant='outlined'
-                  sx={{
-                    '& .MuiInputLabel-root': {
-                      color: '#333' // Màu chữ cố định cho label
-                    },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: '#1976d2' // Màu chữ khi focus
-                    },
-                    '& .MuiInputBase-input': {
-                      color: '#333' // Màu chữ cố định cho nội dung nhập
-                    },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#333' // Màu viền cố định
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#555' // Màu viền khi hover
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976d2' // Màu viền khi focus
-                    }
-                  }}
-                  {...register('address')}
-                />
+                <Box flex={1}>
+                  <TextField
+                    select
+                    fullWidth
+                    label='Chọn quận'
+                    variant='outlined'
+                    SelectProps={{
+                      MenuProps: {
+                        anchorOrigin: {
+                          vertical: 'bottom',
+                          horizontal: 'left'
+                        },
+                        transformOrigin: {
+                          vertical: 'top',
+                          horizontal: 'left'
+                        },
+                        getContentAnchorEl: null,
+                        PaperProps: {
+                          style: {
+                            maxHeight: 200,
+                            overflowY: 'auto',
+                            zIndex: 1300 // đảm bảo nằm trên các component khác
+                          }
+                        }
+                      }
+                    }}
+                    sx={{
+                      '& .MuiInputLabel-root': {
+                        color: '#333' // Màu chữ cố định cho label
+                      },
+                      '& .MuiInputLabel-root.Mui-focused': {
+                        color: '#1976d2' // Màu chữ khi focus
+                      },
+                      '& .MuiInputBase-input': {
+                        color: '#333' // Màu chữ cố định cho nội dung nhập
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#333' // Màu viền cố định
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#555' // Màu viền khi hover
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1976d2' // Màu viền khi focus
+                      }
+                    }}
+                    {...register('address', {
+                      onChange: (e) => {
+                        const districtName = e.target.value
+                        setSelectedDistrict(`${e.target.value}, Đà Nẵng`)
+                        const district = districtsInDaNang.find(d => d.name === districtName)
+                        setWards(district ? district?.wards : [])
+                      }
+                    })}
+                  >
+                    {districtsInDaNang?.map((address) => (
+                      <MenuItem key={address.name} value={address.name}>
+                        {address.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
+                <Box flex={1}>
+                  <TextField
+                    select
+                    fullWidth
+                    label='Chọn phường'
+                    variant='outlined'
+                    SelectProps={{
+                      MenuProps: {
+                        anchorOrigin: {
+                          vertical: 'bottom',
+                          horizontal: 'left'
+                        },
+                        transformOrigin: {
+                          vertical: 'top',
+                          horizontal: 'left'
+                        },
+                        getContentAnchorEl: null,
+                        PaperProps: {
+                          style: {
+                            maxHeight: 200,
+                            overflowY: 'auto',
+                            zIndex: 1300 // đảm bảo nằm trên các component khác
+                          }
+                        }
+                      }
+                    }}
+                    sx={{
+                      '& .MuiInputLabel-root': {
+                        color: '#333' // Màu chữ cố định cho label
+                      },
+                      '& .MuiInputLabel-root.Mui-focused': {
+                        color: '#1976d2' // Màu chữ khi focus
+                      },
+                      '& .MuiInputBase-input': {
+                        color: '#333' // Màu chữ cố định cho nội dung nhập
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#333' // Màu viền cố định
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#555' // Màu viền khi hover
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#1976d2' // Màu viền khi focus
+                      }
+                    }}
+                    value={selectedWard}
+                    onChange={(e) => {
+                      const wardName = e.target.value
+                      setSelectedWard(wardName)
+                      const fullAddress = `${wardName}, ${selectedDistrict}`
+                      setValue('address', fullAddress) // ✅ Ghi địa chỉ đầy đủ vào field `address`
+                    }}
+                  >
+                    {wards?.map((ward) => (
+                      <MenuItem key={ward} value={ward}>
+                        {ward}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
                 <Button variant='contained'
                   sx={{
                     bgcolor: 'rgb(71, 60, 139)',
                     '&:hover': {
                       bgcolor: 'rgb(64, 52, 142)'
                     },
-                    color:'white'
-                  }} type='submit' size='large'>Search</Button>
+                    color: 'white'
+                  }} type='submit' size='large'>Tìm kiếm</Button>
               </Box>
             </form>
           </Container>
@@ -183,7 +280,7 @@ function HouesPage() {
             maxWidth='lg'
           >
             <Typography variant="h5" fontWeight="bold" gutterBottom align='center'>
-              DANH SÁCH NHÀ TRỌ
+              DANH SÁCH NHÀ TRỌ ĐÀ NẴNG
             </Typography>
             {/* <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? 'white' : '#473C8B') }} variant='h6'>{'Đà Nẵng'}</Typography> */}
             <Divider sx={{

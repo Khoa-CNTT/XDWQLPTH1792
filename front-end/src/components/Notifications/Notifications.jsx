@@ -117,11 +117,12 @@ function Notifications() {
               maxWidth: 360,
               overflowY: 'auto'
             }}>
+              {notification.type === 'HOSTEL_INVITATION' &&
               <Box sx={{ maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'pre-wrap', display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {/* Nội dung của thông báo */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Box><GroupAddIcon fontSize="small" /></Box>
-                  <Box><strong>{notification?.inviter?.displayName}</strong> had invited you to join the hostel <strong>{notification?.hostel?.title}</strong></Box>
+                  <Box><strong>{notification?.inviter?.displayName}</strong> đã mời bạn vào <strong>{notification?.hostel?.hostelName}</strong></Box>
                 </Box>
 
                 {/* Khi Status của thông báo này là PENDING thì sẽ hiện 2 Button */}
@@ -165,6 +166,7 @@ function Notifications() {
                   </Typography>
                 </Box>
               </Box>
+              }
             </MenuItem>
             {/* Cái đường kẻ Divider sẽ không cho hiện nếu là phần tử cuối */}
             {index !== (notifications?.length - 1) && <Divider />}

@@ -45,7 +45,7 @@ const paginationModel = { page: 0, pageSize: 10 }
 export const STATUS_ROOM = {
   AVAILABLE: 'available',
   OCCUPIED: 'occupied', //Đã thuê
-  MAINTENCANCE: 'maintenance' // đã đặt cọc
+  MAINTENANCE: 'maintenance' // đã đặt cọc
 }
 function Rooms() {
 
@@ -63,13 +63,20 @@ function Rooms() {
     setOpen(true) // Mở Dialog
   }
   const handleEdit = (room) => {
-    const [length, width] = room.acreage?.split('x').map((value) => value.trim()) || ['', ''];
+    const [length, width] = room.acreage?.split('x').map((value) => value.trim()) || ['', '']
     // Tách chiều dài và chiều rộng từ acreage
+    const statusMapping = {
+      'Còn trống': STATUS_ROOM.AVAILABLE,
+      'Đã thuê': STATUS_ROOM.OCCUPIED,
+      'Đang bảo trì': STATUS_ROOM.MAINTENANCE
+    }
+
+    const status = statusMapping[room?.status] || STATUS_ROOM.AVAILABLE
     setEditingRoom(room) // Lưu thông tin nhà trọ vào state
     setValue('roomName', room.roomName) // Điền dữ liệu vào form
     setValue('length', length)
     setValue('width', width) // Điền dữ liệu vào form
-    setValue('status', room.status) // Điền dữ liệu vào form
+    setValue('status', status) // Điền dữ liệu vào form
     setValue('utilities', room.utilities.split(',')) // Điền dữ liệu vào form
     setValue('price', room.price)
     setValue('images', room.images)
@@ -134,7 +141,7 @@ function Rooms() {
             width: 'auto', // Tăng chiều rộng hình ảnh
             height: '100%', // Đặt chiều cao hình ảnh bằng chiều cao của ô
             maxHeight: '150px', // Đặt chiều cao tối đa
-            objectFit: 'cover',
+            objectFit: 'cover'
           }}
         />
       )
@@ -181,6 +188,13 @@ function Rooms() {
           if (!res.error) {
             toast.success('Cập nhật thành công')
           }
+          const updatedHostel = {
+            ...hostel,
+            rooms: hostel.rooms.map((room) =>
+              room._id === res._id ? res : room
+            )
+          }
+          dispatch(updateCurrentActiveHostel(updatedHostel))
           handleClose()
         })
       })
@@ -210,14 +224,14 @@ function Rooms() {
       })
     }
   }
-  const rows = hostel?.rooms?.filter(room => room && room._id) ?.map((room, index) => ({
+  const rows = hostel?.rooms?.filter(room => room && room._id)?.map((room, index) => ({
     id: room?._id,
     stt: index + 1,
     images: room?.images,
     roomName: room?.roomName,
     price: room?.price,
     acreage: `${room?.length} x ${room?.width}`,
-    status: room?.status,
+    status: room?.status === 'available' && 'Còn trống' || room?.status === 'occupied' && 'Đã thuê' || room?.status === 'maintenance' && 'Đang bảo trì',
     utilities: room?.utilities?.join(', ') || '',
     members: room.members?.length || 0
   }))
@@ -465,47 +479,49 @@ function Rooms() {
                 </FormGroup>
               </FormControl>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2, // Khoảng cách giữa các phần
-                mt: 2, // Thêm khoảng cách phía trên
-              }}
-            >
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                Tình trạng
-              </Typography>
-              <Controller
-                name="status"
-                defaultValue="available" // Giá trị mặc định
-                control={control}
-                render={({ field }) => (
-                  <RadioGroup
-                    {...field}
-                    row // Hiển thị theo hàng ngang
-                    onChange={(event, value) => field.onChange(value)}
-                    value={field.value}
-                  >
-                    <FormControlLabel
-                      value={STATUS_ROOM.AVAILABLE}
-                      control={<Radio size="small" />}
-                      label="Còn trống"
-                    />
-                    <FormControlLabel
-                      value={STATUS_ROOM.OCCUPIED}
-                      control={<Radio size="small" />}
-                      label="Đã thuê"
-                    />
-                    <FormControlLabel
-                      value={STATUS_ROOM.MAINTENCANCE}
-                      control={<Radio size="small" />}
-                      label="Bảo trì"
-                    />
-                  </RadioGroup>
-                )}
-              />
-            </Box>
+            {editingRoom &&
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2, // Khoảng cách giữa các phần
+                  mt: 2 // Thêm khoảng cách phía trên
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  Tình trạng
+                </Typography>
+                <Controller
+                  name="status"
+                  defaultValue={STATUS_ROOM.AVAILABLE} // Giá trị mặc định
+                  control={control}
+                  render={({ field }) => (
+                    <RadioGroup
+                      {...field}
+                      row // Hiển thị theo hàng ngang
+                      onChange={(event, value) => field.onChange(value)}
+                      value={field.value}
+                    >
+                      <FormControlLabel
+                        value={STATUS_ROOM.AVAILABLE}
+                        control={<Radio size="small" />}
+                        label="Còn trống"
+                      />
+                      <FormControlLabel
+                        value={STATUS_ROOM.OCCUPIED}
+                        control={<Radio size="small" />}
+                        label="Đã thuê"
+                      />
+                      <FormControlLabel
+                        value={STATUS_ROOM.MAINTENANCE}
+                        control={<Radio size="small" />}
+                        label="Bảo trì"
+                      />
+                    </RadioGroup>
+                  )}
+                />
+              </Box>
+            }
             {/* <Controller
               name="type"
               defaultValue={HOSTEL_TYPE.PUBLIC}

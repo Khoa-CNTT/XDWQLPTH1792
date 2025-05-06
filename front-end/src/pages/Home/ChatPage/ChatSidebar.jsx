@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -13,26 +13,35 @@ import Avatar from '@mui/material/Avatar'
 import SearchIcon from '@mui/icons-material/Search'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { useTheme } from '@mui/material/styles'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteConversationAPI } from '~/redux/conversation/conversationSlice'
+import { selectCurrentUser } from '~/redux/user/userSlice'
 import { calculateTimeAgo } from '~/utils/formatters'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Fade from '@mui/material/Fade'
-
 import { useConfirm } from 'material-ui-confirm'
+import { socketIoInstance } from '~/socketClient'
 const ChatSidebar = ({ conversations }) => {
   // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
   const confirmUpdateOrDelete = useConfirm()
   const navigate = useNavigate()
 
+  // Hiển thị tin nhắn tô đậm
+  const handleNewMessageOfConversation = (conversation) => {
+    return setNewMessage(conversation._id)
+  }
+
+  socketIoInstance.on('BE_USER_MESSAGE', handleNewMessageOfConversation)
   const dispatch = useDispatch()
   const theme = useTheme()
   const [searchTerm, setSearchTerm] = useState('')
 
+  // Biến state đơn giản để kiểm tra nó co thông báo mới hay không
+  const [newMessage, setNewMessage] = useState(null)
   // state mở menu
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -180,6 +189,7 @@ const ChatSidebar = ({ conversations }) => {
               }}
               onClick={() => {
                 setSelectedUser(user)
+                setNewMessage(false)
                 navigate(`/home/message/${user.conversationId}`)
               }
               }
@@ -195,7 +205,11 @@ const ChatSidebar = ({ conversations }) => {
                       component="span"
                       variant="body2"
                       color="textSecondary"
-                      sx={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                      sx={{
+                        flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                        fontWeight: newMessage === user.conversationId ? '900' : '400',
+                        color : newMessage === user.conversationId ? '#444444' : 'gray'
+                      }}
                     >
                       {user._id !== user?.lastMessage?.senderId && 'Bạn: '}
                       {user?.lastMessage?.content}
@@ -251,7 +265,7 @@ const ChatSidebar = ({ conversations }) => {
                     padding: '4px 16px', // Giảm padding
                     minHeight: '32px', // Giảm chiều cao tối thiểu
                     fontSize: '0.875rem', // Giảm kích thước chữ (nếu cần)
-                    width:'4rem'
+                    width: '4rem'
                   }}
                 >Xóa</MenuItem>
               </Menu>

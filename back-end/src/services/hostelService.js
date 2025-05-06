@@ -45,7 +45,7 @@ const getHostels = async (userId) => {
 }
 const getHostelsPublic = async () => {
   try {
-    const find ={
+    const find = {
       type: 'public'
     }
     const hostel = await hostelModel.getHostelsPublic(find)
@@ -57,6 +57,12 @@ const getHostelsPublic = async () => {
 
 const update = async (hostelId, reqBody) => {
   try {
+    if (reqBody.tenantId) {
+      const getHostel = await hostelModel.findOneById(hostelId)
+      const tenantIds = getHostel.tenantIds.filter(id => id.toString() !== reqBody.tenantId)
+      console.log('tenantIds', tenantIds)
+      return await hostelModel.update(hostelId, { tenantIds })
+    }
     const updatedBoard = await hostelModel.update(hostelId, reqBody)
     return updatedBoard
   } catch (error) {
@@ -82,7 +88,7 @@ const deleteHostel = async (userId, ids) => {
     throw error
   }
 }
-const findHostels = async ( reqBody) => {
+const findHostels = async (reqBody) => {
   try {
     // Lấy danh sách các hostels dựa trên `ids` và `userId`
     const dataFind = {

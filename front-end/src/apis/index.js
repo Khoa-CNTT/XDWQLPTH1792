@@ -114,3 +114,12 @@ export const fetchMessagesAPI = async (data) => {
   })
   return response.data
 }
+// Contract API
+export const createNewContractAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/contracts`, data)
+  return response.data
+}
+export const fetchContractsAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/contracts`)
+  return response.data
+}

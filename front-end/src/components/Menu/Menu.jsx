@@ -146,7 +146,7 @@ function Menu() {
                 <Link to={`/hostel/${hostel._id}`} style={{ color: 'inherit' }}>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <GiteIcon />
+                      <GiteIcon sx={{color:'#FF6666'}}/>
                     </ListItemIcon>
                     <ListItemText primary={hostel.hostelName} />
                   </ListItemButton>

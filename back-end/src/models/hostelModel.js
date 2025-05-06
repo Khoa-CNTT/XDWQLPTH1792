@@ -17,7 +17,7 @@ const INVALID_UPDATE_FIELDS = ['_id', 'createAt']
 const HOSTEL_COLLECTION_NAME = 'Hostel'
 const HOSTEL_COLLECTION_SCHEMA = Joi.object({
   hostelName: Joi.string().required().min(3).max(50).trim().strict(),
-  address: Joi.string().required().min(3).max(50).trim().strict(),
+  address: Joi.string().required().min(3).max(256).trim().strict(),
   roomIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
   ownerId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   images: Joi.string().required().messages({
@@ -171,7 +171,7 @@ const update = async (hostelId, updateData) => {
     const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(hostelId) },
       { $set: updateData },
-      { ReturnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
+      { returnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
     )
     return result
   } catch (error) {
@@ -226,7 +226,7 @@ const getHostelsPublic = async (find) => {
   try {
     // Bước 1: tạo query cơ bản
     const baseMatch = {}
-    if (find?.type) baseMatch.type = find.type;
+    if (find?.type) baseMatch.type = find.type
     if (find?.address) {
       baseMatch.address = { $regex: find.address, $options: 'i' }
     }

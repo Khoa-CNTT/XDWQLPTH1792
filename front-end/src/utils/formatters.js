@@ -3,7 +3,7 @@ export const capitalizeFirstLetter = (val) => {
   return `${val.charAt(0).toUpperCase()}${val.slice(1)}`
 }
 
-export const generatePlaceholderCard = (column) =>{
+export const generatePlaceholderCard = (column) => {
   return {
     _id: `${column._id}-placeholder-card`,
     boardId: column.boardId,
@@ -44,4 +44,13 @@ export const calculateTimeAgo = (timestamp) => {
   if (hours < 24) return `${hours} giờ trước`
   const days = Math.floor(hours / 24)
   return `${days} ngày trước`
+}
+// di chuyển 1 phần tử đã biết lên đầu mảng
+export const moveToTop = (array, element) => {
+  const index = array.findIndex(convo => convo._id === element)
+  if (index > -1) {
+    const [item] = array.splice(index, 1)
+    array.unshift(item)
+  }
+  return array
 }

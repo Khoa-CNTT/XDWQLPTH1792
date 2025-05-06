@@ -12,7 +12,7 @@ export const HOSTEL_TYPES = {
 export const STATUS_ROOM = {
   AVAILABLE: 'available',
   OCCUPIED: 'occupied', //Đã thuê
-  MAINTENCANCE: 'maintenance' // đã đặt cọc
+  MAINTENANCE: 'maintenance' // đã đặt cọc
 }
 export const WEBSITE_DOMAIN = (env.BUILD_MODE=== 'production') ? env.WEBSITE_DOMAIN_PRODUCTION : env.WEBSITE_DOMAIN_DEVELOPMENT
 
@@ -26,4 +26,9 @@ export const HOSTEL_INVITATION_STATUS = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED'
+}
+export const CONSTRACT_STATUS = {
+  ACTIVE: 'Đang hiệu lực',
+  EXPIRED: 'Đã hết hạn',
+  CANCELED: 'Đã hủy'
 }

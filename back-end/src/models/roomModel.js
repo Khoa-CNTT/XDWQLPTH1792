@@ -24,7 +24,7 @@ const ROOM_COLLECTION_SCHEMA = Joi.object({
     'any.required': 'Image is required',
     'string.empty': 'Image must not be an empty string'
   }),
-  status: Joi.string().valid(STATUS_ROOM.AVAILABLE, STATUS_ROOM.OCCUPIED, STATUS_ROOM.MAINTENCANCE).default(STATUS_ROOM.AVAILABLE),
+  status: Joi.string().valid(STATUS_ROOM.AVAILABLE, STATUS_ROOM.OCCUPIED, STATUS_ROOM.MAINTENANCE).default(STATUS_ROOM.AVAILABLE),
   price: Joi.number().required()
 })
 const validateBeforeCreate = async (data) => {
@@ -94,7 +94,7 @@ const update = async (roomId, updateData) => {
     const result = await GET_DB().collection(ROOM_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(roomId) },
       { $set: updateData },
-      { ReturnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
+      { returnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
     )
     return result
   } catch (error) {

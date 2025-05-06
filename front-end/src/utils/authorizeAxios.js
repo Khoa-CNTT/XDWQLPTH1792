@@ -107,7 +107,6 @@ authorizeAxiosInstance.interceptors.response.use((response) => {
 
   // Xư lý tập trung phần hiển thị thông báo từ nơi trả vè API ở đây (viết code một lần. Clean Code)
   // console.log error ra là sẽ thấy cấu trúc data dẫn tới lỗi message lỗi như này
-  console.log('error:', error)
   let errorMessage = error?.message
   if (error.response?.data?.message) {
     errorMessage = error.response?.data?.message
