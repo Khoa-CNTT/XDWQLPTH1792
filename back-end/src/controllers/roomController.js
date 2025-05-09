@@ -6,9 +6,9 @@ const createNew = async (req, res, next) => {
     // console.log('req.body=', req.body)
     // console.log('req.query=', req.query)
     // console.log('req.params=', req.params)
-    const createHostel = await roomService.createNew(req.body)
+    const createRoom = await roomService.createNew(req.body)
     //kết quả trả về phía CLient
-    res.status(StatusCodes.CREATED).json(createHostel)
+    res.status(StatusCodes.CREATED).json(createRoom)
     // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
   } catch (error) {
     next(error)
@@ -67,10 +67,25 @@ const update = async (req, res, next) => {
     // })
   }
 }
+const pullTenant = async (req, res, next) => {
+  try {
+    const data = req.body // Lấy dữ liệu từ query string
+    const result = await roomService.pullTenant(data)
+    //kết quả trả về phía CLient
+    res.status(StatusCodes.OK).json(result)
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+  } catch (error) {
+    next(error)
+    // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    //     errors: new Error(error).message
+    // })
+  }
+}
 
 export const roomController = {
   createNew,
   getDetails,
   deleteRooms,
-  update
+  update,
+  pullTenant
 }

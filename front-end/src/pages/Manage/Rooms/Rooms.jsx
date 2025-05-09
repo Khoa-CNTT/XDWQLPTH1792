@@ -41,6 +41,7 @@ import { toast } from 'react-toastify'
 
 import { useConfirm } from 'material-ui-confirm'
 import { useForm, Controller } from 'react-hook-form'
+import ModalAddUserToRoom from '~/components/Modal/ModalAddUserToRoom'
 const paginationModel = { page: 0, pageSize: 10 }
 export const STATUS_ROOM = {
   AVAILABLE: 'available',
@@ -55,6 +56,9 @@ function Rooms() {
   // Lưu danh sách id các phòng trọ
   const [selectedRows, setSelectedRows] = useState([])
 
+  // Mở modal AddUser
+  const [openModal, setOpenModal] = useState(false)
+  const [roomSelect, setRoomSelect] = useState(null)
   const handleClose = () => setOpen(false)
   const handleOpen = () => {
     setEditingRoom(null) // Đặt về null để xác định chế độ tạo mới
@@ -233,7 +237,7 @@ function Rooms() {
     acreage: `${room?.length} x ${room?.width}`,
     status: room?.status === 'available' && 'Còn trống' || room?.status === 'occupied' && 'Đã thuê' || room?.status === 'maintenance' && 'Đang bảo trì',
     utilities: room?.utilities?.join(', ') || '',
-    members: room.members?.length || 0
+    members: room.memberIds?.length || 0
   }))
 
   // Xóa phòng trọ
@@ -322,6 +326,8 @@ function Rooms() {
               return
             }
             // Thay thế bằng hành động bạn muốn thực hiện khi bấm đúp vào hàng
+            setRoomSelect(params.row)
+            setOpenModal(true)
           }}
         />
       </Paper>
@@ -522,32 +528,6 @@ function Rooms() {
                 />
               </Box>
             }
-            {/* <Controller
-              name="type"
-              defaultValue={HOSTEL_TYPE.PUBLIC}
-              control={control}
-              render={({ field }) => (
-                <RadioGroup
-                  {...field}
-                  row
-                  onChange={(event, value) => field.onChange(value)}
-                  value={field.value}
-                >
-                  <FormControlLabel
-                    value={HOSTEL_TYPE.PUBLIC}
-                    control={<Radio size="small" />}
-                    label="Public"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value={HOSTEL_TYPE.PRIVATE}
-                    control={<Radio size="small" />}
-                    label="Private"
-                    labelPlacement="start"
-                  />
-                </RadioGroup>
-              )}
-            /> */}
             <TextField
               fullWidth
               margin="normal"
@@ -590,7 +570,7 @@ function Rooms() {
                   minWidth: '150px', // Đặt chiều rộng tối thiểu để nút không bị thay đổi kích thước
                   '&:hover': {
                     backgroundColor: '#f5f5f5', // Màu nền khi hover
-                  },
+                  }
                 }}
               >
                 Tải ảnh nhà trọ
@@ -658,6 +638,7 @@ function Rooms() {
           </DialogActions>
         </form>
       </Dialog >
+      <ModalAddUserToRoom open={openModal} handleClose={() => setOpenModal(false)} room={roomSelect} hostel={hostel}/>
     </>
   )
 }

@@ -5,11 +5,12 @@ import { authMiddleware } from '~/middlewares/authMiddleware'
 const Router = express.Router()
 
 Router.route('/')
-  .post(authMiddleware.isAuthorized, roomValidation.createNew, roomController.createNew )
-  .delete(authMiddleware.isAuthorized, roomController.deleteRooms )
+  .post(authMiddleware.isAuthorized, roomValidation.createNew, roomController.createNew)
+  .delete(authMiddleware.isAuthorized, roomController.deleteRooms)
+Router.route('/pullTenant')
+  .put(authMiddleware.isAuthorized, roomValidation.pullTenant, roomController.pullTenant)
 
 Router.route('/:id')
   .get(authMiddleware.isAuthorized, roomController.getDetails)
   .put(authMiddleware.isAuthorized, roomValidation.update, roomController.update)
-  // .put(roomValidation.update, )
 export const roomRoute = Router

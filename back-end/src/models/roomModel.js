@@ -9,6 +9,8 @@ import { ObjectId, ReturnDocument } from 'mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE, PHONE_NUMBER_RULE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
 import { STATUS_ROOM } from '~/utils/constants'
+import { userModel } from './userModel'
+import { hostelModel } from './hostelModel'
 
 const INVALID_UPDATE_FIELDS = ['_id']
 const ROOM_COLLECTION_NAME = 'rooms'
@@ -57,10 +59,29 @@ const findOneById = async (id) => {
 }
 const getDetails = async (id) => {
   try {
-    const result = await GET_DB().collection(ROOM_COLLECTION_NAME).findOne({
-      _id: new ObjectId(id)
-    })
-    return result
+    const result = await GET_DB().collection(ROOM_COLLECTION_NAME).aggregate([
+      {
+        $match: { _id: new ObjectId(id) }
+      },
+      {
+        $lookup: {
+          from: hostelModel.HOSTEL_COLLECTION_NAME,
+          localField: 'hostelId',
+          foreignField: '_id',
+          as: 'hostelInfo'
+        }
+      },
+      {
+        $lookup: {
+          from: userModel.USER_COLLECTION_NAME, // Tên collection của user
+          localField: 'memberIds', // Trường trong hostel để nối
+          foreignField: '_id', // Trường trong user để nối
+          as: 'tenantsInfo', // Tên trường chứa thông tin owner sau khi lookup
+          pipeline: [{ $project: { password: 0, verifyToken: 0, isActive: 0 } }]
+        }
+      }
+    ]).toArray()
+    return result[0] || null
   } catch (error) {
     throw new Error(error)
   }
@@ -101,6 +122,41 @@ const update = async (roomId, updateData) => {
     throw new Error(error)
   }
 }
+const pushMembers = async (roomId, userId) => {
+  try {
+    const result = await GET_DB().collection(ROOM_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(roomId) },
+      { $push: { memberIds: new ObjectId(userId) } },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+const getRoomsByHostelId = async (hostelId) => {
+  try {
+    const result = await GET_DB().collection(ROOM_COLLECTION_NAME).aggregate(
+      [
+        {
+          $match: { hostelId: new ObjectId(hostelId) }
+        },
+        {
+          $lookup: {
+            from: userModel.USER_COLLECTION_NAME, // Tên collection của user
+            localField: 'memberIds', // Trường trong hostel để nối
+            foreignField: '_id', // Trường trong user để nối
+            as: 'tenantsInfo', // Tên trường chứa thông tin user sau khi lookup
+            pipeline: [{ $project: { password: 0, verifyToken: 0, isActive: 0 } }]
+          }
+        }
+      ]
+    ).toArray()
+    return result || null
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 export const roomModel = {
   ROOM_COLLECTION_NAME,
   ROOM_COLLECTION_SCHEMA,
@@ -108,5 +164,7 @@ export const roomModel = {
   findOneById,
   getDetails,
   deleteRooms,
-  update
+  update,
+  pushMembers,
+  getRoomsByHostelId
 }

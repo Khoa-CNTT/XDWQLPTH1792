@@ -51,7 +51,7 @@ const update = async (req, res, next) => {
     displayName: Joi.string().trim().strict(),
     current_password: Joi.string().pattern(PASSWORD_RULE).message(`current_password:${PASSWORD_RULE_MESSAGE}`),
     new_password: Joi.string().pattern(PASSWORD_RULE).message(`new_password:${PASSWORD_RULE_MESSAGE}`),
-    gender: Joi.string().valid('male', 'female'),
+    gender: Joi.string().valid('Nam', 'Nữ'),
     // dateOfBirth: Joi.date().less('now').greater('1-1-1920'),
     dateOfBirth:Joi.string().pattern(DATE_RULE).message(DATE_RULE_MESSAGE),
     phone: Joi.string().pattern(PHONE_NUMBER_RULE).message(NUMBER_RULE_MESSAGE),

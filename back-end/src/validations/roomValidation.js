@@ -49,7 +49,22 @@ const update = async (req, res, next) => {
       'any.required': 'Image is required',
       'string.empty': 'Image must not be an empty string'
     }),
-    status: Joi.string().valid(STATUS_ROOM.AVAILABLE, STATUS_ROOM.OCCUPIED, STATUS_ROOM.MAINTENANCE)
+    status: Joi.string().valid(STATUS_ROOM.AVAILABLE, STATUS_ROOM.OCCUPIED, STATUS_ROOM.MAINTENANCE),
+    tenantId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+    hostelId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+  })
+  try {
+    await correctCondition.validateAsync(req.body, { abortEarly: false }) // trả về tất cả các lỗi, còn trả về lỗi đầu tiên thì true
+    next()
+
+  } catch (error) {
+    next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message))// console.log(error)
+  }
+}
+const pullTenant = async (req, res, next) => {
+  const correctCondition = Joi.object({ // biến tên điều kiện đúng
+    roomId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+    tenantId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
   })
   try {
     await correctCondition.validateAsync(req.body, { abortEarly: false }) // trả về tất cả các lỗi, còn trả về lỗi đầu tiên thì true
@@ -62,5 +77,6 @@ const update = async (req, res, next) => {
 export const roomValidation = {
   createNew,
   deleteRooms,
-  update
+  update,
+  pullTenant
 }

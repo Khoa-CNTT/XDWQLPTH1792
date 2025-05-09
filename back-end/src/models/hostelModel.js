@@ -110,7 +110,7 @@ const pushRoomOrderIds = async (room) => {
     const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(room.hostelId), },
       { $push: { roomIds: new ObjectId(room._id) } },
-      { ReturnDocument: 'after' }
+      { returnDocument: 'after' }
     )
     return result
   } catch (error) {
@@ -277,7 +277,7 @@ const getHostelsPublic = async (find) => {
 
     return result
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error)
   }
 };
 

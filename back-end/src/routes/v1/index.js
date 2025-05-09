@@ -7,6 +7,7 @@ import { invitationRoute } from './invitationRoute'
 import { conversationRoute } from './conversationRoute'
 import { messageRoute } from './messageRoute'
 import { contractRoute } from './contractRoute'
+import { utilityRoute } from './utilityRoute'
 const Router = express.Router()
 //check APIs v1 stats
 Router.get('/status', (req, res) => {
@@ -34,6 +35,9 @@ Router.use('/messages', messageRoute )
 
 // Messages APIs
 Router.use('/contracts', contractRoute )
+
+// Utility APIs
+Router.use('/utilities', utilityRoute )
 export const APIs_V1 = Router
 
 

@@ -13,7 +13,7 @@ import DialogContent from '@mui/material/DialogContent'
 import MenuItem from '@mui/material/MenuItem'
 import DialogTitle from '@mui/material/DialogTitle'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from '@mui/icons-material/Add'
 import { useState, useEffect } from 'react'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -141,18 +141,18 @@ function Hostel() {
         cancellationText: 'Cancel'
       }).then(() => {
         updateAdress(data)
-        // // Gọi API cập nhật nhà trọ ở đây
-        // const promise = updateHostelAPI(editingHostel.id, data)
-        // toast.promise(
-        //   promise,
-        //   { pending: 'Đang cập nhật....' }
-        // ).then(res => {
-        //   if (!res.error) {
-        //     toast.success('Cập nhật thành công')
-        //   }
-        //   setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
-        //   handleClose()
-        // })
+        // Gọi API cập nhật nhà trọ ở đây
+        const promise = updateHostelAPI(editingHostel.id, data)
+        toast.promise(
+          promise,
+          { pending: 'Đang cập nhật....' }
+        ).then(res => {
+          if (!res.error) {
+            toast.success('Cập nhật thành công')
+          }
+          setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
+          handleClose()
+        })
         console.log('data', data)
       })
     } else {
@@ -283,7 +283,6 @@ function Hostel() {
             Xóa
           </Button>
         </Box>
-
       </Box>
       <Divider sx={{
         height: '2px'

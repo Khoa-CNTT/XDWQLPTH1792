@@ -31,6 +31,18 @@ export const activeHostelSlice = createSlice({
 
       // Update lại dữ liệu của currentActiveHostel
       state.currentActiveHostel = hostel
+    },
+    removeTenantActiveHostel: (state, action) => {
+      //action.payload là chuẩn đặt tên nhận dữ liệu vào reducer, ở đây chúng ta gán nó vào 1 biến có ý nghĩa hơn
+      let hostel = action.payload
+      // Xử lý dữ liệu nếu cần thiết...
+
+      // Update lại dữ liệu của currentActiveHostel
+      state.currentActiveHostel = {
+        ...state.currentActiveHostel,
+        tenantIds: hostel.tenantIds,
+        tenants: state.currentActiveHostel.tenants.filter(tenant => hostel.tenantIds.includes(tenant._id))
+      }
     }
   },
   // ExtraReducers: Nơi xử lý dữ liệu bất đồng bộ
@@ -51,7 +63,7 @@ export const activeHostelSlice = createSlice({
 
 /** Để ý ở trên thì không thấy properties actions đâu cả, bởi vì những cái actions này đơn giản là được thằng redux tạo tự động theo
  tên của reducer nhé.*/
-export const { updateCurrentActiveHostel } = activeHostelSlice.actions
+export const { updateCurrentActiveHostel, removeTenantActiveHostel } = activeHostelSlice.actions
 
 // Selectors: là nơi dành cho các components bên dưới gọi bằng hook useSelector() để lấy dữ liệ từ trong kho redux store ra sử dụng
 export const selectCurrentActiveHostel = (state) => {

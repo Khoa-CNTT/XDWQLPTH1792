@@ -40,18 +40,21 @@ function ModalUser({ open, handleClose, user }) {
             {user.name}
           </Typography>
           <Box sx={{ width: '100%' }}>
+            <Typography variant="body2"><strong>Tên:</strong> {user?.displayName}</Typography>
             <Typography variant="body2"><strong>Số điện thoại:</strong> {user?.phone}</Typography>
             <Typography variant="body2"><strong>Email:</strong> {user?.email}</Typography>
-            <Typography variant="body2"><strong>Ngày thuê:</strong> {user?.rentDate}</Typography>
-            <Typography variant="body2"><strong>Số phòng:</strong> {user?.roomNumber}</Typography>
+            <Typography variant="body2"><strong>Giới tính:</strong> {user?.gender}</Typography>
+            <Typography variant="body2"><strong>Số căn cước công dân:</strong> {user?.citizenId}</Typography>
+            <Typography variant="body2"><strong>Địa chỉ:</strong> {user?.address}</Typography>
+            <Typography variant="body2"><strong>Số phòng:</strong> {user?.roomName}</Typography>
           </Box>
           <Stack direction="row" spacing={2} mt={2}>
             <Button variant="contained" color="primary" onClick={handleClose}>
               Đóng
             </Button>
-            <Button variant="outlined" color="success" href={`tel:${user?.phone}`}>
+            {/* <Button variant="outlined" color="success" href={`tel:${user?.phone}`}>
               Gọi
-            </Button>
+            </Button> */}
           </Stack>
         </Stack>
       </Box>

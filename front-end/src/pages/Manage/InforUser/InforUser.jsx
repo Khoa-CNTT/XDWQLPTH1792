@@ -11,11 +11,12 @@ import { toast } from 'react-toastify'
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { fetchHostelsAPI } from '~/apis'
-import { fetchHostelDetailsAPI, updateCurrentActiveHostel, selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
+import { fetchHostelDetailsAPI, selectCurrentActiveHostel, removeTenantActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { createNewConversationAPI, updateHostelAPI } from '~/apis'
 import { useNavigate } from 'react-router-dom'
 import { useConfirm } from 'material-ui-confirm'
+import InviteHostelUser from '~/pages/Home/BedsitBar/InviteHostelUser'
 
 
 function InforUser() {
@@ -104,18 +105,23 @@ function InforUser() {
       )
     }
   ]
-  const filteredUsers = hostel?.tenants?.map((user, index) => ({
-    id: user?._id,
-    stt: index + 1,
-    avatar: user?.avatar,
-    displayName: user?.displayName,
-    phone: user?.phone,
-    address: user?.address,
-    gender: user?.gender === 'male' ? 'Nữ' : 'Nam',
-    dateOfBirth: user?.dateOfBirth,
-    roomName: user?.roomName || 'Chưa có',
-    ...user
-  }))
+  const filteredUsers = hostel?.tenants?.map((user, index) => {
+    const room = hostel?.rooms?.find(room =>
+      room.memberIds?.map(id => id.toString()).includes(user._id)
+    )
+    return {
+      id: user?._id,
+      stt: index + 1,
+      avatar: user?.avatar,
+      displayName: user?.displayName,
+      phone: user?.phone,
+      address: user?.address,
+      gender: user?.gender === 'male' ? 'Nữ' : 'Nam',
+      dateOfBirth: user?.dateOfBirth,
+      roomName: room?.roomName || 'Chưa có',
+      ...user
+    }
+  })
   const createNewConversation = async (userId) => {
     const participants = [userId]
     const res = await createNewConversationAPI({ participants })
@@ -134,7 +140,7 @@ function InforUser() {
       cancellationText: 'Hủy'
     }).then(() => {
       // Gọi API cập nhật nhà trọ ở đây
-      const promise = updateHostelAPI(hostel._id, {tenantId})
+      const promise = updateHostelAPI(hostel._id, { tenantId })
       toast.promise(
         promise,
         { pending: 'Đang xóa....' }
@@ -142,7 +148,7 @@ function InforUser() {
         if (!res.error) {
           toast.success('Xóa thành công')
         }
-        dispatch(updateCurrentActiveHostel(res))
+        dispatch(removeTenantActiveHostel(res))
       })
     })
   }
@@ -154,21 +160,22 @@ function InforUser() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f5f5f5',
+          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#C0C0C0',
           padding: 2,
           borderRadius: 2,
-          boxShadow: theme.palette.mode === 'dark' ? '0px 4px 10px rgba(0, 0, 0, 0.5)' : '0px 4px 10px rgba(0, 0, 0, 0.1)',
+          boxShadow: theme.palette.mode === 'dark' ? '0px 4px 10px rgba(0, 0, 0, 0.5)' : '0px 4px 10px rgba(0, 0, 0, 0.1)'
         }}
       >
         <Typography
           variant="h6"
           sx={{
             fontWeight: 'bold',
-            color: theme.palette.mode === 'dark' ? '#fff' : '#333',
+            color: theme.palette.mode === 'dark' ? '#fff' : '#333'
           }}
         >
           Chọn nhà trọ: {hostel?.hostelName}
         </Typography>
+        <InviteHostelUser hostelId={hostel._id} />
         <Select
           value={selectedHostel}
           onChange={handleHostelChange}
@@ -177,7 +184,7 @@ function InforUser() {
             backgroundColor: theme.palette.mode === 'dark' ? '#444' : '#fff',
             color: theme.palette.mode === 'dark' ? '#fff' : '#000',
             borderRadius: 1,
-            boxShadow: theme.palette.mode === 'dark' ? '0px 2px 5px rgba(0, 0, 0, 0.5)' : '0px 2px 5px rgba(0, 0, 0, 0.1)',
+            boxShadow: theme.palette.mode === 'dark' ? '0px 2px 5px rgba(0, 0, 0, 0.5)' : '0px 2px 5px rgba(0, 0, 0, 0.1)'
           }}
         >
           {hostels?.map((hostel) => (
@@ -194,7 +201,7 @@ function InforUser() {
           borderRadius: 2,
           overflow: 'hidden',
           boxShadow: theme.palette.mode === 'dark' ? '0px 4px 10px rgba(0, 0, 0, 0.5)' : '0px 4px 10px rgba(0, 0, 0, 0.1)',
-          backgroundColor: theme.palette.mode === 'dark' ? '#222' : '#fff',
+          backgroundColor: theme.palette.mode === 'dark' ? '#222' : '#fff'
         }}
       >
         <DataGrid

@@ -59,8 +59,14 @@ const update = async (hostelId, reqBody) => {
   try {
     if (reqBody.tenantId) {
       const getHostel = await hostelModel.findOneById(hostelId)
+      const hostelDetail = await hostelModel.getDetails(hostelId)
+      const isInRoom = hostelDetail.rooms.some(room =>
+        room.memberIds.map(id => id.toString()).includes(reqBody.tenantId)
+      )
+      if (isInRoom) {
+        throw new ApiError(StatusCodes.BAD_REQUEST, 'Khách đã tồn tại trong phòng trọ nào đó. Hãy xóa khách ở phòng mới được xóa khỏi nhà trọ!')
+      }
       const tenantIds = getHostel.tenantIds.filter(id => id.toString() !== reqBody.tenantId)
-      console.log('tenantIds', tenantIds)
       return await hostelModel.update(hostelId, { tenantIds })
     }
     const updatedBoard = await hostelModel.update(hostelId, reqBody)

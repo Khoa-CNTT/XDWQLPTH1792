@@ -90,7 +90,7 @@ function Profiles() {
           <ListItemIcon>
             <PersonAdd fontSize="small" />
           </ListItemIcon>
-          Add another account
+          Thêm tài khoản khác
         </MenuItem>
         <MenuItem onClick={() => {
           navigate('/security')
@@ -98,7 +98,7 @@ function Profiles() {
           <ListItemIcon>
             <SettingsIcon fontSize="small" />
           </ListItemIcon>
-          Setting
+          Cài đặt
         </MenuItem>
         <MenuItem onClick={handleLogout} sx={{
           '&:hover': {
@@ -111,7 +111,7 @@ function Profiles() {
           <ListItemIcon>
             <LogoutIcon className='logout-icon' fontSize="small" />
           </ListItemIcon>
-          Logout
+          Đăng xuất
         </MenuItem>
       </Menu>
     </Box>

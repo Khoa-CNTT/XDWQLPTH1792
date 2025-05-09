@@ -10,16 +10,25 @@ function ManagerID() {
   const [conversations, setConversations] = useState(null)
 
   const refreshConversations = (conversation) => {
-    fetchConversationsAPI().then((res) =>{
+    fetchConversationsAPI().then((res) => {
       const listConversation = moveToTop(res, conversation._id)
-      console.log('list',listConversation )
-      setConversations(listConversation)})
+      setConversations(listConversation)
+    })
   }
   useEffect(() => {
-    fetchConversationsAPI().then( res => setConversations(res)
+    fetchConversationsAPI().then(res => setConversations(res)
     )
   }, [])
-  socketIoInstance.on('BE_USER_MESSAGE', refreshConversations)
+  useEffect(() => {
+    const handleNewMessage = (conversation) => {
+      refreshConversations(conversation)
+    }
+
+    socketIoInstance.on('BE_USER_MESSAGE', handleNewMessage)
+    return () => {
+      socketIoInstance.off('BE_USER_MESSAGE', handleNewMessage)
+    }
+  }, [])
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* AppBar */}

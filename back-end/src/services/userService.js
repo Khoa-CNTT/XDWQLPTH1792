@@ -79,10 +79,10 @@ const login = async (reqBody) => {
     const existUser = await userModel.findOneByEmail(reqBody.email)
 
     // Các bước kiểm tra cần thiết
-    if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
-    if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your account is not active!')
+    if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Tài khoản không tồn tại!')
+    if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Tài khoản bạn chưa được xác thực!')
     if (!bcryptjs.compareSync(reqBody.password, existUser.password)) { // nó sẽ trả về true hoặc false
-      throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your email or password is incorrect')
+      throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Password của bạn không đúng')
     }
 
     /** Nếu mọi thứ oke thì bắt đầu tạo Tokens đăng nhập để trả về cho phí FE */
