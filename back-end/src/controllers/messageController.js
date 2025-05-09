@@ -4,6 +4,7 @@ import { messageService } from '~/services/messageService'
 const createNew = async (req, res, next) => {
   try {
     const senderId = req.jwtDecoded._id
+    console.log('res', req.body)
     const createMessage = await messageService.createNew(senderId, req.body)
     res.status(StatusCodes.CREATED).json(createMessage)
 

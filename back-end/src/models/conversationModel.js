@@ -52,7 +52,7 @@ const getDetails = async (id, currentUserId) => {
   try {
     const result = await GET_DB().collection(CONVERSATION_COLLECTION_NAME).aggregate([
       {
-        $match:  { _id: new ObjectId(id) }
+        $match: { _id: new ObjectId(id) }
       },
       {
         $lookup: {
@@ -130,6 +130,18 @@ const getConversations = async (userId) => {
       {
         $addFields: {
           currentUser: new ObjectId(userId) // Lấy số điện thoại từ mảng ownerInfo
+        }
+      },
+      {
+        $addFields: {
+          lastMessageDate: {
+            $toDate: '$lastMessage.createAt'
+          }
+        }
+      },
+      {
+        $sort: {
+          lastMessageDate: -1
         }
       }
     ]).toArray()

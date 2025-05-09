@@ -174,8 +174,8 @@ function Profile() {
                           row
                           {...field} // Truyền đầy đủ value và onChange
                         >
-                          <FormControlLabel value="male" control={<Radio />} label="Nam" />
-                          <FormControlLabel value="female" control={<Radio />} label="Nữ" />
+                          <FormControlLabel value="Nam" control={<Radio />} label="Nam" />
+                          <FormControlLabel value="Nữ" control={<Radio />} label="Nữ" />
                         </RadioGroup>
                       </FormControl>
                     )

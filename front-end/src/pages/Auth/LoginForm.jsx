@@ -82,7 +82,7 @@ function LoginForm() {
                 // autoComplete="nope"
                 autoFocus
                 fullWidth
-                label="Enter Email..."
+                label="Nhập Email..."
                 type="text"
                 variant="outlined"
                 error={!!errors['email']}
@@ -99,7 +99,7 @@ function LoginForm() {
             <Box sx={{ marginTop: '1em' }}>
               <TextField
                 fullWidth
-                label="Enter Password..."
+                label="Nhập mật khẩu..."
                 type="password"
                 variant="outlined"
                 error={!!errors['password']}

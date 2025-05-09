@@ -10,7 +10,8 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 import ImageList from '@mui/material/ImageList'
 import ImageListItem from '@mui/material/ImageListItem'
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import theme from '~/theme'
+import ContactMailIcon from '@mui/icons-material/ContactMail'
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 import { useParams } from 'react-router-dom'
 
@@ -79,7 +80,7 @@ function InforRoom() {
   const dispatch = useDispatch()
   const room = useSelector(selectCurrentActiveRoom)
   const { roomId } = useParams()
-  console.log('roomid', roomId)
+  console.log('room', room)
 
   // Gọi API
   useEffect(() => {
@@ -155,7 +156,7 @@ function InforRoom() {
                 }}>
                   <PersonIcon />
                   <Typography variant="span" > Tiện ích:</Typography>
-                  <Typography variant="span" > {room?.utilities } </Typography>
+                  <Typography variant="span" > {room?.utilities.join(', ') || 'Không có thông tin' } </Typography>
                 </Box>
                 <Box sx={{
                   display: 'flex',
@@ -179,8 +180,8 @@ function InforRoom() {
                   gap: 1
                 }}>
                   <PersonIcon />
-                  <Typography variant="span" > Người sở hữu:</Typography>
-                  <Typography variant="span" > Nguyễn Văn Gia Huy</Typography>
+                  <Typography variant="span" > Người thuê:</Typography>
+                  <Typography variant="span" > {room?.tenantsInfo[0]?.displayName}</Typography>
                 </Box>
                 <Box sx={{
                   display: 'flex',
@@ -189,7 +190,7 @@ function InforRoom() {
                 }}>
                   <LocalPhoneIcon />
                   <Typography variant="span" > Số điện thoại liên hệ:</Typography>
-                  <Typography variant="span" > 0909009009</Typography>
+                  <Typography variant="span" > {room?.tenantsInfo[0]?.phone}</Typography>
                 </Box>
                 <Box sx={{
                   display: 'flex',
@@ -197,17 +198,26 @@ function InforRoom() {
                   gap: 1
                 }}>
                   <CalendarMonthIcon />
-                  <Typography variant="span" > Ngày bắt đầu thuê:</Typography>
-                  <Typography variant="span" > 20-12-2023</Typography>
+                  <Typography variant="span" > Ngày sinh</Typography>
+                  <Typography variant="span" > {room?.tenantsInfo[0]?.dateOfBirth}</Typography>
                 </Box>
                 <Box sx={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 1
                 }}>
-                  <CalendarMonthIcon />
-                  <Typography variant="span" > Ngày hết hạn hợp đồng:</Typography>
-                  <Typography variant="span" > 20-12-2024</Typography>
+                  <LocationOnIcon />
+                  <Typography variant="span" > Địa chỉ:</Typography>
+                  <Typography variant="span" >{room?.tenantsInfo[0]?.address}</Typography>
+                </Box>
+                <Box sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}>
+                  <ContactMailIcon />
+                  <Typography variant="span" > Email:</Typography>
+                  <Typography variant="span" >{room?.tenantsInfo[0]?.email}</Typography>
                 </Box>
               </Box>
             </Box>

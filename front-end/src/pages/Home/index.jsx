@@ -56,7 +56,6 @@ function HouesPage() {
   return (
     <>
       <AppBar />
-
       <Box sx={{ bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#F5F5F5') }}>
         <Box
           sx={{

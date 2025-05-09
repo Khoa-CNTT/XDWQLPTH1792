@@ -1,0 +1,72 @@
+import { StatusCodes } from 'http-status-codes'
+import { roomModel } from '~/models/roomModel'
+import { hostelModel } from '~/models/hostelModel'
+import { STATUS_ROOM } from '~/utils/constants'
+import { utilityModel } from '~/models/utilityModel'
+import ApiError from '~/utils/ApiError'
+
+const createNew = async (reqBody) => {
+  try {
+    const data = {
+      roomId: reqBody.roomId,
+      month: reqBody.month
+    }
+    const isHasUtility = await utilityModel.getUtilities(data)
+    if (isHasUtility.length > 0) {
+      throw new ApiError(StatusCodes.CONFLICT, 'Tiện ích của phòng đã được tạo trong tháng này ')
+    }
+    const detailHostel = await hostelModel.findOneById(reqBody.hostelId)
+    const dataUtility = {
+      ...reqBody,
+      toltalUtility: (reqBody.waterBegin - reqBody.waterStart) * detailHostel.water_price + (reqBody.electricBegin - reqBody.electricStart) * detailHostel.electricity_price
+    }
+    const createdUtility = await utilityModel.createNew(dataUtility)
+    const getNewUtility = await utilityModel.findOneById(createdUtility.insertedId)
+    return getNewUtility
+  } catch (error) {
+    throw error
+  }
+}
+const getUtilitiesByHostelId = async (hostelId) => {
+  try {
+    const result = await utilityModel.getUtilities({ hostelId })
+    const res = result.map(u => ({
+      ...u,
+      roomInfo: u.roomInfo[0],
+      hostelInfo: u.hostelInfo[0]
+    }))
+    return res
+  } catch (error) {
+    throw error
+  }
+}
+const deleteUtilities = async (ids) => {
+  try {
+    const utilities = await utilityModel.deleteUtilities(ids)
+    if (!utilities) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Tiện ích không tìm thấy')
+    }
+    return utilities
+  } catch (error) {
+    throw error
+  }
+}
+const update = async (utilityId, reqBody) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      updateAt: Date.now()
+    }
+    const updatedUtility = await utilityModel.update(utilityId, updateData)
+    return updatedUtility
+  } catch (error) {
+    throw error
+  }
+}
+export const utilityService = {
+  createNew,
+  getUtilitiesByHostelId,
+  // getDetails,
+  deleteUtilities,
+  update
+}

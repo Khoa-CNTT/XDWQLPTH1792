@@ -21,6 +21,7 @@ const createNew = async (senderId, reqBody) => {
     }
     const result = await conversationModel.update(conversationId, { lastMessage })
     console.log('con', result)
+    
     return result
   } catch (error) {
     throw error

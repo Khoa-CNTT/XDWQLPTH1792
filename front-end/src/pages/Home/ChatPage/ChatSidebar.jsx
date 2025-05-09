@@ -15,7 +15,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import { useTheme } from '@mui/material/styles'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteConversationAPI } from '~/redux/conversation/conversationSlice'
+import { deleteConversationAPI, selectCurrentConversation } from '~/redux/conversation/conversationSlice'
 import { selectCurrentUser } from '~/redux/user/userSlice'
 import { calculateTimeAgo } from '~/utils/formatters'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
@@ -34,12 +34,12 @@ const ChatSidebar = ({ conversations }) => {
   const handleNewMessageOfConversation = (conversation) => {
     return setNewMessage(conversation._id)
   }
-
   socketIoInstance.on('BE_USER_MESSAGE', handleNewMessageOfConversation)
   const dispatch = useDispatch()
   const theme = useTheme()
   const [searchTerm, setSearchTerm] = useState('')
-
+  const conversation = useSelector(selectCurrentConversation)
+  const { conversationId } = useParams()
   // Biến state đơn giản để kiểm tra nó co thông báo mới hay không
   const [newMessage, setNewMessage] = useState(null)
   // state mở menu
@@ -189,7 +189,8 @@ const ChatSidebar = ({ conversations }) => {
               }}
               onClick={() => {
                 setSelectedUser(user)
-                setNewMessage(false)
+                if (conversationId === user.conversationId)
+                  setNewMessage(null)
                 navigate(`/home/message/${user.conversationId}`)
               }
               }
@@ -208,7 +209,7 @@ const ChatSidebar = ({ conversations }) => {
                       sx={{
                         flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                         fontWeight: newMessage === user.conversationId ? '900' : '400',
-                        color : newMessage === user.conversationId ? '#444444' : 'gray'
+                        color: newMessage === user.conversationId ? '#444444' : 'gray'
                       }}
                     >
                       {user._id !== user?.lastMessage?.senderId && 'Bạn: '}

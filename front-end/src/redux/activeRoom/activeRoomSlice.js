@@ -29,20 +29,23 @@ export const activeRoomSlice = createSlice({
       let room = action.payload
 
       // Xử lý dữ liệu nếu cần thiết...
-
-      // Update lại dữ liệu của currentActiveHostel
-      state.currentActiveHostel = room
+      state.currentActiveRoom = {
+        ...state.currentActiveRoom,
+        memberIds : room.memberIds
+      }
+      // Update lại dữ liệu của currentActiveRoom
+      state.currentActiveRoom = room
     }
   },
   // ExtraReducers: Nơi xử lý dữ liệu bất đồng bộ
   extraReducers: (builder) => {
     builder.addCase(fetchRoomDetailsAPI.fulfilled, (state, action) => {
-      // action.payload ở đây chính là cái response.data trả về ở trên fetchHostelDetailsAPI
+      // action.payload ở đây chính là cái response.data trả về ở trên fetchRoomDetailsAPI
       const room = action.payload
 
       // Xử lý dữ liệu nếu cần thiết...
 
-      // Update lại dữ liệu của currentActiveHostel
+      // Update lại dữ liệu của currentActiveRoom
       state.currentActiveRoom = room
     })
   }

@@ -72,7 +72,7 @@ function Notifications() {
   const navigate = useNavigate()
   // Cập nhật trạng thái của lời mời join hostel
   const updateHostelInvitation = (status, invitationId) => {
-    dispatch(updateHostelInvitationAPI({ status, invitationId })).them(res => {
+    dispatch(updateHostelInvitationAPI({ status, invitationId })).then(res => {
       if (res.payload.hostelInvitation.status === HOSTEL_INVITATION_STATUS.ACCEPTED) {
         navigate(`/hostel/${res.payload.hostelInvitation.hostelId}`)
       }
@@ -109,7 +109,7 @@ function Notifications() {
         MenuListProps={{ 'aria-labelledby': 'basic-button-open-notification' }}
       >
         {(!notifications || notifications.length === 0) &&
-          <MenuItem sx={{ minWidth: 200 }}>You do not have any new notifications.</MenuItem>}
+          <MenuItem sx={{ minWidth: 200 }}>Bạn không có thông báo mới nào.</MenuItem>}
         {notifications?.map((notification, index) =>
           <Box key={index}>
             <MenuItem sx={{

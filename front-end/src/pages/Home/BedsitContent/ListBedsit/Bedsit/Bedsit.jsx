@@ -34,7 +34,7 @@ function Bedsit({ room }) {
             <CardMedia
               component="img"
               height="194"
-              image={Test}
+              image={room?.images}
               alt="Paella dish"
               sx={{
                 objectFit: 'cover'// cắt ảnh vửa khít với kích thước
@@ -102,7 +102,7 @@ function Bedsit({ room }) {
                 fontSize: '1.4rem',
                 color: 'rgba(0, 0, 0, 0.6)'
               }}>
-                Sức chứa: {room?.capacity || 'N/A'} người
+                Số người trong phòng : {room.memberIds?.length || 'Không có'} người
               </Typography>
             </Box>
 

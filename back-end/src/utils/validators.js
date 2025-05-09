@@ -15,6 +15,8 @@ export const PASSWORD_RULE_MESSAGE = 'Password must include at least 1 letter, a
 // Rule định nghĩa ngày
 export const DATE_RULE = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/
 export const DATE_RULE_MESSAGE = 'Ngày được định dạng sai'
+export const MONTH_YEAR_RULE = /^(0[1-9]|1[0-2])\/(19|20)\d{2}$/
+export const MONTH_YEAR_RULE_MESSAGE = 'Tháng năm định dạng không đúng'
 // Liên quan đến validate file
 export const LIMIT_COMMON_FILE_SIZE = 10485760 // byte = 10 MB
 export const ALLOW_COMMON_FILE_TYPES = ['image/jpg', 'image/jpeg', 'image/png']

@@ -91,7 +91,7 @@ function ChatPage({ refreshConversations }) {
     if (!isLoading) {
       fetchMessagesAPI(dataMessages).then(updateStateData)
     }
-  }, [conversationId, offset])
+  }, [conversationId, offset, isLoading])
   const conversation = useSelector(selectCurrentConversation)
 
   const updateStateData = (res) => {
@@ -118,7 +118,7 @@ function ChatPage({ refreshConversations }) {
 
     // Gọi hàm refreshConversations để làm mới danh sách cuộc trò chuyện
     if (refreshConversations) {
-      refreshConversations()
+      refreshConversations(conversation)
     }
   }
 

@@ -69,6 +69,10 @@ export const updateRoomAPI = async (roomId, updateData) => {
   const respone = await authorizeAxiosInstance.put(`${API_ROOT}/v1/rooms/${roomId}`, updateData)
   return respone.data
 }
+export const pullTenantFromRoomAPI = async (updateData) => {
+  const respone = await authorizeAxiosInstance.put(`${API_ROOT}/v1/rooms/pullTenant`, updateData)
+  return respone.data
+}
 // User
 export const registerUserAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/users/register`, data)
@@ -121,5 +125,16 @@ export const createNewContractAPI = async (data) => {
 }
 export const fetchContractsAPI = async () => {
   const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/contracts`)
+  return response.data
+}
+// Utilities API
+export const createNewUtilityAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/utilities`, data)
+  return response.data
+}
+export const deleteUtilityAPI = async (data) => {
+  const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/utilities`, {
+    params: data // Truyền dữ liệu qua params
+  })
   return response.data
 }
