@@ -2,26 +2,6 @@ import { toast } from 'react-toastify'
 import authorizeAxiosInstance from '~/utils/authorizeAxios'
 import { API_ROOT } from '~/utils/constants'
 
-/**
- * Lưu ý: Đối với việc sử dụng axios ở khóa MERN Stack Pro trên kênh YouTube: TrungQuanDev – Một Lập Trình Viên
- * Tất cả các function bên dưới các bạn sẽ thấy mình chỉ request và lấy data từ response luôn, mà không có try catch hay 
- * then catch gì để bắt lỗi.
- * Lý do là vì ở phía Front-end chúng ta không cần thiết làm như vậy đối với mọi request bởi nó sẽ gây ra việc
- * dư thừa code catch lỗi quá nhiều.
- * Giải pháp Clean Code gọn gàng đó là chúng ta sẽ catch lỗi tập trung tại một nơi bằng cách tận dụng một thứ
- * cực kỳ mạnh mẽ trong axios đó là Interceptors
- * Hiểu đơn giản Interceptors là cách mà chúng ta sẽ đánh chặn vào giữa request hoặc response để xử lý logic mà 
- * chúng ta muốn.
- * (Và ở học phần MERN Stack Advance nâng cao học trực tiếp mình sẽ dạy cực kỳ đầy đủ cách xử lý, áp dụng phần
- * này chuẩn chỉnh cho các bạn.)
- */
-// Boards
-// Đã move vào redux
-// export const fetchBoardDetailsAPI = async (boardId) => {
-//   const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
-//   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
-//   return response.data
-// }
 // Hostel
 export const createNewHostelAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/hostel`, data)
@@ -76,14 +56,14 @@ export const pullTenantFromRoomAPI = async (updateData) => {
 // User
 export const registerUserAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/users/register`, data)
-  toast.success('Account created successfully! Please check and verify your account before logging in!',
+  toast.success('Tài khoản đã tạo thành công. Vui lòng xem và xác thực trong email!',
     { theme: 'colored' }
   )
   return respone.data
 }
 export const verifyUserAPI = async (data) => {
   const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/verify`, data)
-  toast.success('Account verified successfully! Now you can login to enjoy our service!',
+  toast.success('Tài khoản đã xác thực thành công! Bây giờ bạn có thể đăng nhập và sử dụng dịch vụ!',
     { theme: 'colored' }
   )
   return response.data
@@ -91,6 +71,16 @@ export const verifyUserAPI = async (data) => {
 export const refreshTokenAPI = async () => {
   const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users/refresh_token`)
   return response.data
+}
+
+export const fetchAllAccountsAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/users`)
+  return response.data
+}
+
+export const updateAccountAPI = async (userId, updateData) => {
+  const respone = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/${userId}`, updateData)
+  return respone.data
 }
 // Invite API
 export const inviteUserToHostelAPI = async (data) => {

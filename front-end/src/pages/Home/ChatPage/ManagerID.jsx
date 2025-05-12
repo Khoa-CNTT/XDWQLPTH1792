@@ -8,7 +8,7 @@ import { socketIoInstance } from '~/socketClient'
 import { moveToTop } from '~/utils/formatters'
 function ManagerID() {
   const [conversations, setConversations] = useState(null)
-
+  const [refresh, setRefresh] = useState(false)
   const refreshConversations = (conversation) => {
     fetchConversationsAPI().then((res) => {
       const listConversation = moveToTop(res, conversation._id)
@@ -18,7 +18,7 @@ function ManagerID() {
   useEffect(() => {
     fetchConversationsAPI().then(res => setConversations(res)
     )
-  }, [])
+  }, [refresh])
   useEffect(() => {
     const handleNewMessage = (conversation) => {
       refreshConversations(conversation)
@@ -34,7 +34,7 @@ function ManagerID() {
       {/* AppBar */}
       <AppBar />
       <Box sx={{ display: 'flex', flex: 1 }}>
-        <ChatSidebar conversations={conversations}
+        <ChatSidebar conversations={conversations} setRefresh={setRefresh}
         />
         <ChatPage refreshConversations={refreshConversations}
         />

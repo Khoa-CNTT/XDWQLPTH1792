@@ -17,8 +17,9 @@ import MapIcon from '@mui/icons-material/Map'
 import HeatPumpIcon from '@mui/icons-material/HeatPump'
 import HotTubIcon from '@mui/icons-material/HotTub'
 import MessageIcon from '@mui/icons-material/Message'
-import { createNewConversationAPI } from '~/apis'
+import { createNewConversationAPI, createNewMessaggeAPI } from '~/apis'
 import { useNavigate } from 'react-router-dom'
+import { socketIoInstance } from '~/socketClient'
 const style = {
   position: 'absolute',
   top: '50%',
@@ -40,8 +41,8 @@ const utilityIcons = {
   Giường: <BedIcon />,
   'Toilet riêng': <ShowerIcon />,
   'Tủ lạnh': <AcUnitIcon />, // Thay bằng icon phù hợp
-  'Điều hòa':<HeatPumpIcon/>,
-  'Nước nóng':<HotTubIcon/>
+  'Điều hòa': <HeatPumpIcon />,
+  'Nước nóng': <HotTubIcon />
 }
 const getUniqueUtilities = (hostel) => {
   if (!hostel?.rooms) return [] // Kiểm tra nếu không có rooms
@@ -60,7 +61,13 @@ const ModalHostel = ({ open, handleClose, hostel }) => {
 
   const createNewConversation = async (ownerID) => {
     const participants = [ownerID]
-    const res = await createNewConversationAPI({participants})
+    const res = await createNewConversationAPI({ participants })
+    const dataSent = {
+      content: `Tôi muốn liên hệ tìm hiểu về ${hostel?.hostelName} `,
+      conversationId: res._id
+    }
+    const result = await createNewMessaggeAPI(dataSent)
+    socketIoInstance.emit('FE_USER_MESSAGE', result)
     navigate(`/home/message/${res._id}`)
   }
   return (
@@ -68,12 +75,12 @@ const ModalHostel = ({ open, handleClose, hostel }) => {
       <Box sx={style}>
         <IconButton
           onClick={handleClose}
-          sx={{ position: 'absolute', top: 8, right: 8, color:'red' }}
+          sx={{ position: 'absolute', top: 8, right: 8, color: 'red' }}
         >
           <CloseIcon />
         </IconButton>
 
-        <Typography variant='h5'fontWeight="bold" mb={2} c align="center">
+        <Typography variant='h5' fontWeight="bold" mb={2} c align="center">
           {hostel?.hostelName}
         </Typography>
 
@@ -152,7 +159,7 @@ const ModalHostel = ({ open, handleClose, hostel }) => {
               variant='contained'
               startIcon={<MessageIcon />}
               fullWidth
-              onClick={()=> createNewConversation(hostel?.ownerInfo[0]?._id)}
+              onClick={() => createNewConversation(hostel?.ownerInfo[0]?._id)}
             >
               Liên hệ nhắn tin
             </Button>

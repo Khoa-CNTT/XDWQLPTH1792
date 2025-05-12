@@ -6,6 +6,7 @@ import { multerUploadMiddeware } from '~/middlewares/multerUploadMiddleware'
 
 const Router = express.Router()
 
+
 Router.route('/register')
   .post(userValidation.createNew, userController.createNew)
 
@@ -25,4 +26,12 @@ Router.route('/update')
     multerUploadMiddeware.upload.single('avatar'),
     userValidation.update,
     userController.update)
+Router.route('/:id')
+  .put(
+    authMiddleware.isAuthorized,
+    multerUploadMiddeware.upload.single('avatar'),
+    userValidation.update,
+    userController.updateByAdmin)
+Router.route('/')
+  .get(authMiddleware.isAuthorized, userController.getAllAccounts)
 export const userRoute = Router

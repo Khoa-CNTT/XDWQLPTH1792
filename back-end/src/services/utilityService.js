@@ -1,7 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
-import { roomModel } from '~/models/roomModel'
 import { hostelModel } from '~/models/hostelModel'
-import { STATUS_ROOM } from '~/utils/constants'
 import { utilityModel } from '~/models/utilityModel'
 import ApiError from '~/utils/ApiError'
 
@@ -53,10 +51,17 @@ const deleteUtilities = async (ids) => {
 }
 const update = async (utilityId, reqBody) => {
   try {
+    const detailHostel = await hostelModel.findOneById(reqBody.hostelId)
     const updateData = {
       ...reqBody,
+      waterStart: Number(reqBody.waterStart),
+      waterBegin: Number(reqBody.waterBegin),
+      electricStart: Number(reqBody.electricStart),
+      electricBegin: Number(reqBody.electricBegin),
+      toltalUtility: (reqBody.waterBegin - reqBody.waterStart) * detailHostel.water_price + (reqBody.electricBegin - reqBody.electricStart) * detailHostel.electricity_price,
       updateAt: Date.now()
     }
+    delete updateData.hostelId
     const updatedUtility = await utilityModel.update(utilityId, updateData)
     return updatedUtility
   } catch (error) {

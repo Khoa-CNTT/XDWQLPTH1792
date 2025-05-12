@@ -53,7 +53,8 @@ const deleteConversation = async (conversationId) => {
     // Xóa tất cả tin nhắn trong hộp thoại
     await messageModel.deleteAllMessagesOfConversation(conversationId)
     // Xóa hộp thoại
-    await conversationModel.deleteConversation(conversationId)
+    const result = await conversationModel.deleteConversation(conversationId)
+    console.log('result', result)
   } catch (error) {
     throw error
   }

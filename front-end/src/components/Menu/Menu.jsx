@@ -172,7 +172,7 @@ function Menu() {
               </ListItemButton>
             </Link> */}
           </List>
-          {user.role === USER_ROLES.LANDLORD &&
+          {(user.role === USER_ROLES.ADMIN || user.role === USER_ROLES.LANDLORD) &&(
             <List disablePadding>
               <Link to='/manage/infor-user' style={{ color: 'inherit' }}>
                 <ListItemButton sx={{ pl: 4 }}>
@@ -183,7 +183,7 @@ function Menu() {
                 </ListItemButton>
               </Link>
             </List>
-          }
+          )}
         </Collapse>
         <ListItem disablePadding>
           <ListItemButton >

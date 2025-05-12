@@ -19,6 +19,14 @@ export const fetchUtilitiesByHostelIdAPI = createAsyncThunk(
     return response.data
   }
 )
+export const updateUtilityAPI = createAsyncThunk(
+  'utilities/updateUtilityAPI',
+  async ({ utilityId, data }) => {
+    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/utilities/${utilityId}`, data)
+    // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
+    return response.data
+  }
+)
 
 // Khởi tạo một cái Slice trong kho lưu trữ Redux Store
 export const utilitiesSlice = createSlice({
@@ -47,6 +55,15 @@ export const utilitiesSlice = createSlice({
       let incomingUtilitys = action.payload
       // Đoạn này ngược lại với mảng invations nhận được, đơn giản là để hiển thị cái mới nhất lên đầu
       state.currentUtilities = incomingUtilitys
+    }),
+    builder.addCase(updateUtilityAPI.fulfilled, (state, action) => {
+      let updatedUtility = action.payload
+      // Đoạn này ngược lại với mảng invations nhận được, đơn giản là để hiển thị cái mới nhất lên đầu
+      state.currentUtilities = state.currentUtilities.map(u => u._id === updatedUtility._id ?
+        {
+          ...updatedUtility,
+          roomInfo: u.roomInfo
+        } : u)
     })
   }
 })

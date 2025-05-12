@@ -72,7 +72,7 @@ function RegisterForm() {
             <Box sx={{ marginTop: '1em' }}>
               <TextField
                 fullWidth
-                label="Enter Password..."
+                label="Nhập password..."
                 type="password"
                 variant="outlined"
                 error={!!errors['password']}
@@ -89,7 +89,7 @@ function RegisterForm() {
             <Box sx={{ marginTop: '1em' }}>
               <TextField
                 fullWidth
-                label="Enter Password Confirmation..."
+                label="Nhập lại mật khẩu..."
                 type="password"
                 variant="outlined"
                 error={!!errors['password_comfirmation']}

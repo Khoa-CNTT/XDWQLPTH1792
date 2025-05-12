@@ -91,7 +91,7 @@ function ChatPage({ refreshConversations }) {
     if (!isLoading) {
       fetchMessagesAPI(dataMessages).then(updateStateData)
     }
-  }, [conversationId, offset, isLoading])
+  }, [conversationId, offset])
   const conversation = useSelector(selectCurrentConversation)
 
   const updateStateData = (res) => {
@@ -169,127 +169,153 @@ function ChatPage({ refreshConversations }) {
     }
   }
   return (
-    <Box
-      sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: theme.palette.mode === 'dark' ? '#121212' : '#ffffff',
-        color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
-        height: (theme) => theme.trello.messageHeight
-      }}
-    >
-      {/* Header */}
-      <Paper
-        elevation={1}
-        sx={{
-          p: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#ffffff'
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar src={otherUserConversation?.avatar} sx={{ mr: 2 }} />
-          <Box>
-            <Typography variant="h6">{otherUserConversation?.displayName}</Typography>
-            <Typography variant="body2" color="textSecondary">
-              Hoạt động
-            </Typography>
-          </Box>
+    <>
+      {!conversationId ?
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'background.default'
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 500,
+              color: 'text.secondary',
+              textAlign: 'center',
+              fontStyle: 'italic'
+            }}
+          >
+            Hãy chọn hộp thoại bạn muốn chat
+          </Typography>
         </Box>
-        <Box>
-          <IconButton>
-            <CallIcon />
-          </IconButton>
-          <IconButton>
-            <WarningIcon />
-          </IconButton>
-        </Box>
-      </Paper>
+        :
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: theme.palette.mode === 'dark' ? '#121212' : '#ffffff',
+            color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+            height: (theme) => theme.trello.messageHeight
+          }}
+        >
+          {/* Header */}
+          <Paper
+            elevation={1}
+            sx={{
+              p: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#ffffff'
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar src={otherUserConversation?.avatar} sx={{ mr: 2 }} />
+              <Box>
+                <Typography variant="h6">{otherUserConversation?.displayName}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Hoạt động
+                </Typography>
+              </Box>
+            </Box>
+            <Box>
+              <IconButton>
+                <CallIcon />
+              </IconButton>
+              <IconButton>
+                <WarningIcon />
+              </IconButton>
+            </Box>
+          </Paper>
 
-      {/* Messages */}
-      <Box sx={{ flex: 1, p: 2, overflowY: 'auto' }} onScroll={handleScroll}>
-        {isLoading &&
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center'
-            }}
-          >
-            <CircularProgress size={40} /> {/* size có thể là 20, 30, 40 tuỳ ý */}
-          </Box>}
-        {messages?.map((message, index) => (
-          <Box
-            key={index}
-            sx={{
-              mb: 2,
-              display: 'flex',
-              justifyContent: message?.senderId === conversation.currentUser ? 'flex-end' : 'flex-start'
-            }}
-          >
-            <Paper
-              sx={{
-                p: 1,
-                backgroundColor:
-                  message?.senderId === conversation.currentUser
-                    ? theme.palette.mode === 'dark'
-                      ? '#007bff'
-                      : '#007bff'
-                    : theme.palette.mode === 'dark'
-                      ? '#333333'
-                      : '#f0f0f0',
-                color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
-                borderRadius: 2,
-                maxWidth: '60%'
-              }}
-            >
-              {message?.content}
+          {/* Messages */}
+          <Box sx={{ flex: 1, p: 2, overflowY: 'auto' }} onScroll={handleScroll}>
+            {isLoading &&
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}
+              >
+                <CircularProgress size={40} /> {/* size có thể là 20, 30, 40 tuỳ ý */}
+              </Box>}
+            {messages?.map((message, index) => (
+              <Box
+                key={message._id}
+                sx={{
+                  mb: 2,
+                  display: 'flex',
+                  justifyContent: message?.senderId === conversation.currentUser ? 'flex-end' : 'flex-start'
+                }}
+              >
+                <Paper
+                  sx={{
+                    p: 1,
+                    backgroundColor:
+                      message?.senderId === conversation.currentUser
+                        ? theme.palette.mode === 'dark'
+                          ? '#007bff'
+                          : '#007bff'
+                        : theme.palette.mode === 'dark'
+                          ? '#333333'
+                          : '#f0f0f0',
+                    color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+                    borderRadius: 2,
+                    maxWidth: '60%'
+                  }}
+                >
+                  {message?.content}
+                </Paper>
+              </Box>
+            ))}
+
+          </Box>
+
+          {/* Input */}
+          <form onSubmit={handleSubmit(sentMessage)}>
+            <Paper elevation={1} sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
+              <TextField
+                fullWidth
+                placeholder="Nhập tin nhắn..."
+                variant="outlined"
+                size="small"
+                sx={{ mr: 2 }}
+                {...register('content')}
+              />
+              <IconButton onClick={handleOpenEmojiPanel}>
+                <EmojiEmotionsIcon />
+              </IconButton>
+              <Popover
+                open={isEmojiPanelOpen}
+                anchorEl={anchorEl}
+                onClose={handleCloseEmojiPanel}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center'
+                }}
+                transformOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center'
+                }}
+              >
+                <EmojiPanel onSelectEmoji={handleSelectEmoji} />
+              </Popover>
+              <IconButton>
+                <PhotoCameraIcon />
+              </IconButton>
+              <Button variant="contained" color="primary" endIcon={<SendIcon />} type='submit' >
+                Gửi
+              </Button>
             </Paper>
-          </Box>
-        ))}
-
-      </Box>
-
-      {/* Input */}
-      <form onSubmit={handleSubmit(sentMessage)}>
-        <Paper elevation={1} sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
-          <TextField
-            fullWidth
-            placeholder="Nhập tin nhắn..."
-            variant="outlined"
-            size="small"
-            sx={{ mr: 2 }}
-            {...register('content')}
-          />
-          <IconButton onClick={handleOpenEmojiPanel}>
-            <EmojiEmotionsIcon />
-          </IconButton>
-          <Popover
-            open={isEmojiPanelOpen}
-            anchorEl={anchorEl}
-            onClose={handleCloseEmojiPanel}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'center'
-            }}
-            transformOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center'
-            }}
-          >
-            <EmojiPanel onSelectEmoji={handleSelectEmoji} />
-          </Popover>
-          <IconButton>
-            <PhotoCameraIcon />
-          </IconButton>
-          <Button variant="contained" color="primary" endIcon={<SendIcon />} type='submit' >
-            Gửi
-          </Button>
-        </Paper>
-      </form>
-    </Box>
+          </form>
+        </Box>
+      }
+    </>
   )
 }
 
