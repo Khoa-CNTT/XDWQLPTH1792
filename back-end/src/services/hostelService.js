@@ -69,7 +69,12 @@ const update = async (hostelId, reqBody) => {
       const tenantIds = getHostel.tenantIds.filter(id => id.toString() !== reqBody.tenantId)
       return await hostelModel.update(hostelId, { tenantIds })
     }
-    const updatedBoard = await hostelModel.update(hostelId, reqBody)
+    const updateData = {
+      ...reqBody,
+      electricity_price: Number(reqBody.electricity_price),
+      water_price: Number(reqBody.water_price)
+    }
+    const updatedBoard = await hostelModel.update(hostelId, updateData)
     return updatedBoard
   } catch (error) {
     throw error

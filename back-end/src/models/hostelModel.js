@@ -134,7 +134,8 @@ const getHostels = async (userId) => {
             from: userModel.USER_COLLECTION_NAME, // Tên collection của user
             localField: 'ownerId', // Trường trong hostel để nối
             foreignField: '_id', // Trường trong user để nối
-            as: 'ownerInfo' // Tên trường chứa thông tin user sau khi lookup
+            as: 'ownerInfo', // Tên trường chứa thông tin user sau khi lookup
+            pipeline: [{ $project: { password: 0, verifyToken: 0 } }]
           }
         },
         {
@@ -267,7 +268,7 @@ const getHostelsPublic = async (find) => {
             ]
           }
         }
-      });
+      })
     }
 
     const result = await GET_DB()

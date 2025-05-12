@@ -7,16 +7,11 @@
 
 import Joi from 'joi'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PHONE_NUMBER_RULE, CITIZEN_NUMBER, DATE_RULE, DATE_RULE_MESSAGE } from '~/utils/validators'
+import { USER_ROLES } from '~/utils/constants'
 import { GET_DB } from '~/config/mongodb'
 import { ObjectId } from 'mongodb'
 
 
-// Define tạm 2 roles cho user, tùy việc mở rộng dự án như thế nào mà mọi người có thể thêm role tùy ý cho phù hợp
-const USER_ROLES = {
-  CLIENT: 'client',
-  LANDLORD:'landlord',
-  ADMIN: 'admin'
-}
 // Define Collection (name & schema)
 const USER_COLLECTION_NAME = 'users'
 const USER_COLLECTION_SCHEMA = Joi.object({
@@ -35,7 +30,7 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   //   'date.greater': 'Ngày sinh phải từ năm 1920 trở đi!',
   //   'any.required': 'Ngày sinh là bắt buộc!'
   // }).default(() => new Date().toISOString().split('T')[0]),
-  dateOfBirth:Joi.string().pattern(DATE_RULE).message(DATE_RULE_MESSAGE),
+  dateOfBirth: Joi.string().pattern(DATE_RULE).message(DATE_RULE_MESSAGE),
   phone: Joi.string().pattern(PHONE_NUMBER_RULE).default(null),
   address: Joi.string().trim().default(null), // Không bắt buộc nhập
   citizenId: Joi.string().pattern(CITIZEN_NUMBER).default(null),
@@ -100,6 +95,18 @@ const update = async (userId, updateData) => {
     throw new Error(error)
   }
 }
+const getAllAccountInSystem = async () => {
+  try {
+    const result = await GET_DB().collection(USER_COLLECTION_NAME).aggregate([
+      { $match: {} }, // không lọc gì, lấy tất cả
+      { $project: { password: 0, verifyToken: 0 } }
+    ])
+      .toArray()
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 
 export const userModel = {
   USER_COLLECTION_NAME,
@@ -108,5 +115,6 @@ export const userModel = {
   createNew,
   findOneById,
   update,
-  findOneByEmail
+  findOneByEmail,
+  getAllAccountInSystem
 }

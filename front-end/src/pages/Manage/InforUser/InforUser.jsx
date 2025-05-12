@@ -175,7 +175,7 @@ function InforUser() {
         >
           Chọn nhà trọ: {hostel?.hostelName}
         </Typography>
-        <InviteHostelUser hostelId={hostel._id} />
+        <InviteHostelUser hostelId={hostel?._id} />
         <Select
           value={selectedHostel}
           onChange={handleHostelChange}

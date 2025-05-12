@@ -17,7 +17,6 @@ import SecurityTab from './pages/Securiry/Security'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from './redux/user/userSlice'
 import SPDetailUser from './pages/Home/DetailUser/SPDetailUser'
-import Utility from './pages/Manage/Utility/Utility'
 /**
 * Giải pháp Clean Code trong việc xác định các route nào cần đăng nhập tài khoản xong thì mới cho truy cập
 * Sử dụng <Outlet /> của react-router-dom để hiển thị các Child Route (xem cách sử dụng trong App() bên dưới)
@@ -43,6 +42,8 @@ function App() {
         <Route path='/manage/infor-user' element={<Manage />} />
         <Route path='/manage/utility' element={<Manage />} />
         <Route path='/manage/hostel' element={<Manage />} />
+        <Route path='/manage/accounts' element={<Manage />} />
+        <Route path='/manage/bills' element={<Manage />} />
         <Route path='/manage/hostel/:hostelId' element={<Manage />} />
         <Route path='/infor-room/:roomId' element={<InforRoom />} />
         <Route path='/profile' element={<Profile />} />

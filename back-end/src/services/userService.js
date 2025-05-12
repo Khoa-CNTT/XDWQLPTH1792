@@ -12,6 +12,7 @@ import { env } from '~/config/environment'
 import { JwtProvider } from '~/providers/JwtProvider'
 
 import { CloudinaryProvider } from '~/providers/Cloudinary'
+import { USER_ROLES } from '~/utils/constants'
 const createNew = async (reqBody) => {
   try {
     // Kiểm tra xem email đã tồn tại trong hệ thống của chúng ta hay chưa
@@ -24,19 +25,19 @@ const createNew = async (reqBody) => {
     //nameFromEmail: nếu email là huynguyen@gmail.com thì sẽ lấy đc "huynguyen"
     const nameFromEmail = reqBody.email.split('@')[0]
     const newUser = {
+      ...reqBody,
       email: reqBody.email,
       password: bcryptjs.hashSync(reqBody.password, 8), // tham số thứ 2 là độ phức tạp, giá trị càng cao thì băm càng lâu
       username: nameFromEmail,
       displayName: nameFromEmail, // mặc định để giống username khi user đăng ký mới, về sau làm tính năng update cho user
       verifyToken: uuidv4()
-
     }
     // Thực hiện lưu thông tin user vào database
     const createdUser = await userModel.createNew(newUser)
     const getNewUser = await userModel.findOneById(createdUser.insertedId)
     // Gửi email cho người dùng xác thực tài khoản
     const verificationLink = `${WEBSITE_DOMAIN}/account/verification?email=${getNewUser.email}&token=${getNewUser.verifyToken}`
-    const customSubject = 'Please verify your email before using our service'
+    const customSubject = 'Vui lòng xác thự email trước khi đăng nhâp'
     const htmlContent = `
       <h3> Here is your verification link:</j3>
       <h3> ${verificationLink}</j3>
@@ -55,8 +56,8 @@ const verifyAccount = async (reqBody) => {
     const existUser = await userModel.findOneByEmail(reqBody.email)
 
     // Các bước kiểm tra cần thiết
-    if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
-    if (existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Your account is already active!')
+    if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Tài khoản không tìm thấy!')
+    if (existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Tài khoản của bạn đã được xác thực!')
     if (reqBody.token !== existUser.verifyToken) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Token is invalid!')
 
     // Nếu như mọi thứ oke sẽ bắt đầu cập nhật thông tin user để verify tài khoản
@@ -172,10 +173,22 @@ const update = async (userId, reqBody, userAvatarFile) => {
     throw error
   }
 }
+const getAllAccounts = async (userId) => {
+  try {
+    // Query User và kiểm tra chắc chắn
+    const existUser = await userModel.findOneById(userId)
+    if (existUser.role !== USER_ROLES.ADMIN ) throw new ApiError(StatusCodes.NOT_FOUND, 'Bạn phải là admin mới có quyền truy cập')
+    const getAllAccountInSystem = await userModel.getAllAccountInSystem()
+    return getAllAccountInSystem
+  } catch (error) {
+    throw error
+  }
+}
 export const userService = {
   createNew,
   verifyAccount,
   login,
   refreshToken,
-  update
+  update,
+  getAllAccounts
 }

@@ -57,8 +57,9 @@ const deleteUtilities = async (req, res, next) => {
 }
 const update = async (req, res, next) => {
   try {
-    // console.log('req.params=', req.params)
+    console.log('data=', req.body)
     const utilityId = req.params.id
+    console.log('req.params=', utilityId)
     const result = await utilityService.update(utilityId, req.body)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(result)

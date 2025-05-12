@@ -74,8 +74,26 @@ const update = async (req, res, next) => {
   try {
     const userId = req.jwtDecoded._id
     const userAvatarFile = req.file
-    // console.log('Controller-> userAvatarFile:', userAvatarFile)
     const updatedUser = await userService.update(userId, req.body, userAvatarFile)
+    res.status(StatusCodes.OK).json(updatedUser)
+  } catch (error) {
+    next(error)
+  }
+}
+const updateByAdmin = async (req, res, next) => {
+  try {
+    const userId = req.params.id
+    const userAvatarFile = req.file
+    const updatedUser = await userService.update(userId, req.body, userAvatarFile)
+    res.status(StatusCodes.OK).json(updatedUser)
+  } catch (error) {
+    next(error)
+  }
+}
+const getAllAccounts = async (req, res, next) => {
+  try {
+    const userId = req.jwtDecoded._id
+    const updatedUser = await userService.getAllAccounts(userId)
     res.status(StatusCodes.OK).json(updatedUser)
   } catch (error) {
     next(error)
@@ -87,5 +105,7 @@ export const userController = {
   login,
   logout,
   refreshToken,
-  update
+  update,
+  getAllAccounts,
+  updateByAdmin
 }

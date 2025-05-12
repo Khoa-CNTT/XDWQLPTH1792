@@ -6,39 +6,38 @@
 import Joi from 'joi'
 
 import { ObjectId } from 'mongodb'
-import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE, MONTH_YEAR_RULE, MONTH_YEAR_RULE_MESSAGE } from '~/utils/validators'
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
-import { hostelModel } from './hostelModel'
+import { utilityModel } from './utilityModel'
 import { roomModel } from './roomModel'
+import { BILL_STATUS } from '~/utils/constants'
 
-const INVALID_UPDATE_FIELDS = ['_id']
-const UTILITY_COLLECTION_NAME = 'utilities'
-const UTILITY_COLLECTION_SCHEMA = Joi.object({
-  hostelId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+const INVALID_UPDATE_FIELDS = ['_id', 'createdAt']
+const BILL_STATUS_COLLECTION_NAME = 'bills'
+const BILL_COLLECTION_SCHEMA = Joi.object({
   roomId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
-  month: Joi.string().pattern(MONTH_YEAR_RULE).message(MONTH_YEAR_RULE_MESSAGE).required(),
-  waterStart: Joi.number().required(),
-  waterBegin: Joi.number().required(),
-  electricStart: Joi.number().required(),
-  electricBegin: Joi.number().required(),
-  toltalUtility: Joi.number().required(),
+  utilityId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+  expenseTitle: Joi.number().required(),
+  extraFees: Joi.number().required(),
+  totalAmount: Joi.number().required(),
+  status: Joi.string().valid(...Object.values(BILL_STATUS)).default(BILL_STATUS.PENDING),
   createAt: Joi.date().timestamp('javascript').default(Date.now()),
   updatedAt: Joi.date().timestamp('javascript').default(null)
 })
 const validateBeforeCreate = async (data) => {
-  return await UTILITY_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
+  return await BILL_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
 
 const createNew = async (data) => {
   try {
     const valiData = await validateBeforeCreate(data)
-    const newutilityToAdd = {
+    const newBillToAdd = {
       ...valiData,
-      hostelId: new ObjectId(valiData.hostelId),
+      utilityId: new ObjectId(valiData.utilityId),
       roomId: new ObjectId(valiData.roomId)
     }
-    const createdBoard = await GET_DB().collection(UTILITY_COLLECTION_NAME).insertOne(newutilityToAdd)
-    return createdBoard
+    const createdBill = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).insertOne(newBillToAdd)
+    return createdBill
   } catch (error) {
     throw new Error(error)
   }
@@ -46,7 +45,7 @@ const createNew = async (data) => {
 
 const findOneById = async (id) => {
   try {
-    const result = await GET_DB().collection(UTILITY_COLLECTION_NAME).findOne({
+    const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).findOne({
       _id: new ObjectId(id)
     })
     return result
@@ -54,18 +53,21 @@ const findOneById = async (id) => {
     throw new Error(error)
   }
 }
-const getDetails = async (id) => {
+const getDetails = async (data) => {
   try {
-    const result = await GET_DB().collection(UTILITY_COLLECTION_NAME).aggregate([
+    if (data.utilityId) {
+      data.utilityId = new ObjectId(data.utilityId)
+    }
+    const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).aggregate([
       {
-        $match: { _id: new ObjectId(id) }
+        $match: data
       },
       {
         $lookup: {
-          from: hostelModel.HOSTEL_COLLECTION_NAME,
-          localField: 'hostelId',
+          from: utilityModel.UTILITY_COLLECTION_NAME,
+          localField: 'utilityId',
           foreignField: '_id',
-          as: 'hostelInfo'
+          as: 'utilityInfo'
         }
       },
       {
@@ -82,10 +84,10 @@ const getDetails = async (id) => {
     throw new Error(error)
   }
 }
-const deleteUtilities = async (ids) => {
+const deleteBills = async (ids) => {
   try {
     const objectIds = ids.map(id => new ObjectId(id))
-    const result = await GET_DB().collection(UTILITY_COLLECTION_NAME).deleteMany({
+    const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).deleteMany({
       _id: { $in: objectIds }
     })
     return result
@@ -104,7 +106,7 @@ const update = async (utilityId, updateData) => {
     if (updateData.roomIds) {
       updateData.roomIds = updateData.roomIds.map(_id => (new ObjectId(_id)))
     }
-    const result = await GET_DB().collection(UTILITY_COLLECTION_NAME).findOneAndUpdate(
+    const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(utilityId) },
       { $set: updateData },
       { returnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
@@ -114,7 +116,7 @@ const update = async (utilityId, updateData) => {
     throw new Error(error)
   }
 }
-const getUtilities = async (data) => {
+const getBills = async (data) => {
   try {
     if (data.hostelId) {
       data.hostelId = new ObjectId(data.hostelId)
@@ -123,17 +125,17 @@ const getUtilities = async (data) => {
       data.roomId = new ObjectId(data.roomId)
     }
     const queryConditions = Object.entries(data).map(([key, value]) => ({ [key]: value }))
-    const result = await GET_DB().collection(UTILITY_COLLECTION_NAME).aggregate(
+    const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).aggregate(
       [
         {
           $match: { $and: queryConditions }
         },
         {
           $lookup: {
-            from: hostelModel.HOSTEL_COLLECTION_NAME,
-            localField: 'hostelId',
+            from: utilityModel.UTILITY_COLLECTION_NAME,
+            localField: 'utilityId',
             foreignField: '_id',
-            as: 'hostelInfo'
+            as: 'utilityInfo'
           }
         },
         {
@@ -151,13 +153,13 @@ const getUtilities = async (data) => {
     throw new Error(error)
   }
 }
-export const utilityModel = {
-  UTILITY_COLLECTION_NAME,
-  UTILITY_COLLECTION_SCHEMA,
+export const billModel = {
+  BILL_STATUS_COLLECTION_NAME,
+  BILL_COLLECTION_SCHEMA,
   createNew,
   findOneById,
   getDetails,
-  deleteUtilities,
+  deleteBills,
   update,
-  getUtilities
+  getBills
 }

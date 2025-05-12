@@ -55,16 +55,13 @@ const deleteConversation = async (req, res, next) => {
     const conversationId = req.params.id
     // Chỉ lấy board thuộc về user nào đó thôi
     await conversationService.deleteConversation(conversationId)
+
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json({
       message: 'Hộp thoại đã xóa thành công'
     })
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
   } catch (error) {
     next(error)
-    // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    //     errors: new Error(error).message
-    // })
   }
 }
 export const conversationController = {

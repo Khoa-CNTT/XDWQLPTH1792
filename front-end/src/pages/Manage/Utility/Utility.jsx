@@ -34,7 +34,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 
-import { fetchUtilitiesByHostelIdAPI, selectCurrentUtilities, removeItilities } from '~/redux/utilitiy/utilitiesSlice'
+import { fetchUtilitiesByHostelIdAPI, selectCurrentUtilities, removeItilities, updateUtilityAPI } from '~/redux/utilitiy/utilitiesSlice'
 function Utility() {
   const navigate = useNavigate()
   // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
@@ -94,7 +94,6 @@ function Utility() {
     setValue('waterBegin', utility.waterBegin)
     setValue('electricStart', utility.electricStart) // Điền dữ liệu vào form
     setValue('electricBegin', utility.electricBegin)
-    setValue('electricity_price', utility.electricity_price)
     setValue('month', utility.month)
     setValue('roomId', utility.roomId)
     setOpen(true) // Mở Dialog
@@ -146,19 +145,42 @@ function Utility() {
     return true
   }
   const createNewUtility = async (data) => {
-    data.hostelId = hostel._id
-    const promise = createNewUtilityAPI(data)
-    toast.promise(
-      promise,
-      { pending: 'Đang tạo....' }
-    ).then(res => {
-      // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
-      if (!res.error) {
-        toast.success('Tạo thành công')
-      }
-      dispatch(fetchUtilitiesByHostelIdAPI({ hostelId: selectedHostel }))
-      handleClose()
-    })
+    if (editingUtility) {
+      data.hostelId = hostel._id
+      delete data.roomId
+      console.log('data', data)
+      confirmDelete({
+        // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
+        title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <SystemUpdateAltIcon sx={{ color: 'warning.dark' }} /> Cập nhật nhà trọ
+        </Box>,
+        description: 'Bạn có chắc chắn muốn cập nhật tiện ích này không?',
+        confirmationText: 'Confirm',
+        cancellationText: 'Cancel'
+      }).then(() => {
+        // Gọi API cập nhật nhà trọ ở đây
+        dispatch(updateUtilityAPI({utilityId: editingUtility._id, data})).then(res => {
+          if (!res.error) {
+            toast.success('Cập nhật thành công')
+          }
+          handleClose()
+        })
+      })
+    } else {
+      data.hostelId = hostel._id
+      const promise = createNewUtilityAPI(data)
+      toast.promise(
+        promise,
+        { pending: 'Đang tạo....' }
+      ).then(res => {
+        // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
+        if (!res.error) {
+          toast.success('Tạo thành công')
+        }
+        dispatch(fetchUtilitiesByHostelIdAPI({ hostelId: selectedHostel }))
+        handleClose()
+      })
+    }
   }
 
   // Xóa nhà trọ đã chọn
@@ -347,32 +369,34 @@ function Utility() {
               alignItems: 'center', // Căn giữa theo chiều dọc
               mt: 2 // Thêm khoảng cách phía trên
             }}>
-              <Box sx={{
-                width: '43%'
-              }}>
-                <TextField
-                  fullWidth
-                  select
-                  margin="normal"
-                  label='Chọn phòng trọ'
-                  variant='outlined'
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      borderRadius: '8px'
-                    }
-                  }}
-                  {...register('roomId', {
-                    required: FIELD_REQUIRED_MESSAGE
-                  })}
-                >
-                  {hostel?.rooms?.map((room) => (
-                    <MenuItem key={room._id} value={room._id}>
-                      {room.roomName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <FieldErrorAlert errors={errors} fieldName={'roomId'} />
-              </Box>
+              {!editingUtility &&
+                <Box sx={{
+                  width: '43%'
+                }}>
+                  <TextField
+                    fullWidth
+                    select
+                    margin="normal"
+                    label='Chọn phòng trọ'
+                    variant='outlined'
+                    sx={{
+                      '& .MuiInputBase-root': {
+                        borderRadius: '8px'
+                      }
+                    }}
+                    {...register('roomId', {
+                      required: FIELD_REQUIRED_MESSAGE
+                    })}
+                  >
+                    {hostel?.rooms?.map((room) => (
+                      <MenuItem key={room._id} value={room._id}>
+                        {room.roomName}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <FieldErrorAlert errors={errors} fieldName={'roomId'} />
+                </Box>
+              }
               <Box sx={{
                 width: '46%'
               }}>

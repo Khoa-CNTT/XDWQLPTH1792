@@ -36,7 +36,7 @@ function HouesPage() {
 
   const listData = (data) =>
     data?.map((hostel) => ({
-      price: `${hostel.minPrice || 0}-${hostel.maxPrice || 0} đồng/tháng`,
+      price: hostel?.minPrice!==hostel.maxPrice ? `${hostel.minPrice || 0}-${hostel.maxPrice || 0} đồng/tháng` : `${hostel.minPrice} đồng/ tháng`,
       ...hostel
     }))
   useEffect(() => {
@@ -313,7 +313,10 @@ function HouesPage() {
                         Địa điểm: {hostel.address}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        Giá: {hostel.price}
+                        Giá: {hostel.price }
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        Số phòng trống: {hostel.rooms.filter(room => room.status === 'available').length }
                       </Typography>
                     </CardContent>
                     <CardActions>

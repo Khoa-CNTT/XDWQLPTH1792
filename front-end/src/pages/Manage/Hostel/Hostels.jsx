@@ -74,12 +74,20 @@ function Hostel() {
     setEditingHostel(hostel) // Lưu thông tin nhà trọ vào state
     setValue('hostelName', hostel.hostelName) // Điền dữ liệu vào form
     setValue('streetAddress', arr[0])
-    // setValue('district', arr[2])
-    // setValue('ward', arr[1])
+    setValue('district', arr[2])
+    setSelectedDistrict(arr[2])
+
+    // 2. Tìm danh sách phường từ quận đã chọn
+    const district = districtsInDaNang.find(d => d.name === arr[2])
+    setWards(district ? district.wards : [])
+
+    // 3. Gán phường
+    setValue('ward', arr[1])
+    setSelectedWard(arr[1])
     setValue('images', hostel.images) // Điền dữ liệu vào form
     setValue('type', hostel.type)
-    setValue('electricity_price', hostel.electricity_price)
-    setValue('water_price', hostel.water_price)
+    setValue('electricity_price', Number(hostel.electricity_price))
+    setValue('water_price', Number(hostel.water_price))
     setValue('description', hostel.description)
     setPreviewUrl(hostel.images) // Hiển thị ảnh xem trước
     setOpen(true) // Mở Dialog

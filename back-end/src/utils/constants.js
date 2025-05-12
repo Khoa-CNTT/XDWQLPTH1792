@@ -27,8 +27,18 @@ export const HOSTEL_INVITATION_STATUS = {
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED'
 }
+export const BILL_STATUS = {
+  PENDING: 'pending',
+  SUCCESS: 'success'
+}
 export const CONSTRACT_STATUS = {
   ACTIVE: 'Đang hiệu lực',
   EXPIRED: 'Đã hết hạn',
   CANCELED: 'Đã hủy'
+}
+// role user
+export const USER_ROLES = {
+  CLIENT: 'client',
+  LANDLORD:'landlord',
+  ADMIN: 'admin'
 }

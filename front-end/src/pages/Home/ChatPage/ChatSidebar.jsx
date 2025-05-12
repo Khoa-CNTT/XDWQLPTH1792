@@ -25,7 +25,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Fade from '@mui/material/Fade'
 import { useConfirm } from 'material-ui-confirm'
 import { socketIoInstance } from '~/socketClient'
-const ChatSidebar = ({ conversations }) => {
+const ChatSidebar = ({ conversations, setRefresh }) => {
   // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
   const confirmUpdateOrDelete = useConfirm()
   const navigate = useNavigate()
@@ -38,12 +38,14 @@ const ChatSidebar = ({ conversations }) => {
   const dispatch = useDispatch()
   const theme = useTheme()
   const [searchTerm, setSearchTerm] = useState('')
-  const conversation = useSelector(selectCurrentConversation)
   const { conversationId } = useParams()
   // Biến state đơn giản để kiểm tra nó co thông báo mới hay không
   const [newMessage, setNewMessage] = useState(null)
   // state mở menu
   const [anchorEl, setAnchorEl] = useState(null)
+  const [menuConversationId, setMenuConversationId] = useState(null) // Thêm dòng này
+
+
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -75,6 +77,14 @@ const ChatSidebar = ({ conversations }) => {
       cancellationText: 'Hủy'
     }).then(() => {
       dispatch(deleteConversationAPI(conversationId))
+        .unwrap() // nếu dùng createAsyncThunk
+        .then(() => {
+          if (conversations.length === 1)
+            navigate('/home/message')
+        })
+        .then(() => {
+          setRefresh((prev) => !prev)
+        })
     }).catch()
   }
   return (
@@ -243,6 +253,7 @@ const ChatSidebar = ({ conversations }) => {
                 onClick={(e) => {
                   e.stopPropagation() // Ngăn sự kiện click lan ra ngoài
                   handleClick(e)
+                  setMenuConversationId(user.conversationId) // Lưu ID của conversation được click
                 }}
               >
                 <MoreHorizIcon />
@@ -260,7 +271,7 @@ const ChatSidebar = ({ conversations }) => {
                 <MenuItem
                   onClick={() => {
                     handleClose()
-                    deleteConversation(user.conversationId)
+                    deleteConversation(menuConversationId)
                   }}
                   sx={{
                     padding: '4px 16px', // Giảm padding

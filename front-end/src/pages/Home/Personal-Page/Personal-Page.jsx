@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Typography, TextField, Button, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Avatar, Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Avatar, Grid } from '@mui/material'
 import Footer from '~/components/footer/footer';
 
 import AppBar from '~/components/AppBar'
@@ -12,7 +12,7 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { INPUT_NAME, INPUT_NAME_MESSAGE, PHONE_NUMBER_RULE, NUMBER_RULE_MESSAGE, CITIZEN_NUMBER, FIELD_REQUIRED_MESSAGE, CITIZEN_NUMBER_MESSAGE } from '~/utils/validators';
-import FieldErrorAlert from '~/components/Form/FieldErrorAlert';
+import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentUser, updateUserAPI } from '~/redux/user/userSlice'
