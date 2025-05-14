@@ -145,10 +145,18 @@ const getHostels = async (userId) => {
           }
         },
         {
-          $project: {
-            ownerInfo: 0 // Loại bỏ trường ownerInfo nếu không cần
+          $lookup: {
+            from: roomModel.ROOM_COLLECTION_NAME,
+            localField: '_id',
+            foreignField: 'hostelId',
+            as: 'rooms'
           }
-        }
+        },
+        // {
+        //   $project: {
+        //     ownerInfo: 0 // Loại bỏ trường ownerInfo nếu không cần
+        //   }
+        // }
       ]
     ).toArray()
     return result || null
@@ -194,7 +202,7 @@ const deleteHostel = async (userId, ids) => {
     throw new Error(error)
   }
 }
-const deleteRoomOrderIds = async (userId, ids) => {
+const deleteRoomOrderIds = async (ids) => {
   try {
     // Chuyển đổi mảng `_id` thành ObjectId
     const objectIds = ids.map(id => new ObjectId(id))

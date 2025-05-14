@@ -11,18 +11,21 @@ import { GET_DB } from '~/config/mongodb'
 import { utilityModel } from './utilityModel'
 import { roomModel } from './roomModel'
 import { BILL_STATUS } from '~/utils/constants'
+import { hostelModel } from './hostelModel'
 
 const INVALID_UPDATE_FIELDS = ['_id', 'createdAt']
 const BILL_STATUS_COLLECTION_NAME = 'bills'
 const BILL_COLLECTION_SCHEMA = Joi.object({
   roomId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+  hostelId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   utilityId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
-  expenseTitle: Joi.number().required(),
-  extraFees: Joi.number().required(),
+  expenseTitle: Joi.string().allow('').default(''),
+  extraFees: Joi.number().empty('').empty(null).default(0),
   totalAmount: Joi.number().required(),
   status: Joi.string().valid(...Object.values(BILL_STATUS)).default(BILL_STATUS.PENDING),
-  createAt: Joi.date().timestamp('javascript').default(Date.now()),
-  updatedAt: Joi.date().timestamp('javascript').default(null)
+  createdAt: Joi.date().timestamp('javascript').default(Date.now()),
+  updatedAt: Joi.date().timestamp('javascript').default(null),
+  isDeleted: Joi.boolean().default(false)
 })
 const validateBeforeCreate = async (data) => {
   return await BILL_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
@@ -34,7 +37,8 @@ const createNew = async (data) => {
     const newBillToAdd = {
       ...valiData,
       utilityId: new ObjectId(valiData.utilityId),
-      roomId: new ObjectId(valiData.roomId)
+      roomId: new ObjectId(valiData.roomId),
+      hostelId: new ObjectId(valiData.hostelId)
     }
     const createdBill = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).insertOne(newBillToAdd)
     return createdBill
@@ -58,9 +62,15 @@ const getDetails = async (data) => {
     if (data.utilityId) {
       data.utilityId = new ObjectId(data.utilityId)
     }
+    if (data.roomId) {
+      data.roomId = new ObjectId(data.roomId)
+    }
+    if (data.hostelId) {
+      data.hostelId = new ObjectId(data.hostelId)
+    }
     const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).aggregate([
       {
-        $match: data
+        $match:  { ...data }
       },
       {
         $lookup: {
@@ -72,6 +82,14 @@ const getDetails = async (data) => {
       },
       {
         $lookup: {
+          from: hostelModel.HOSTEL_COLLECTION_NAME,
+          localField: 'hostelId',
+          foreignField: '_id',
+          as: 'hostelInfo'
+        }
+      },
+      {
+        $lookup: {
           from: roomModel.ROOM_COLLECTION_NAME,
           localField: 'roomId',
           foreignField: '_id',
@@ -79,23 +97,22 @@ const getDetails = async (data) => {
         }
       }
     ]).toArray()
-    return result[0] || null
+    return result || null
   } catch (error) {
     throw new Error(error)
   }
 }
-const deleteBills = async (ids) => {
+const deleteBill = async (billId) => {
   try {
-    const objectIds = ids.map(id => new ObjectId(id))
-    const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).deleteMany({
-      _id: { $in: objectIds }
+    const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).deleteOne({
+      _id: new ObjectId(billId)
     })
     return result
   } catch (error) {
     throw new Error(error)
   }
 }
-const update = async (utilityId, updateData) => {
+const update = async (billId, updateData) => {
   try {
     // Lọc những field mà chúng ta không cho phép cập nhật linh tinh
     Object.keys(updateData).forEach(fieldName => {
@@ -103,11 +120,8 @@ const update = async (utilityId, updateData) => {
         delete updateData[fieldName] // Xóa các trư��ng không cho phép update
       }
     })
-    if (updateData.roomIds) {
-      updateData.roomIds = updateData.roomIds.map(_id => (new ObjectId(_id)))
-    }
     const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).findOneAndUpdate(
-      { _id: new ObjectId(utilityId) },
+      { _id: new ObjectId(billId) },
       { $set: updateData },
       { returnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
     )
@@ -159,7 +173,7 @@ export const billModel = {
   createNew,
   findOneById,
   getDetails,
-  deleteBills,
+  deleteBill,
   update,
   getBills
 }

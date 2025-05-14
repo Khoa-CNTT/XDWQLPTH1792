@@ -36,7 +36,7 @@ function HouesPage() {
 
   const listData = (data) =>
     data?.map((hostel) => ({
-      price: hostel?.minPrice!==hostel.maxPrice ? `${hostel.minPrice || 0}-${hostel.maxPrice || 0} đồng/tháng` : `${hostel.minPrice} đồng/ tháng`,
+      price: hostel?.minPrice !== hostel.maxPrice ? `${hostel.minPrice || 0}-${hostel.maxPrice || 0} đồng/tháng` : `${hostel.minPrice} đồng/ tháng`,
       ...hostel
     }))
   useEffect(() => {
@@ -256,6 +256,7 @@ function HouesPage() {
                   </TextField>
                 </Box>
                 <Button variant='contained'
+                  className='interceptor-loading'
                   sx={{
                     bgcolor: 'rgb(71, 60, 139)',
                     '&:hover': {
@@ -313,14 +314,14 @@ function HouesPage() {
                         Địa điểm: {hostel.address}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        Giá: {hostel.price }
+                        Giá: {hostel.price}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        Số phòng trống: {hostel.rooms.filter(room => room.status === 'available').length }
+                        Số phòng trống: {hostel.rooms.filter(room => room.status === 'available').length}
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button size="small" color="primary" onClick={() => {
+                      <Button className='interceptor-loading' size="small" color="primary" onClick={() => {
                         setOpen(true)
                         setSelectedHostel(hostel)
                       }}>

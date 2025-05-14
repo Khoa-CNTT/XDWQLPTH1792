@@ -5,6 +5,7 @@ import { activeRoomReducer } from './activeRoom/activeRoomSlice'
 import { notificationsReducer } from './notifications/notificationsSlice'
 import { conversationReducer } from './conversation/conversationSlice'
 import { utilitiesReducer } from './utilitiy/utilitiesSlice'
+import { billsReducer } from './activeBill/activeBillSlice'
 /**
  * Cấu hình redux-persist
  * https://www.npmjs.com/package/redux-persist
@@ -30,7 +31,8 @@ const reducers = combineReducers({
   activeRoom:activeRoomReducer,
   notifications: notificationsReducer,
   conversation: conversationReducer,
-  utilities: utilitiesReducer
+  utilities: utilitiesReducer,
+  bills: billsReducer
 })
 // Thực hiện persist Reducer
 const persistedReducers = persistReducer(rootPersistConfig, reducers)

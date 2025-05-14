@@ -19,6 +19,10 @@ export const CONSTRACT_STATUS = {
   EXPIRED: 'Đã hết hạn',
   CANCELED: 'Đã hủy'
 }
+export const BILL_STATUS = {
+  PENDING: 'Chưa thanh toán',
+  SUCCESS: 'Đã thanh toán'
+}
 export const districtsInDaNang = [
   {
     name: 'Quận Hải Châu',

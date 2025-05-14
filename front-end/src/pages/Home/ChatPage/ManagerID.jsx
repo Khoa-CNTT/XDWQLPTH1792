@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Box } from '@mui/material'
 import ChatSidebar from './ChatSidebar'
 import ChatPage from './ChatPage'
-import AppBar from '~/components/AppBar' // Đảm bảo đường dẫn import đúng
+import AppBar from '~/components/AppBar'
 import { fetchConversationsAPI } from '~/apis'
 import { socketIoInstance } from '~/socketClient'
 import { moveToTop } from '~/utils/formatters'

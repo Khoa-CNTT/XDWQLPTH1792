@@ -41,6 +41,7 @@ function InviteHostelUser({ hostelId }) {
     <Box>
       <Tooltip title="Mời người thuê vào trong nhà trọ">
         <Button
+          className='interceptor-loading'
           aria-describedby={popoverId}
           onClick={handleTogglePopover}
           variant="outlined"

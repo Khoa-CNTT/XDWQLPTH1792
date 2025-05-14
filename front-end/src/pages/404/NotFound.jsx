@@ -66,6 +66,7 @@ function NotFound() {
         </Box>
         <Link to="/" style={{ textDecoration: 'none' }}>
           <Button
+            className='interceptor-loading'
             variant="outlined"
             startIcon={<HomeIcon />}
             sx={{

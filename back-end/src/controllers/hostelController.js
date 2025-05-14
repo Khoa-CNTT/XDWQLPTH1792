@@ -79,7 +79,7 @@ const deleteHostel = async (req, res, next) => {
     const result = await hostelService.deleteHostel(userId, ids)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json({
-      message: 'Hostels deleted successfully',
+      message: 'Nhà trọ đã xóa thành công',
       deletedCount: result.deletedCount
     })
     // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
