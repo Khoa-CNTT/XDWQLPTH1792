@@ -26,7 +26,7 @@ const getDetails = async (req, res, next) => {
 const getUtilitiesByHostelId = async (req, res, next) => {
   try {
     const { hostelId } = req.query
-    const hostel = await utilityService.getUtilitiesByHostelId(hostelId)
+    const hostel = await utilityService.getUtilitiesByHostelId(req.query)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(hostel)
     // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
@@ -57,7 +57,6 @@ const deleteUtilities = async (req, res, next) => {
 }
 const update = async (req, res, next) => {
   try {
-    console.log('data=', req.body)
     const utilityId = req.params.id
     console.log('req.params=', utilityId)
     const result = await utilityService.update(utilityId, req.body)

@@ -134,6 +134,18 @@ const pushMembers = async (roomId, userId) => {
     throw new Error(error)
   }
 }
+const pushBillIds = async (roomId, billId) => {
+  try {
+    const result = await GET_DB().collection(ROOM_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(roomId) },
+      { $push: { billIds: new ObjectId(billId) } },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 const getRoomsByHostelId = async (hostelId) => {
   try {
     const result = await GET_DB().collection(ROOM_COLLECTION_NAME).aggregate(
@@ -157,6 +169,21 @@ const getRoomsByHostelId = async (hostelId) => {
     throw new Error(error)
   }
 }
+const deleteBillIds = async (roomId, billId) => {
+  try {
+    // Chuyển đổi mảng `_id` thành ObjectId
+    const objectId = new ObjectId(billId)
+    // Xóa  có `_id` nằm trong mảng
+    const result = await GET_DB().collection(ROOM_COLLECTION_NAME).updateOne(
+      { _id: new ObjectId(roomId) },
+      { $pull: { billIds: objectId } },
+      { returnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 export const roomModel = {
   ROOM_COLLECTION_NAME,
   ROOM_COLLECTION_SCHEMA,
@@ -166,5 +193,7 @@ export const roomModel = {
   deleteRooms,
   update,
   pushMembers,
-  getRoomsByHostelId
+  getRoomsByHostelId,
+  pushBillIds,
+  deleteBillIds
 }

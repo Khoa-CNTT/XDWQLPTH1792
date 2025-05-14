@@ -127,8 +127,8 @@ function ModalAddUserToRoom({ open, handleClose, room, hostel }) {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">Hủy</Button>
-          <Button color='success' type="submit" variant="contained">Thêm</Button>
+          <Button  onClick={handleClose} color="secondary">Hủy</Button>
+          <Button  className='interceptor-loading' color='success' type="submit" variant="contained">Thêm</Button>
         </DialogActions>
       </form>
     </Dialog>

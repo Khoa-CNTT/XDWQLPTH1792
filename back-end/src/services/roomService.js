@@ -3,6 +3,7 @@ import { roomModel } from '~/models/roomModel'
 import { hostelModel } from '~/models/hostelModel'
 import { STATUS_ROOM } from '~/utils/constants'
 import ApiError from '~/utils/ApiError'
+import { utilityModel } from '~/models/utilityModel'
 
 const createNew = async (reqBody) => {
   try {
@@ -35,10 +36,11 @@ const getDetails = async (hostelId) => {
     throw error
   }
 }
-const deleteRooms = async (userId, ids) => {
+const deleteRooms = async (ids) => {
   try {
     // Cập nhật lại mảng columnOrderIds trong colecton boards
-    await hostelModel.deleteRoomOrderIds(userId, ids)
+    await hostelModel.deleteRoomOrderIds(ids)
+    await utilityModel.deleteUtilitiesByRoomIds(ids)
     const room = await roomModel.deleteRooms(ids)
     if (!room) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Room not found')

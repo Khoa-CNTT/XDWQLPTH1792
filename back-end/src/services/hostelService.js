@@ -3,6 +3,7 @@ import { hostelModel } from '~/models/hostelModel'
 import ApiError from '~/utils/ApiError'
 import { CloudinaryProvider } from '~/providers/Cloudinary'
 import { roomModel } from '~/models/roomModel'
+import { roomService } from './roomService'
 
 const createNew = async (userId, reqBody) => {
   try {
@@ -91,7 +92,7 @@ const deleteHostel = async (userId, ids) => {
     // Gộp tất cả `roomIds` từ các hostels
     const allRoomIds = hostels.flatMap((hostel) => hostel.roomIds || [])
     if (allRoomIds.length > 0) {
-      await roomModel.deleteRooms(allRoomIds)
+      await roomService.deleteRooms(allRoomIds)
     }
     const updatedBoard = await hostelModel.deleteHostel(userId, ids)
     return updatedBoard
