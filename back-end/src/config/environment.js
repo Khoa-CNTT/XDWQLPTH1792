@@ -27,5 +27,7 @@ export const env = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   VNP_TMNCODE: process.env.VNP_TMNCODE,
-  VNP_HASHSECRET: process.env.VNP_HASHSECRET
+  VNP_HASHSECRET: process.env.VNP_HASHSECRET,
+  VNP_URL: process.env.VNP_URL,
+  VNP_RETURN_URL:process.env.VNP_RETURN_URL
 }
