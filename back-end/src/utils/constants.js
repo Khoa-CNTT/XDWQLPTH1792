@@ -31,6 +31,10 @@ export const BILL_STATUS = {
   PENDING: 'Chưa thanh toán',
   SUCCESS: 'Đã thanh toán'
 }
+export const PAYMENT_STATUS = {
+  FAILED: 'Thanh toán thất bại',
+  SUCCESS: 'Thanh toán thành công'
+}
 export const CONSTRACT_STATUS = {
   ACTIVE: 'Đang hiệu lực',
   EXPIRED: 'Đã hết hạn',
