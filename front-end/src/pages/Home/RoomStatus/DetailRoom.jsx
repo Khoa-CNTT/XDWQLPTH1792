@@ -26,16 +26,16 @@ const DetailRoom = () => {
   const [formData, setFormData] = useState(
     isNewRoom
       ? {
-          name: '',
-          location: '',
-          price: '',
-          area: '',
-          furniture: 'Không',
-          type: 'Thường',
-          tenant: '',
-          status: 'Trống',
-          images: [],
-        }
+        name: '',
+        location: '',
+        price: '',
+        area: '',
+        furniture: 'Không',
+        type: 'Thường',
+        tenant: '',
+        status: 'Trống',
+        images: [],
+      }
       : null
   );
 
@@ -130,7 +130,7 @@ const DetailRoom = () => {
 
   return (
     <Box>
-      <AppBar/> 
+      <AppBar />
       <Box sx={{ p: 3 }}>
         {/* Thông tin phòng */}
         <Box

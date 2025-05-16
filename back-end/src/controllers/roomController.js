@@ -34,10 +34,8 @@ const getDetails = async (req, res, next) => {
 }
 const deleteRooms = async (req, res, next) => {
   try {
-    // console.log('req.params=', req.params)
-    const userId = req.params.id
     const ids = req.query.ids // Lấy dữ liệu từ query string
-    const result = await roomService.deleteRooms(userId, ids)
+    const result = await roomService.deleteRooms(ids)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json({
       message: 'Rooms deleted successfully',

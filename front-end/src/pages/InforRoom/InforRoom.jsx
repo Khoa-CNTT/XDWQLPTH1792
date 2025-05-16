@@ -93,7 +93,7 @@ function InforRoom() {
       <Box p={3} sx={{
         display: 'flex',
         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#F5F5F5'),
-        height: (theme) => theme.trello.boardContentHeight
+        height: (theme) => theme.trello.messageHeight
       }}>
         <Box sx={{
           width: '60%',

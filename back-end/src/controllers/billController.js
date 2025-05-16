@@ -9,6 +9,14 @@ const createNew = async (req, res, next) => {
     next(error)
   }
 }
+const getBillsByRoomId = async (req, res, next) => {
+  try {
+    const createHostel = await billService.getBillsByRoomId(req.query)
+    res.status(StatusCodes.CREATED).json(createHostel)
+  } catch (error) {
+    next(error)
+  }
+}
 
 const update = async (req, res, next) => {
   try {
@@ -16,16 +24,26 @@ const update = async (req, res, next) => {
     const result = await billService.update(billId, req.body)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(result)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
   } catch (error) {
     next(error)
-    // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    //     errors: new Error(error).message
-    // })
+  }
+}
+const deleteBill = async (req, res, next) => {
+  try {
+    const data = req.query
+    await billService.deleteBill(data)
+    //kết quả trả về phía CLient
+    res.status(StatusCodes.OK).json({
+      message: 'Hóa đơn đã xóa thành công'
+    })
+  } catch (error) {
+    next(error)
   }
 }
 
 export const billController = {
   createNew,
-  update
+  update,
+  getBillsByRoomId,
+  deleteBill
 }

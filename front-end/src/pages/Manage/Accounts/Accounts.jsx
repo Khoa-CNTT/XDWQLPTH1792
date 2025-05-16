@@ -25,7 +25,6 @@ import { registerUserAPI } from '~/apis'
 import { toast } from 'react-toastify'
 import ModalUpdateAccount from '~/components/Modal/ModalUpdateAccount'
 function Accounts() {
-  const [value, setValue] = useState(0)
   // Mở modal updateAccount
   const [open, setOpen] = useState(false)
   const [account, setAccount] = useState(null)

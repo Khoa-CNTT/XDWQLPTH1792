@@ -19,7 +19,6 @@ import { fetchHostelsAPI } from '~/apis'
 import { fetchHostelDetailsAPI, selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { createNewUtilityAPI, deleteUtilityAPI } from '~/apis'
-import { useNavigate } from 'react-router-dom'
 import { useConfirm } from 'material-ui-confirm'
 import { useForm } from 'react-hook-form'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -33,16 +32,14 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
-
 import { fetchUtilitiesByHostelIdAPI, selectCurrentUtilities, removeItilities, updateUtilityAPI } from '~/redux/utilitiy/utilitiesSlice'
 function Utility() {
-  const navigate = useNavigate()
   // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
   const confirmDelete = useConfirm()
 
   const theme = useTheme() // Lấy thông tin theme
   const [hostels, setHostels] = useState([])
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm()
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm()
   // Mở modal user
   const [open, setOpen] = useState(false)
   // Lưu danh sách các tiện ích cần xóa
@@ -148,7 +145,6 @@ function Utility() {
     if (editingUtility) {
       data.hostelId = hostel._id
       delete data.roomId
-      console.log('data', data)
       confirmDelete({
         // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
         title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -159,7 +155,7 @@ function Utility() {
         cancellationText: 'Cancel'
       }).then(() => {
         // Gọi API cập nhật nhà trọ ở đây
-        dispatch(updateUtilityAPI({utilityId: editingUtility._id, data})).then(res => {
+        dispatch(updateUtilityAPI({ utilityId: editingUtility._id, data })).then(res => {
           if (!res.error) {
             toast.success('Cập nhật thành công')
           }

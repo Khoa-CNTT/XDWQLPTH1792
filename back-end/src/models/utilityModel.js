@@ -93,6 +93,17 @@ const deleteUtilities = async (ids) => {
     throw new Error(error)
   }
 }
+const deleteUtilitiesByRoomIds = async (roomIds) => {
+  try {
+    const objectIds = roomIds.map(id => new ObjectId(id))
+    const result = await GET_DB().collection(UTILITY_COLLECTION_NAME).deleteMany({
+      roomId: { $in: objectIds }
+    })
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 const update = async (utilityId, updateData) => {
   try {
     // Lọc những field mà chúng ta không cho phép cập nhật linh tinh
@@ -159,5 +170,6 @@ export const utilityModel = {
   getDetails,
   deleteUtilities,
   update,
-  getUtilities
+  getUtilities,
+  deleteUtilitiesByRoomIds
 }

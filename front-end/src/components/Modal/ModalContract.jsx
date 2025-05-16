@@ -1,31 +1,29 @@
 
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-  Box,
-  Divider,
-  Grid
-} from '@mui/material'
+import { Box } from '@mui/material'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import Divider from '@mui/material/Divider'
+import Grid from '@mui/material/Grid'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
-import { useState } from 'react'
+import { useRef } from 'react'
 function ModalContract({ open, handleClose, contract }) {
-  const printRef = useState(null)
+  const printRef = useRef(null)
   const handleDownloadPdf = async () => {
     const element = printRef.current
     if (!element) {
       return
     }
+
     const canvas = await html2canvas(element, {
       scale: 2
     })
 
     const data = canvas.toDataURL('image/png')
-
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'px',
@@ -34,9 +32,10 @@ function ModalContract({ open, handleClose, contract }) {
     const imgProperties = pdf.getImageProperties(data)
     const pdfWidth = pdf.internal.pageSize.getWidth()
 
-    const pdfHeight = (imgProperties.height * pdfWidth)/ imgProperties.width
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width
+
     pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight)
-    pdf.save('example.pdf')
+    pdf.save('examplePDF.pdf')
   }
 
   return (
@@ -58,7 +57,7 @@ function ModalContract({ open, handleClose, contract }) {
             fontSize: 20,
             fontWeight: 'bold',
             textTransform: 'uppercase',
-            p:4
+            p: 4
           }}>
             {`HỢP ĐỒNG THUÊ PHÒNG TRỌ ${contract?.hostelInfo?.hostelName}`}
           </Typography>
@@ -133,7 +132,7 @@ function ModalContract({ open, handleClose, contract }) {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleDownloadPdf} variant='contained' color='primary'>
+        <Button className='interceptor-loading' onClick={handleDownloadPdf} variant='contained' color='primary'>
           In hợp đồng
         </Button>
         <Button onClick={handleClose}>Đóng</Button>

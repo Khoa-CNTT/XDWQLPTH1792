@@ -122,9 +122,36 @@ export const createNewUtilityAPI = async (data) => {
   const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/utilities`, data)
   return response.data
 }
+export const fetchUtilitiesByRoomIdAPI = async (data) => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/utilities/room`, {
+    params: data
+  })
+  return response.data
+}
 export const deleteUtilityAPI = async (data) => {
   const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/utilities`, {
     params: data // Truyền dữ liệu qua params
   })
   return response.data
+}
+// bills API
+export const fetchBillsByHostelIdAPI = async (data) => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/bills/hostel`, {
+    params: data
+  })
+  return response.data
+}
+export const createNewBillAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/bills`, data)
+  return response.data
+}
+export const updateBillAPI = async (billId, updateData) => {
+  const respone = await authorizeAxiosInstance.put(`${API_ROOT}/v1/bills/${billId}`, updateData)
+  return respone.data
+}
+export const deleteBillAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/bills`, {
+    params: data // Truyền dữ liệu qua params
+  })
+  return respone.data
 }

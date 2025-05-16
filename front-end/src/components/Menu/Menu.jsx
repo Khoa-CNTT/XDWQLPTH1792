@@ -146,7 +146,7 @@ function Menu() {
                 <Link to={`/hostel/${hostel._id}`} style={{ color: 'inherit' }}>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      <GiteIcon sx={{color:'#FF6666'}}/>
+                      <GiteIcon sx={{ color: '#FF6666' }} />
                     </ListItemIcon>
                     <ListItemText primary={hostel.hostelName} />
                   </ListItemButton>
@@ -155,12 +155,14 @@ function Menu() {
             ))
           }
           <List disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemIcon>
-                <PaymentIcon />
-              </ListItemIcon>
-              <ListItemText primary="Hóa đơn thanh toán" />
-            </ListItemButton>
+            <Link to={'/payment'} style={{ color: 'inherit' }}>
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <PaymentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Hóa đơn thanh toán" />
+              </ListItemButton>
+            </Link>
           </List>
           <List disablePadding>
             {/* <Link to='/manage/Contracts' style={{ color: 'inherit' }}>
@@ -172,7 +174,7 @@ function Menu() {
               </ListItemButton>
             </Link> */}
           </List>
-          {(user.role === USER_ROLES.ADMIN || user.role === USER_ROLES.LANDLORD) &&(
+          {(user.role === USER_ROLES.ADMIN || user.role === USER_ROLES.LANDLORD) && (
             <List disablePadding>
               <Link to='/manage/infor-user' style={{ color: 'inherit' }}>
                 <ListItemButton sx={{ pl: 4 }}>

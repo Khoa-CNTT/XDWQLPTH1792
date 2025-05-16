@@ -25,9 +25,9 @@ const createNew = async (reqBody) => {
     throw error
   }
 }
-const getUtilitiesByHostelId = async (hostelId) => {
+const getUtilitiesByHostelId = async (data) => {
   try {
-    const result = await utilityModel.getUtilities({ hostelId })
+    const result = await utilityModel.getUtilities(data)
     const res = result.map(u => ({
       ...u,
       roomInfo: u.roomInfo[0],

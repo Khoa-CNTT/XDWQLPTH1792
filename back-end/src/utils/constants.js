@@ -28,8 +28,8 @@ export const HOSTEL_INVITATION_STATUS = {
   REJECTED: 'REJECTED'
 }
 export const BILL_STATUS = {
-  PENDING: 'pending',
-  SUCCESS: 'success'
+  PENDING: 'Chưa thanh toán',
+  SUCCESS: 'Đã thanh toán'
 }
 export const CONSTRACT_STATUS = {
   ACTIVE: 'Đang hiệu lực',

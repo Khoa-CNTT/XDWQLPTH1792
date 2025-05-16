@@ -5,11 +5,12 @@ import { authMiddleware } from '~/middlewares/authMiddleware'
 const Router = express.Router()
 
 Router.route('/')
+  .get(authMiddleware.isAuthorized, billController.getBillsByRoomId)
   .post(authMiddleware.isAuthorized, billValidation.createNew, billController.createNew)
-// Router.route('/pullTenant')
-//   .put(authMiddleware.isAuthorized, roomValidation.pullTenant, roomController.pullTenant)
+  .delete(authMiddleware.isAuthorized, billController.deleteBill)
+Router.route('/hostel')
+  .get(authMiddleware.isAuthorized, billController.getBillsByRoomId)
 
 Router.route('/:id')
-//   .get(authMiddleware.isAuthorized, roomController.getDetails)
   .put(authMiddleware.isAuthorized, billValidation.update, billController.update)
 export const billRoute = Router
