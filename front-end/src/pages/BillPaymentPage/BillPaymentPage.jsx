@@ -21,7 +21,7 @@ import {
 import { Payment, ReceiptLong, HomeWork } from '@mui/icons-material'
 import AppBar from '~/components/AppBar'
 import { useEffect } from 'react'
-import { fetchHostelsAPI } from '~/apis'
+import { fetchHostelsAPI, createPaymentAPI } from '~/apis'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
 import { fetchBillsByRoomIdAPI, selectCurrentBills } from '~/redux/activeBill/activeBillSlice'
@@ -31,7 +31,6 @@ import { BILL_STATUS } from '~/utils/constants'
 function BillPaymentPage() {
   const dispatch = useDispatch()
   const user = useSelector(selectCurrentUser)
-  console.log('user', user)
   const [selectedHostelId, setSelectedHostelId] = useState('')
   const [selectedBillId, setSelectedBillId] = useState('')
   const [selectedHostel, setSelectedHostel] = useState(null)
@@ -41,9 +40,8 @@ function BillPaymentPage() {
       setHostels(res)
     )
   }, []) // Chỉ gọi API khi component được mount lần đầu tiên hoặc khi `refresh` thay đổi
-  console.log('selectedHostel', selectedHostel)
+
   const hostel = hostels?.filter(hostel => hostel._id === selectedHostel)[0]
-  console.log('hostel', hostel)
   const room = hostel?.rooms?.filter(room => room.memberIds.includes(user._id))[0]
   useEffect(() => {
     if (room) {
@@ -52,7 +50,14 @@ function BillPaymentPage() {
   }, [dispatch, room])
   const bills = useSelector(selectCurrentBills)
   const selectedBill = bills?.filter(bill => bill._id === selectedBillId)[0]
-  console.log('selectedBill', selectedBill)
+  const createNewPayment = async (datelBill) => {
+    const data = {
+      billId: datelBill._id,
+      amount: datelBill.totalAmount
+    }
+    const resultUrlPayment = await createPaymentAPI(data)
+    if (resultUrlPayment) window.location.href = resultUrlPayment
+  }
   return (
     <>
       <AppBar />
@@ -190,7 +195,7 @@ function BillPaymentPage() {
                     startIcon={<Payment />}
                     size="large"
                     sx={{ borderRadius: 3 }}
-                    onClick={() => alert(`Thanh toán hóa đơn ${selectedBill.id} thành công!`)}
+                    onClick={() => createNewPayment(selectedBill)}
                   >
                     Thanh toán
                   </Button>

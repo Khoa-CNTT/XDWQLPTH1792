@@ -13,6 +13,7 @@ import DetailRoom from './pages/Home/RoomStatus/DetailRoom'
 import ManagerID from './pages/Home/ChatPage/ManagerID'
 import SecurityTab from './pages/Securiry/Security'
 import BillPaymentPage from './pages/BillPaymentPage/BillPaymentPage'
+import ReturnVnpay from './pages/BillPaymentPage/ReturnVNPay'
 
 
 import { useSelector } from 'react-redux'
@@ -54,6 +55,7 @@ function App() {
         <Route path='/home/DetailInforUser' element={<DetailUser />} />
         <Route path='/home/SPDetailUser' element={<SPDetailUser />} />
         <Route path='/home/RoomStatus' element={<RoomStatus />} />
+        <Route path='/payment/return_vnpay' element={<ReturnVnpay />} />
         <Route path='/payment' element={<BillPaymentPage />} />
         <Route path="/room/:id" element={<DetailRoom />} />
         <Route path="/room/new" element={<DetailRoom />} />

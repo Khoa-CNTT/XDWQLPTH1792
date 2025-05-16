@@ -14,6 +14,10 @@ export const USER_ROLES = {
   LANDLORD: 'landlord',
   ADMIN: 'admin'
 }
+export const PAYMENT_STATUS = {
+  FAILED: 'Thanh toán thất bại',
+  SUCCESS: 'Thanh toán thành công'
+}
 export const CONSTRACT_STATUS = {
   ACTIVE: 'Đang hiệu lực',
   EXPIRED: 'Đã hết hạn',
