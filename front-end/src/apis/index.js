@@ -155,3 +155,14 @@ export const deleteBillAPI = async (data) => {
   })
   return respone.data
 }
+//Payment api
+export const checkVNPayResultAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.get(`${API_ROOT}/v1/payments/return_vnpay`, {
+    params: data // Truyền dữ liệu qua params
+  })
+  return respone.data
+}
+export const createPaymentAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/payments/create_payment`, data)
+  return respone.data
+}
