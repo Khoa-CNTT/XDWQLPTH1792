@@ -21,8 +21,8 @@ export const fetchUtilitiesByHostelIdAPI = createAsyncThunk(
 )
 export const updateUtilityAPI = createAsyncThunk(
   'utilities/updateUtilityAPI',
-  async ({ utilityId, data }) => {
-    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/utilities/${utilityId}`, data)
+  async ({ utilityId, dataUpdate }) => {
+    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/utilities/${utilityId}`, dataUpdate)
     // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
     return response.data
   }

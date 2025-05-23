@@ -266,6 +266,7 @@ const DetailRoom = () => {
               <ArrowForwardIosIcon />
             </IconButton>
             <Button
+              className='interceptor-loading'
               variant="outlined"
               component="label"
               startIcon={<UploadIcon />}

@@ -49,7 +49,7 @@ function ModalUser({ open, handleClose, user }) {
             <Typography variant="body2"><strong>Số phòng:</strong> {user?.roomName}</Typography>
           </Box>
           <Stack direction="row" spacing={2} mt={2}>
-            <Button variant="contained" color="primary" onClick={handleClose}>
+            <Button className='interceptor-loading' variant="contained" color="primary" onClick={handleClose}>
               Đóng
             </Button>
             {/* <Button variant="outlined" color="success" href={`tel:${user?.phone}`}>

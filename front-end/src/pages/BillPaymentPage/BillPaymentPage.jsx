@@ -161,11 +161,11 @@ function BillPaymentPage() {
                     </TableRow>
                     <TableRow>
                       <TableCell>Số nước tiêu thụ</TableCell>
-                      <TableCell align="right">{selectedBill.utilityInfo.waterBegin - selectedBill.utilityInfo.waterStart} x {selectedBill.hostelInfo.water_price} đồng/số</TableCell>
+                      <TableCell align="right">{selectedBill.utilityInfo.waterEnd - selectedBill.utilityInfo.waterStart} x {selectedBill.hostelInfo.water_price} đồng/số</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>Số điện tiêu thụ</TableCell>
-                      <TableCell align="right">{selectedBill.utilityInfo.electricBegin - selectedBill.utilityInfo.electricStart} x {selectedBill.hostelInfo.electricity_price} đồng/số</TableCell>
+                      <TableCell align="right">{selectedBill.utilityInfo.electricEnd - selectedBill.utilityInfo.electricStart} x {selectedBill.hostelInfo.electricity_price} đồng/số</TableCell>
                     </TableRow>
                     {selectedBill.expenseTitle &&
                       <TableRow>
@@ -190,6 +190,7 @@ function BillPaymentPage() {
               {selectedBill.status !== BILL_STATUS.SUCCESS &&
                 <Box mt={4} display="flex" justifyContent="flex-end">
                   <Button
+                    className='interceptor-loading'
                     variant="contained"
                     color="primary"
                     startIcon={<Payment />}

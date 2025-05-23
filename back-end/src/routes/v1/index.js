@@ -10,6 +10,8 @@ import { contractRoute } from './contractRoute'
 import { utilityRoute } from './utilityRoute'
 import { billRoute } from './billRoute'
 import { paymentRoute } from './paymentRoute'
+import { facilityRoute } from './facilityRoute'
+import { requestRoute } from './requestRoute'
 const Router = express.Router()
 //check APIs v1 stats
 Router.get('/status', (req, res) => {
@@ -44,6 +46,10 @@ Router.use('/utilities', utilityRoute )
 Router.use('/bills', billRoute )
 // Payment APIs
 Router.use('/payments', paymentRoute )
+// Payment APIs
+Router.use('/facilities', facilityRoute )
+// Requets APIs
+Router.use('/requests', requestRoute )
 export const APIs_V1 = Router
 
 

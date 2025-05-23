@@ -166,3 +166,43 @@ export const createPaymentAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/payments/create_payment`, data)
   return respone.data
 }
+export const getListPaymentsAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.get(`${API_ROOT}/v1/payments/getListPayment`, {
+    params : data
+  })
+  return respone.data
+}
+//Facility API
+export const createNewFacilityAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/facilities`, data)
+  return respone.data
+}
+export const fetchFacilitiesByHostelId = async (data) => {
+  const respone = await authorizeAxiosInstance.get(`${API_ROOT}/v1/facilities`, {
+    params : data
+  })
+  return respone.data
+}
+export const deleteFacilityAPI = async (id) => {
+  const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/facilities/${id}`)
+  return response.data
+}
+export const updateFacilityAPI = async (id, data) => {
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/facilities/${id}`, data)
+  return response.data
+}
+// Request API
+export const createNewRepairRequestAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/requests`, data)
+  return response.data
+}
+export const fetchRequestByHostelId = async (hostelId) => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/requests/hostelId`, {
+    params: hostelId
+  })
+  return response.data
+}
+export const updateRequestAPI = async (id, data) => {
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/requests/${id}`, data)
+  return response.data
+}

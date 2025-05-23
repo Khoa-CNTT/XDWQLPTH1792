@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash'
 export const capitalizeFirstLetter = (val) => {
   if (!val) return ''
   return `${val.charAt(0).toUpperCase()}${val.slice(1)}`
@@ -53,4 +54,13 @@ export const moveToTop = (array, element) => {
     array.unshift(item)
   }
   return array
+}
+// So sánh 2 dữ liệu khi update
+export const compareData = (dataPre, dataCur) => {
+
+  const dataToCompare = {
+    ...dataPre,
+    ...dataCur
+  }
+  return isEqual(dataPre, dataToCompare)
 }

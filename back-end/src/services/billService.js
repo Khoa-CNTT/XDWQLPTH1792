@@ -22,7 +22,7 @@ const createNew = async (reqBody) => {
     }
     const dataBill = {
       ...reqBody,
-      totalAmount: detailRoom.price + detailUtility.toltalUtility + Number(reqBody.extraFees)
+      totalAmount: Number(detailRoom.price) + Number(detailUtility.toltalUtility) + Number(reqBody.extraFees)
     }
     const createdbill = await billModel.createNew(dataBill)
     const getNewBill = await billModel.findOneById(createdbill.insertedId)

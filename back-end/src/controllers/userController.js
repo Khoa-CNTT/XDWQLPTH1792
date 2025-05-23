@@ -99,6 +99,16 @@ const getAllAccounts = async (req, res, next) => {
     next(error)
   }
 }
+const deleteAccount = async (req, res, next) => {
+  try {
+    const userId = req.jwtDecoded._id
+    const accountIsDeletedId = req.query
+    const updatedUser = await userService.deleteAccount(userId, accountIsDeletedId)
+    res.status(StatusCodes.OK).json(updatedUser)
+  } catch (error) {
+    next(error)
+  }
+}
 export const userController = {
   createNew,
   verifyAccount,
@@ -107,5 +117,6 @@ export const userController = {
   refreshToken,
   update,
   getAllAccounts,
-  updateByAdmin
+  updateByAdmin,
+  deleteAccount
 }

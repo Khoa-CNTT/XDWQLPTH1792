@@ -32,6 +32,7 @@ Router.route('/:id')
     multerUploadMiddeware.upload.single('avatar'),
     userValidation.update,
     userController.updateByAdmin)
+  .delete(authMiddleware.isAuthorized, userController.deleteAccount)
 Router.route('/')
   .get(authMiddleware.isAuthorized, userController.getAllAccounts)
 export const userRoute = Router

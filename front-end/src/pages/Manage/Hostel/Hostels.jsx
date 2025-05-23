@@ -36,6 +36,7 @@ import { uploadImagesAPI, createNewHostelAPI, fetchHostelsAPI, updateHostelAPI, 
 
 import { useConfirm } from 'material-ui-confirm'
 import { useNavigate } from 'react-router-dom'
+import { compareData } from '~/utils/formatters'
 
 const paginationModel = { page: 0, pageSize: 10 }
 const HOSTEL_TYPE = {
@@ -92,7 +93,7 @@ function Hostel() {
     setPreviewUrl(hostel.images) // Hiển thị ảnh xem trước
     setOpen(true) // Mở Dialog
   }
-  const { register, handleSubmit, setValue, reset, control, formState: { errors } } = useForm()
+  const { register, handleSubmit, setValue, reset, watch, control, formState: { errors } } = useForm()
 
   // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
   const confirmUpdateOrDelete = useConfirm()
@@ -114,9 +115,6 @@ function Hostel() {
       { pending: 'Đang tải ảnh lên....' }
     ).then(res => {
       // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
-      if (!res.error) {
-        toast.success('Tải thành công')
-      }
       // Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng 1 file liên
       //tiếp được
       const url = `${res}`
@@ -149,8 +147,14 @@ function Hostel() {
         cancellationText: 'Cancel'
       }).then(() => {
         updateAdress(data)
+        const dataUpdate = {
+          ...data,
+          electricity_price: Number(data.electricity_price),
+          water_price: Number(data.water_price)
+        }
         // Gọi API cập nhật nhà trọ ở đây
-        const promise = updateHostelAPI(editingHostel.id, data)
+        if (compareData(editingHostel, dataUpdate)) return
+        const promise = updateHostelAPI(editingHostel.id, dataUpdate)
         toast.promise(
           promise,
           { pending: 'Đang cập nhật....' }
@@ -161,7 +165,6 @@ function Hostel() {
           setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
           handleClose()
         })
-        console.log('data', data)
       })
     } else {
       updateAdress(data)
@@ -216,6 +219,7 @@ function Hostel() {
             year: 'numeric'
           }).format(new Date(item.createAt)) // Định dạng ngày tạo
         }))
+
       setRows(formattedData) // Lưu dữ liệu vào state
     })
   }, [refresh]) // Chỉ gọi API khi component được mount lần đầu tiên hoặc khi `refresh` thay đổi
@@ -399,6 +403,7 @@ function Hostel() {
                   margin="normal"
                   label='Chọn quận'
                   variant='outlined'
+                  value={watch('district') || ''}
                   sx={{
                     '& .MuiInputBase-root': {
                       borderRadius: '8px'
@@ -566,6 +571,8 @@ function Hostel() {
               margin="normal"
               label="Mô tả"
               type="text"
+              multiline
+              minRows={4}
               sx={{
                 '& .MuiInputBase-root': {
                   borderRadius: '8px' // Bo góc cho ô nhập liệu

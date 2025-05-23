@@ -26,7 +26,7 @@ function ModalUpdateAccount({ open, handleClose, account, setRefresh }) {
     phone: account?.phone,
     role: account?.role
   }
-  const { register, handleSubmit, reset, control, formState: { errors }, watch } = useForm({
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm({
     defaultValues: initialGeneralForm
   })
   useEffect(() => {
@@ -108,7 +108,7 @@ function ModalUpdateAccount({ open, handleClose, account, setRefresh }) {
         <DialogContent dividers>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
             <Avatar sx={{ width: 170, height: 170, mb: 2 }} src={account?.avatar} />
-            <Button  className='interceptor-loading' variant="outlined" component="label">
+            <Button className='interceptor-loading' variant="outlined" component="label">
               Upload
               <VisuallyHiddenInput type="file" onChange={uploadAvatar} />
             </Button>
@@ -188,11 +188,11 @@ function ModalUpdateAccount({ open, handleClose, account, setRefresh }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Hủy</Button>
-          <Button  className='interceptor-loading' variant="contained" color="primary" type='submit'>Lưu</Button>
+          <Button className='interceptor-loading' variant="contained" color="primary" type='submit'>Lưu</Button>
         </DialogActions>
       </form>
     </Dialog>
-  );
+  )
 }
 
 export default ModalUpdateAccount

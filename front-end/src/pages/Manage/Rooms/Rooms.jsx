@@ -42,12 +42,10 @@ import { toast } from 'react-toastify'
 import { useConfirm } from 'material-ui-confirm'
 import { useForm, Controller } from 'react-hook-form'
 import ModalAddUserToRoom from '~/components/Modal/ModalAddUserToRoom'
+import { compareData } from '~/utils/formatters'
+import { STATUS_ROOM } from '~/utils/constants'
 const paginationModel = { page: 0, pageSize: 10 }
-export const STATUS_ROOM = {
-  AVAILABLE: 'available',
-  OCCUPIED: 'occupied', //Đã thuê
-  MAINTENANCE: 'maintenance' // đã đặt cọc
-}
+
 function Rooms() {
 
   const dispatch = useDispatch()
@@ -76,12 +74,15 @@ function Rooms() {
     }
 
     const status = statusMapping[room?.status] || STATUS_ROOM.AVAILABLE
-    setEditingRoom(room) // Lưu thông tin nhà trọ vào state
+    setEditingRoom({
+      ...room,
+      length: Number(length),
+      width: Number(width)
+    }) // Lưu thông tin nhà trọ vào state
     setValue('roomName', room.roomName) // Điền dữ liệu vào form
     setValue('length', length)
     setValue('width', width) // Điền dữ liệu vào form
     setValue('status', status) // Điền dữ liệu vào form
-    setValue('utilities', room.utilities.split(',')) // Điền dữ liệu vào form
     setValue('price', room.price)
     setValue('images', room.images)
     setPreviewUrl(room.images) // Hiển thị ảnh xem trước
@@ -174,6 +175,12 @@ function Rooms() {
   ]
   const createNewRoom = (data) => {
     if (editingRoom) {
+      const dataUpdate = {
+        ...data,
+        length: Number(data.length),
+        width: Number(data.width)
+      }
+      if (compareData(editingRoom, dataUpdate)) return
       confirmUpdateOrDelete({
         // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
         title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -184,7 +191,7 @@ function Rooms() {
         cancellationText: 'Cancel'
       }).then(() => {
         // Gọi API cập nhật nhà trọ ở đây
-        const promise = updateRoomAPI(editingRoom.id, data)
+        const promise = updateRoomAPI(editingRoom.id, dataUpdate)
         toast.promise(
           promise,
           { pending: 'Đang cập nhật....' }
@@ -235,7 +242,7 @@ function Rooms() {
     roomName: room?.roomName,
     price: room?.price,
     acreage: `${room?.length} x ${room?.width}`,
-    status: room?.status === 'available' && 'Còn trống' || room?.status === 'occupied' && 'Đã thuê' || room?.status === 'maintenance' && 'Đang bảo trì',
+    status: room?.status,
     utilities: room?.utilities?.join(', ') || '',
     members: room.memberIds?.length || 0
   }))
@@ -461,29 +468,6 @@ function Rooms() {
                 mt: 2 // Thêm khoảng cách phía trên
               }}
             >
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                Tiện ích
-              </Typography>
-              <FormControl component="fieldset">
-                <FormGroup sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
-                  <FormControlLabel
-                    control={<Checkbox {...register('utilities')} value="Wifi" />}
-                    label="Wifi"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox {...register('utilities')} value="Điều hòa" />}
-                    label="Điều hòa"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox {...register('utilities')} value="Nước nóng" />}
-                    label="Nước nóng"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox {...register('utilities')} value="Bãi đỗ xe" />}
-                    label="Bãi đỗ xe"
-                  />
-                </FormGroup>
-              </FormControl>
             </Box>
             {editingRoom &&
               <Box
@@ -638,7 +622,7 @@ function Rooms() {
           </DialogActions>
         </form>
       </Dialog >
-      <ModalAddUserToRoom open={openModal} handleClose={() => setOpenModal(false)} room={roomSelect} hostel={hostel}/>
+      <ModalAddUserToRoom open={openModal} handleClose={() => setOpenModal(false)} room={roomSelect} hostel={hostel} />
     </>
   )
 }

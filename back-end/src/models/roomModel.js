@@ -19,7 +19,7 @@ const ROOM_COLLECTION_SCHEMA = Joi.object({
   roomName: Joi.string().required().max(50).trim(),
   length: Joi.number().required(),
   width: Joi.number().required(),
-  utilities: Joi.array().items(Joi.string().max(50).trim().strict()).required(),
+  utilities: Joi.array().items(Joi.string().max(50).trim().strict()).default([]),
   memberIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
   billIds: Joi.array().items(Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)).default([]),
   images: Joi.string().required().messages({
@@ -146,6 +146,18 @@ const pushBillIds = async (roomId, billId) => {
     throw new Error(error)
   }
 }
+const pushUtility = async (roomId, facilityName) => {
+  try {
+    const result = await GET_DB().collection(ROOM_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(roomId) },
+      { $push: { utilities: facilityName } },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 const getRoomsByHostelId = async (hostelId) => {
   try {
     const result = await GET_DB().collection(ROOM_COLLECTION_NAME).aggregate(
@@ -184,6 +196,19 @@ const deleteBillIds = async (roomId, billId) => {
     throw new Error(error)
   }
 }
+const pullFacilityInRoom = async (roomId, facilityName) => {
+  try {
+    // Xóa  có `_id` nằm trong mảng
+    const result = await GET_DB().collection(ROOM_COLLECTION_NAME).updateOne(
+      { _id: new ObjectId(roomId) },
+      { $pull: { utilities: facilityName } },
+      { returnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 export const roomModel = {
   ROOM_COLLECTION_NAME,
   ROOM_COLLECTION_SCHEMA,
@@ -195,5 +220,7 @@ export const roomModel = {
   pushMembers,
   getRoomsByHostelId,
   pushBillIds,
-  deleteBillIds
+  deleteBillIds,
+  pushUtility,
+  pullFacilityInRoom
 }

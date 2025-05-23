@@ -33,13 +33,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import { fetchUtilitiesByHostelIdAPI, selectCurrentUtilities, removeItilities, updateUtilityAPI } from '~/redux/utilitiy/utilitiesSlice'
+import { compareData } from '~/utils/formatters'
 function Utility() {
   // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
   const confirmDelete = useConfirm()
 
   const theme = useTheme() // Lấy thông tin theme
   const [hostels, setHostels] = useState([])
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm()
+  const { register, handleSubmit, setValue, watch, formState: { errors }, reset } = useForm()
   // Mở modal user
   const [open, setOpen] = useState(false)
   // Lưu danh sách các tiện ích cần xóa
@@ -53,6 +54,7 @@ function Utility() {
   // OnClick của nút "Tạo tiện ích"
   const handleOpen = () => {
     setEditingUtility(null) // Đặt về null để xác định chế độ tạo mới
+    reset() // Xóa sạch dữ liệu trong form
     setOpen(true) // Mở Dialog
   }
   const handleClose = () => setOpen(false)
@@ -88,9 +90,9 @@ function Utility() {
   const handleEdit = (utility) => {
     setEditingUtility(utility) // Lưu thông tin nhà trọ vào state
     setValue('waterStart', utility.waterStart) // Điền dữ liệu vào form
-    setValue('waterBegin', utility.waterBegin)
+    setValue('waterEnd', utility.waterEnd)
     setValue('electricStart', utility.electricStart) // Điền dữ liệu vào form
-    setValue('electricBegin', utility.electricBegin)
+    setValue('electricEnd', utility.electricEnd)
     setValue('month', utility.month)
     setValue('roomId', utility.roomId)
     setOpen(true) // Mở Dialog
@@ -100,9 +102,9 @@ function Utility() {
     { field: 'roomName', headerName: 'Tên phòng', flex: 2, headerAlign: 'center' },
     { field: 'month', headerName: 'Tháng/Năm', flex: 1.5, headerAlign: 'center' },
     { field: 'waterStart', headerName: 'Nước đầu tháng', flex: 2, headerAlign: 'center' },
-    { field: 'waterBegin', headerName: 'Nước cuối tháng', flex: 2, headerAlign: 'center' },
+    { field: 'waterEnd', headerName: 'Nước cuối tháng', flex: 2, headerAlign: 'center' },
     { field: 'electricStart', headerName: 'Điện đầu tháng', flex: 2, headerAlign: 'center' },
-    { field: 'electricBegin', headerName: 'Điện cuối tháng', flex: 2, headerAlign: 'center' },
+    { field: 'electricEnd', headerName: 'Điện cuối tháng', flex: 2, headerAlign: 'center' },
     { field: 'toltalUtility', headerName: 'Tổng tiền', flex: 1.5, headerAlign: 'center' },
     {
       field: 'actions',
@@ -128,9 +130,9 @@ function Utility() {
     roomName: utility?.roomInfo?.roomName,
     month: utility?.month,
     waterStart: utility?.waterStart,
-    waterBegin: utility?.waterBegin,
+    waterEnd: utility?.waterEnd,
     electricStart: utility?.electricStart,
-    electricBegin: utility?.electricBegin,
+    electricEnd: utility?.electricEnd,
     toltalUtility: utility?.toltalUtility,
     ...utility
   }))
@@ -143,8 +145,16 @@ function Utility() {
   }
   const createNewUtility = async (data) => {
     if (editingUtility) {
-      data.hostelId = hostel._id
       delete data.roomId
+      const dataUpdate = {
+        ...data,
+        hostelId: hostel._id,
+        waterStart: Number(data.waterStart),
+        waterEnd: Number(data.waterEnd),
+        electricStart: Number(data.electricStart),
+        electricEnd: Number(data.electricEnd)
+      }
+      if (compareData(editingUtility, dataUpdate)) return
       confirmDelete({
         // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
         title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -155,7 +165,7 @@ function Utility() {
         cancellationText: 'Cancel'
       }).then(() => {
         // Gọi API cập nhật nhà trọ ở đây
-        dispatch(updateUtilityAPI({ utilityId: editingUtility._id, data })).then(res => {
+        dispatch(updateUtilityAPI({ utilityId: editingUtility._id, dataUpdate })).then(res => {
           if (!res.error) {
             toast.success('Cập nhật thành công')
           }
@@ -472,7 +482,7 @@ function Utility() {
                   fullWidth
                   margin="normal"
                   label="Số nước cuối tháng"
-                  name="waterBegin"
+                  name="waterEnd"
                   type="text"
                   InputProps={{
                     endAdornment: <InputAdornment position="end">đồng/chữ</InputAdornment> // Thêm đơn vị "m"
@@ -482,7 +492,7 @@ function Utility() {
                       borderRadius: '8px'
                     }
                   }}
-                  {...register('waterBegin', {
+                  {...register('waterEnd', {
                     required: FIELD_REQUIRED_MESSAGE,
                     pattern: {
                       value: POSITIVE_NUMBER_RULE,
@@ -495,7 +505,7 @@ function Utility() {
                   }
                   )}
                 />
-                <FieldErrorAlert errors={errors} fieldName={'waterBegin'} />
+                <FieldErrorAlert errors={errors} fieldName={'waterEnd'} />
               </Box>
             </Box>
             <Box sx={{
@@ -540,7 +550,7 @@ function Utility() {
                   fullWidth
                   margin="normal"
                   label="Số điện cuối tháng"
-                  name="electricBegin"
+                  name="electricEnd"
                   type="text"
                   InputProps={{
                     endAdornment: <InputAdornment position="end">chữ</InputAdornment> // Thêm đơn vị "m"
@@ -550,7 +560,7 @@ function Utility() {
                       borderRadius: '8px'
                     }
                   }}
-                  {...register('electricBegin', {
+                  {...register('electricEnd', {
                     required: FIELD_REQUIRED_MESSAGE,
                     pattern: {
                       value: POSITIVE_NUMBER_RULE,
@@ -563,7 +573,7 @@ function Utility() {
                   }
                   )}
                 />
-                <FieldErrorAlert errors={errors} fieldName={'electricBegin'} />
+                <FieldErrorAlert errors={errors} fieldName={'electricEnd'} />
               </Box>
             </Box>
           </DialogContent>

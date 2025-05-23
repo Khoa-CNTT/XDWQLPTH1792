@@ -10,11 +10,11 @@ export const HOSTEL_TYPES = {
   PRIVATE: 'private'
 }
 export const STATUS_ROOM = {
-  AVAILABLE: 'available',
-  OCCUPIED: 'occupied', //Đã thuê
-  MAINTENANCE: 'maintenance' // đã đặt cọc
+  AVAILABLE: 'Còn trống',
+  OCCUPIED: 'Đã thuê', //Đã thuê
+  MAINTENANCE: 'Đã đặt cọc' // đã đặt cọc
 }
-export const WEBSITE_DOMAIN = (env.BUILD_MODE=== 'production') ? env.WEBSITE_DOMAIN_PRODUCTION : env.WEBSITE_DOMAIN_DEVELOPMENT
+export const WEBSITE_DOMAIN = (env.BUILD_MODE === 'production') ? env.WEBSITE_DOMAIN_PRODUCTION : env.WEBSITE_DOMAIN_DEVELOPMENT
 
 export const DEFAULT_MESSAGES = 1
 export const DEFAULT_ITEMS_PER_MESSAGES = 10
@@ -26,6 +26,11 @@ export const HOSTEL_INVITATION_STATUS = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED'
+}
+export const FACILITY_CONDITION = {
+  GOOD: 'Còn tốt',
+  NEED_REPAIR: 'Cần sửa',
+  BROKEN: 'Hỏng'
 }
 export const BILL_STATUS = {
   PENDING: 'Chưa thanh toán',
@@ -43,6 +48,12 @@ export const CONSTRACT_STATUS = {
 // role user
 export const USER_ROLES = {
   CLIENT: 'client',
-  LANDLORD:'landlord',
+  LANDLORD: 'landlord',
   ADMIN: 'admin'
+}
+// role user
+export const REQUETS_STATUS = {
+  PENDING: 'Đang xử lý',
+  ACCEPTED: 'Chấp nhận',
+  REJECTED: 'Từ chối'
 }
