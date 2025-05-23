@@ -6,6 +6,7 @@ import { notificationsReducer } from './notifications/notificationsSlice'
 import { conversationReducer } from './conversation/conversationSlice'
 import { utilitiesReducer } from './utilitiy/utilitiesSlice'
 import { billsReducer } from './activeBill/activeBillSlice'
+import { activeRequestsReducer } from './repairRequest/repairRequestsSlice'
 /**
  * Cấu hình redux-persist
  * https://www.npmjs.com/package/redux-persist
@@ -32,7 +33,8 @@ const reducers = combineReducers({
   notifications: notificationsReducer,
   conversation: conversationReducer,
   utilities: utilitiesReducer,
-  bills: billsReducer
+  bills: billsReducer,
+  activeRequests: activeRequestsReducer
 })
 // Thực hiện persist Reducer
 const persistedReducers = persistReducer(rootPersistConfig, reducers)

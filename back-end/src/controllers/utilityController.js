@@ -44,7 +44,7 @@ const deleteUtilities = async (req, res, next) => {
     const result = await utilityService.deleteUtilities(ids)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json({
-      message: 'utilitys deleted successfully',
+      message: 'Các tiện ích này đã được xóa',
       deletedCount: result.deletedCount
     })
     // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')

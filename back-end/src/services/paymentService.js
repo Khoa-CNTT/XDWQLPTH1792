@@ -2,7 +2,9 @@ import { createVNPayUrl } from '~/utils/vnpay'
 import { billModel } from '~/models/billsModel'
 import { BILL_STATUS, PAYMENT_STATUS } from '~/utils/constants'
 import { paymentModel } from '~/models/paymentModel'
-
+import { utilityModel } from '~/models/utilityModel'
+import { StatusCodes } from 'http-status-codes'
+import ApiError from '~/utils/ApiError'
 const createPayment = async (billId, amount, ipAddr) => {
   try {
     const result = await createVNPayUrl(billId, amount, ipAddr)
@@ -42,7 +44,16 @@ const checkPayment = async (data) => {
     throw error
   }
 }
+const getListPayment = async (hostelIds) => {
+  try {
+    const result = await paymentModel.findPaymentsByHostelIds(hostelIds)
+    return result
+  } catch (error) {
+    throw error
+  }
+}
 export const paymentService = {
   createPayment,
-  checkPayment
+  checkPayment,
+  getListPayment
 }

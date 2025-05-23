@@ -13,6 +13,8 @@ import { JwtProvider } from '~/providers/JwtProvider'
 
 import { CloudinaryProvider } from '~/providers/Cloudinary'
 import { USER_ROLES } from '~/utils/constants'
+import { conversationModel } from '~/models/conversationModel'
+import { hostelModel } from '~/models/hostelModel'
 const createNew = async (reqBody) => {
   try {
     // Kiểm tra xem email đã tồn tại trong hệ thống của chúng ta hay chưa
@@ -154,7 +156,7 @@ const update = async (userId, reqBody, userAvatarFile) => {
       }
       // Nếu như current_password là đúng chungs ta sẽ hash một cái mật khẩu mới và update lại database
       updatedUser = await userModel.update(existUser._id, {
-        password:  bcryptjs.hashSync(reqBody.new_password, 8)
+        password: bcryptjs.hashSync(reqBody.new_password, 8)
       })
     } else if (userAvatarFile) {
       // Trường hợp upload file lên Cloud Storage, cụ thể là Cloudinary
@@ -177,7 +179,30 @@ const getAllAccounts = async (userId) => {
   try {
     // Query User và kiểm tra chắc chắn
     const existUser = await userModel.findOneById(userId)
-    if (existUser.role !== USER_ROLES.ADMIN ) throw new ApiError(StatusCodes.NOT_FOUND, 'Bạn phải là admin mới có quyền truy cập')
+    if (existUser.role !== USER_ROLES.ADMIN) throw new ApiError(StatusCodes.NOT_FOUND, 'Bạn phải là admin mới có quyền truy cập')
+    const getAllAccountInSystem = await userModel.getAllAccountInSystem()
+    return getAllAccountInSystem
+  } catch (error) {
+    throw error
+  }
+}
+const deleteAccount = async (userId, accountIdtIsDelete) => {
+  try {
+    // Query User và kiểm tra chắc chắn
+    const existUser = await userModel.findOneById(userId)
+    if (existUser.role !== USER_ROLES.ADMIN) throw new ApiError(StatusCodes.NOT_FOUND, 'Bạn phải là admin mới có quyền truy cập')
+    const account = await userModel.findOneById(accountIdtIsDelete)
+    if (account.role === USER_ROLES.ADMIN) throw new ApiError(StatusCodes.NOT_FOUND, 'Bạn không thể xóa tài khoản có quyền này')
+    const conversations = await conversationModel.getConversations(accountIdtIsDelete)
+    const conversationIds = conversations.filter(con => con._id)
+    for (const _id of conversationIds) {
+      await conversationModel.deleteConversation(_id)
+    }
+    const hostels = hostelModel.getHostels(accountIdtIsDelete)
+    const hostelIds = hostels.filter(hostel => hostel._id)
+    if (account.role === USER_ROLES.LANDLORD) {
+      await hostelModel.deleteHostel(account._id, hostelIds)
+    }
     const getAllAccountInSystem = await userModel.getAllAccountInSystem()
     return getAllAccountInSystem
   } catch (error) {
@@ -190,5 +215,6 @@ export const userService = {
   login,
   refreshToken,
   update,
+  deleteAccount,
   getAllAccounts
 }

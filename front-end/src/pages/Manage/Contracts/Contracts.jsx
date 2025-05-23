@@ -194,12 +194,6 @@ function Contracts() {
       <Typography variant="h5" sx={{ fontWeight: '600' }}>
         Hợp đồng thuê phòng
       </Typography>
-      <FormControl component="fieldset">
-        <RadioGroup row value={contractType} onChange={handleContractTypeChange}>
-          <FormControlLabel value="rent" control={<Radio />} label="Thuê phòng" />
-          <FormControlLabel value="deposit" control={<Radio />} label="Đặt cọc phòng" />
-        </RadioGroup>
-      </FormControl>
 
       {/* Bảng hợp đồng */}
       <Divider sx={{ my: 2 }} />
@@ -297,6 +291,8 @@ function Contracts() {
               margin="normal"
               label="Nội dung"
               name="content"
+              multiline
+              minRows={4}
               sx={{
                 '& .MuiInputBase-root': {
                   borderRadius: '8px'

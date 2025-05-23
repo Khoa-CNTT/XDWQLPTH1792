@@ -70,7 +70,7 @@ const getDetails = async (data) => {
     }
     const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).aggregate([
       {
-        $match:  { ...data }
+        $match: { ...data }
       },
       {
         $lookup: {
@@ -167,6 +167,23 @@ const getBills = async (data) => {
     throw new Error(error)
   }
 }
+const findBillsByUtilityIds = async (utilityIds) => {
+  try {
+    const objectIds = utilityIds?.map(id => new ObjectId(id))
+    const result = await GET_DB().collection(BILL_STATUS_COLLECTION_NAME).aggregate([
+      {
+        $match: {
+          $and: [
+            { utilityId: { $in: objectIds } }
+          ]
+        }
+      }
+    ]).toArray()
+    return result
+  } catch (error) {
+    throw error
+  }
+}
 export const billModel = {
   BILL_STATUS_COLLECTION_NAME,
   BILL_COLLECTION_SCHEMA,
@@ -175,5 +192,6 @@ export const billModel = {
   getDetails,
   deleteBill,
   update,
-  getBills
+  getBills,
+  findBillsByUtilityIds
 }

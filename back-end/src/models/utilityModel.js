@@ -18,9 +18,9 @@ const UTILITY_COLLECTION_SCHEMA = Joi.object({
   roomId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   month: Joi.string().pattern(MONTH_YEAR_RULE).message(MONTH_YEAR_RULE_MESSAGE).required(),
   waterStart: Joi.number().required(),
-  waterBegin: Joi.number().required(),
+  waterEnd: Joi.number().required(),
   electricStart: Joi.number().required(),
-  electricBegin: Joi.number().required(),
+  electricEnd: Joi.number().required(),
   toltalUtility: Joi.number().required(),
   createAt: Joi.date().timestamp('javascript').default(Date.now()),
   updatedAt: Joi.date().timestamp('javascript').default(null)
@@ -162,6 +162,24 @@ const getUtilities = async (data) => {
     throw new Error(error)
   }
 }
+const findUtilitiesByHostelIds = async (hostelIds, month) => {
+  try {
+    const objectIds = hostelIds?.map(id => new ObjectId(id))
+    const result = await GET_DB().collection(UTILITY_COLLECTION_NAME).aggregate([
+      {
+        $match: {
+          $and: [
+            { hostelId: { $in: objectIds } },
+            { month: month }
+          ]
+        }
+      }
+    ]).toArray()
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 export const utilityModel = {
   UTILITY_COLLECTION_NAME,
   UTILITY_COLLECTION_SCHEMA,
@@ -171,5 +189,6 @@ export const utilityModel = {
   deleteUtilities,
   update,
   getUtilities,
-  deleteUtilitiesByRoomIds
+  deleteUtilitiesByRoomIds,
+  findUtilitiesByHostelIds
 }

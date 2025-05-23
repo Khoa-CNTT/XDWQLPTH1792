@@ -118,7 +118,7 @@ function Profile() {
               <Avatar sx={{ width: 75, height: 75, mr: 2 }} src={currentUser?.avatar} />
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography variant="a" gutterBottom sx={{ fontFamily: 'Times New Roman', fontSize: '26px' }}>{currentUser?.displayName}</Typography>
-                <Button variant="outlined" component="label">
+                <Button className='interceptor-loading' variant="outlined" component="label">
                   Upload
                   <VisuallyHiddenInput type="file" onChange={uploadAvatar} />
                 </Button>

@@ -16,7 +16,7 @@ const createNew = async (reqBody) => {
     const detailHostel = await hostelModel.findOneById(reqBody.hostelId)
     const dataUtility = {
       ...reqBody,
-      toltalUtility: (reqBody.waterBegin - reqBody.waterStart) * detailHostel.water_price + (reqBody.electricBegin - reqBody.electricStart) * detailHostel.electricity_price
+      toltalUtility: (reqBody.waterEnd - reqBody.waterStart) * detailHostel.water_price + (reqBody.electricEnd - reqBody.electricStart) * detailHostel.electricity_price
     }
     const createdUtility = await utilityModel.createNew(dataUtility)
     const getNewUtility = await utilityModel.findOneById(createdUtility.insertedId)
@@ -51,14 +51,16 @@ const deleteUtilities = async (ids) => {
 }
 const update = async (utilityId, reqBody) => {
   try {
+    console.log('hostelId', reqBody.hostelId)
     const detailHostel = await hostelModel.findOneById(reqBody.hostelId)
+    console.log('detailHostel', detailHostel)
     const updateData = {
       ...reqBody,
       waterStart: Number(reqBody.waterStart),
-      waterBegin: Number(reqBody.waterBegin),
+      waterEnd: Number(reqBody.waterEnd),
       electricStart: Number(reqBody.electricStart),
-      electricBegin: Number(reqBody.electricBegin),
-      toltalUtility: (reqBody.waterBegin - reqBody.waterStart) * detailHostel.water_price + (reqBody.electricBegin - reqBody.electricStart) * detailHostel.electricity_price,
+      electricEnd: Number(reqBody.electricEnd),
+      toltalUtility: (Number(reqBody.waterEnd) - Number(reqBody.waterStart)) * detailHostel.water_price + (reqBody.electricEnd - reqBody.electricStart) * detailHostel.electricity_price,
       updateAt: Date.now()
     }
     delete updateData.hostelId

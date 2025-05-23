@@ -151,7 +151,7 @@ const getHostels = async (userId) => {
             foreignField: 'hostelId',
             as: 'rooms'
           }
-        },
+        }
         // {
         //   $project: {
         //     ownerInfo: 0 // Loại bỏ trường ownerInfo nếu không cần
@@ -266,7 +266,7 @@ const getHostelsPublic = async (find) => {
     ]
 
     if (find?.price) {
-      const price = parseFloat(find.price);
+      const price = parseFloat(find.price)
       pipeline.push({
         $match: {
           $expr: {
@@ -288,8 +288,7 @@ const getHostelsPublic = async (find) => {
   } catch (error) {
     throw new Error(error)
   }
-};
-
+}
 export const hostelModel = {
   HOSTEL_COLLECTION_NAME,
   HOSTEL_COLLECTION_SCHEMA,

@@ -12,6 +12,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import BoyIcon from '@mui/icons-material/Boy'
 import AspectRatioIcon from '@mui/icons-material/AspectRatio'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 function Bedsit({ room }) {
   return (
     <Box sx={{
@@ -23,13 +24,18 @@ function Bedsit({ room }) {
       },
     }}>
       <Link to={`/infor-room/${room._id}`}>
-        <Card sx={{
-          width: 300,
-          height: 450,
-          bgcolor: 'white',
-          borderRadius: '0px',
-          boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
-        }}>
+        <Card
+          component={motion.div}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          sx={{
+            width: 300,
+            height: 450,
+            bgcolor: 'white',
+            borderRadius: '10px',
+            boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)'
+          }}>
           <Box sx={{ position: 'relative' }}>
             <CardMedia
               component="img"
@@ -40,7 +46,6 @@ function Bedsit({ room }) {
                 objectFit: 'cover'// cắt ảnh vửa khít với kích thước
               }}
             >
-
             </CardMedia>
             <Badge
               badgeContent={5}

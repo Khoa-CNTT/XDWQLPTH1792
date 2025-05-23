@@ -24,6 +24,7 @@ import {
 } from '~/utils/validators'
 import { districtsInDaNang } from '~/utils/constants'
 import ModalHostel from '~/components/Modal/ModalHostel'
+import { motion } from 'framer-motion'
 function HouesPage() {
   const [tabValue, setTabValue] = useState(0)
   const [hostels, setHostels] = useState(null)
@@ -70,7 +71,12 @@ function HouesPage() {
             justifyContent: 'center'
           }}
         >
-          <Container maxWidth='md' sx={{ background: 'rgba(255, 255, 255, 0.9)', p: 4, borderRadius: 2, boxShadow: 3 }}>
+          <Container maxWidth='md'
+            component={motion.div}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            sx={{ background: 'rgba(255, 255, 255, 0.9)', p: 4, borderRadius: 2, boxShadow: 3 }}>
             <Typography color='black' variant='h4' fontWeight='bold' gutterBottom>
               Bạn muốn tìm một nhà trọ rẻ và tốt ở Đà Nẵng?
             </Typography>

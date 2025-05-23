@@ -7,6 +7,7 @@ import AppBar from '~/components/AppBar'
 import { checkVNPayResultAPI } from '~/apis'
 import { toast } from 'react-toastify'
 import { PAYMENT_STATUS } from '~/utils/constants'
+import moment from 'moment'
 
 function ReturnVnpay() {
   const [searchParams] = useSearchParams()
@@ -81,7 +82,7 @@ function ReturnVnpay() {
               <Grid item xs={6}>{paymentData?.vnp_TransactionNo}</Grid>
 
               <Grid item xs={6}><strong>Thời gian:</strong></Grid>
-              <Grid item xs={6}>{paymentData?.vnp_PayDate}</Grid>
+              <Grid item xs={6}>{moment(paymentData?.vnp_PayDate, 'YYYYMMDDHHmmss').format('DD/MM/YYYY HH:mm:ss')}</Grid>
             </Grid>
             <Box mt={4} textAlign="center">
               <Button
@@ -89,7 +90,7 @@ function ReturnVnpay() {
                 color="primary"
                 href="/payment"
               >
-                Về trang chủ
+                Về trang hóa đơn
               </Button>
             </Box>
           </Paper>

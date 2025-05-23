@@ -59,9 +59,9 @@ function ModalContract({ open, handleClose, contract }) {
             textTransform: 'uppercase',
             p: 4
           }}>
-            {`HỢP ĐỒNG THUÊ PHÒNG TRỌ ${contract?.hostelInfo?.hostelName}`}
+            {`${contract?.contractName} ${contract?.hostelInfo?.hostelName}`}
           </Typography>
-          <Typography gutterBottom>Số: HD-{contract?.id || '0001'}</Typography>
+          <Typography gutterBottom>Số: HD-{contract?._id || '0001'}</Typography>
 
           <Box mt={2}>
             <Typography variant='subtitle1' fontWeight='bold'>
@@ -112,6 +112,7 @@ function ModalContract({ open, handleClose, contract }) {
             <Typography>- Bên B thanh toán đúng hạn, tuân thủ nội quy khu trọ.</Typography>
             <Typography>- Bên A cung cấp dịch vụ đầy đủ, đúng thỏa thuận.</Typography>
             <Typography>- Hai bên tự nguyện và cam kết thực hiện đầy đủ các điều khoản.</Typography>
+            <Typography>- {contract?.content}</Typography>
           </Box>
 
           <Box mt={2}>
@@ -122,6 +123,8 @@ function ModalContract({ open, handleClose, contract }) {
               <Grid item xs={6} textAlign='center'>
                 <Typography>Đại diện Bên A</Typography>
                 <Typography>(Ký, ghi rõ họ tên)</Typography>
+                {/* <Typography>{contract?.ownerInfo?.displayName.split(' ').pop()}</Typography>
+                <Typography>{contract?.ownerInfo?.displayName}</Typography> */}
               </Grid>
               <Grid item xs={6} textAlign='center'>
                 <Typography>Đại diện Bên B</Typography>

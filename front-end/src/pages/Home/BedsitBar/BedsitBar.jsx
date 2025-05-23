@@ -7,7 +7,7 @@ import VpnLockIcon from '@mui/icons-material/VpnLock'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 import { useSelector } from 'react-redux'
-import { selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
+import { selectCurrentUser } from '~/redux/user/userSlice'
 import InviteHostelUser from './InviteHostelUser'
 import HostelUserGroup from './HostelUserGroup'
 const MENU_STYLES = {
@@ -19,7 +19,8 @@ const MENU_STYLES = {
     bgcolor: 'primary.50'
   }
 }
-function BedsitBar({ hostel}) {
+function BedsitBar({ hostel }) {
+  const user = useSelector(selectCurrentUser)
   return (
     <Box sx={{
       width: '100%',
@@ -41,20 +42,13 @@ function BedsitBar({ hostel}) {
         </Tooltip>
         <Chip
           sx={MENU_STYLES}
-          icon={<VpnLockIcon />} label='Public' clickable />
-        {/* <Chip
-          sx={MENU_STYLES}
-          icon={<AddToDriveIcon />} label="Add to Google Drive" clickable />
-        <Chip
-          sx={MENU_STYLES}
-          icon={<BoltIcon />} label="Automation" clickable />
-        <Chip
-          sx={MENU_STYLES}
-          icon={<FilterListIcon />} label="Filters" clickable /> */}
+          icon={<VpnLockIcon />} label={hostel?.type} clickable />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <InviteHostelUser hostelId={hostel._id}/>
-        <HostelUserGroup hostelUsers={hostel?.FE_allUsers}/>
+        {user._id === hostel.ownerId &&
+          <InviteHostelUser hostelId={hostel._id} />
+        }
+        <HostelUserGroup hostelUsers={hostel?.FE_allUsers} />
         {/** Xử lý hiển thị danh sách thành viên của board */}
       </Box>
     </Box>

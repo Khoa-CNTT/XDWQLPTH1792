@@ -9,7 +9,6 @@ const createNew = async (req, res, next) => {
     roomName: Joi.string().required().max(50).trim(),
     length: Joi.number().required(),
     width: Joi.number().required(),
-    utilities: Joi.array().items(Joi.string().max(50).trim().strict()),
     price: Joi.number().required(),
     images: Joi.string().required().messages({
       'any.required': 'Image is required',
@@ -43,7 +42,6 @@ const update = async (req, res, next) => {
     roomName: Joi.string().max(50).trim().strict(),
     length: Joi.number(),
     width: Joi.number(),
-    utilities: Joi.array().items(Joi.string().max(50).trim().strict()),
     price: Joi.number(),
     images: Joi.string().messages({
       'any.required': 'Image is required',

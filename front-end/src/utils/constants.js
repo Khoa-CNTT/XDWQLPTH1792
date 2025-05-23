@@ -23,9 +23,24 @@ export const CONSTRACT_STATUS = {
   EXPIRED: 'Đã hết hạn',
   CANCELED: 'Đã hủy'
 }
+export const REQUETS_STATUS = {
+  PENDING: 'Đang xử lý',
+  ACCEPTED: 'Chấp nhận',
+  REJECTED: 'Từ chối'
+}
+export const FACILITY_CONDITION = {
+  GOOD: 'Còn tốt',
+  NEED_REPAIR: 'Cần sửa',
+  BROKEN: 'Hỏng'
+}
 export const BILL_STATUS = {
   PENDING: 'Chưa thanh toán',
   SUCCESS: 'Đã thanh toán'
+}
+export const STATUS_ROOM = {
+  AVAILABLE: 'Còn trống',
+  OCCUPIED: 'Đã thuê', //Đã thuê
+  MAINTENANCE: 'Đã đặt cọc' // đã đặt cọc
 }
 export const districtsInDaNang = [
   {

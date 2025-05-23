@@ -24,6 +24,8 @@ import { USER_ROLES } from '~/utils/constants'
 import { registerUserAPI } from '~/apis'
 import { toast } from 'react-toastify'
 import ModalUpdateAccount from '~/components/Modal/ModalUpdateAccount'
+import { useConfirm } from 'material-ui-confirm'
+import DeleteIcon from '@mui/icons-material/Delete'
 function Accounts() {
   // Mở modal updateAccount
   const [open, setOpen] = useState(false)
@@ -107,14 +109,27 @@ function Accounts() {
           }}>
             Cập nhật
           </Button>
-          <Button variant="outlined" color="secondary" onClick={() => alert('Xóa tài khoản')}>
+          <Button variant="outlined" color="secondary" onClick={(e) => handleDeleteBill(e.target.value
+
+          )}>
             Xóa
           </Button>
         </Box>
       )
     }
   ]
-
+  const confirmDelete = useConfirm()
+  const handleDeleteBill = (data) => {
+    confirmDelete({
+      title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <DeleteIcon sx={{ color: 'warning.dark' }} /> Xóa tài khoản
+      </Box>,
+      description: 'Bạn có chắc chắn muốn xóa tài khoản này không?',
+      confirmationText: 'Confirm',
+      cancellationText: 'Cancel'
+    }).then(() => {
+    })
+  }
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
       <Typography variant="h4" color="primary" sx={{ textAlign: 'center' }}>Quản Lý Tài Khoản</Typography>

@@ -36,6 +36,9 @@ const deleteRooms = async (req, res, next) => {
   try {
     const ids = req.query.ids // Lấy dữ liệu từ query string
     const result = await roomService.deleteRooms(ids)
+    console.log('roomiD', ids)
+    console.log('type', typeof ids)
+
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json({
       message: 'Rooms deleted successfully',
