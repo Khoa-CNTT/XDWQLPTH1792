@@ -1,7 +1,7 @@
 
 /**
- * Updated by trungquandev.com's author on Sep 27 2023
- * YouTube: https://youtube.com/@trungquandev
+ * Updated by 0dev.com's author on Sep 27 2023
+ * YouTube: https://youtube.com/@0dev
  * "A bit of fragrance clings to the hand that gives flowers!"
  * NOTE: (Muốn hiểu rõ hơn về code trong file này thì vui lòng xem video 54 trong bộ MERN Stack trên kênh Youtube của mình.)
 */

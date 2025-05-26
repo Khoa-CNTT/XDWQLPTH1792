@@ -27,7 +27,7 @@ const CONTRACT_COLLECTION_SCHEMA = Joi.object({
 const validateBeforeCreate = async (data) => {
   return await CONTRACT_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
-const INVALID_UPDATE_FIELDS = ['_id', 'createAt']
+const INVALID_UPDATE_FIELDS = ['_id', 'createAt', 'hostelId', 'roomId', 'tenantId']
 const createNew = async (data) => {
   try {
     const valiData = await validateBeforeCreate(data)
@@ -148,6 +148,25 @@ const getContracts = async (userId) => {
     throw new Error(error)
   }
 }
+const update = async (contractId, updateData) => {
+  try {
+    // Lọc những field mà chúng ta không cho phép cập nhật linh tinh
+    Object.keys(updateData).forEach(fieldName => {
+      if (INVALID_UPDATE_FIELDS.includes(fieldName)) {
+        delete updateData[fieldName] // Xóa các trư��ng không cho phép update
+      }
+    })
+
+    const result = await GET_DB().collection(CONTRACT_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(contractId) },
+      { $set: updateData },
+      { returnDocument: 'after' }// Trả về kết quả sau khi đã cập nhật
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 export const contractModel = {
   CONTRACT_COLLECTION_NAME,
   CONTRACT_COLLECTION_SCHEMA,
@@ -155,5 +174,6 @@ export const contractModel = {
   findOneById,
   findContract,
   getContracts,
-  getDetails
+  getDetails,
+  update
 }

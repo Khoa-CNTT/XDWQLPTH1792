@@ -9,7 +9,8 @@ const Router = express.Router()
 
 Router.route('/register')
   .post(userValidation.createNew, userController.createNew)
-
+Router.route('/generatePassword')
+  .put(userValidation.generatePassword, userController.generatePassword)
 Router.route('/verify')
   .put(userValidation.verifyAccount, userController.verifyAccount)
 Router.route('/login')
@@ -32,7 +33,8 @@ Router.route('/:id')
     multerUploadMiddeware.upload.single('avatar'),
     userValidation.update,
     userController.updateByAdmin)
-  .delete(authMiddleware.isAuthorized, userController.deleteAccount)
 Router.route('/')
   .get(authMiddleware.isAuthorized, userController.getAllAccounts)
+Router.route('/deletAccount/:id')
+  .put(authMiddleware.isAuthorized, userController.deleteAccount)
 export const userRoute = Router

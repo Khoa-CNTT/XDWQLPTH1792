@@ -8,7 +8,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchHostelDetailsAPI, selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
-import { fetchHostelsAPI, getListPaymentsAPI } from '~/apis'
+import { fetchHostelsByOwnerIdAPI, getListPaymentsAPI } from '~/apis'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
@@ -57,14 +57,13 @@ function OverviewReport() {
   const [hostels, setHostels] = useState(null)
   const [selectedDate, setSelectedDate] = useState(dayjs())
   const [selectedHostel, setSelectedHostel] = useState('all')
-  const [selectedRoomId, setSelectedRoomId] = useState('')
   const [listDataPayments, setLishDataPayment] = useState([])
   const handlePropertyChange = (event) => {
     setSelectedHostel(event.target.value)
   }
 
   useEffect(() => {
-    fetchHostelsAPI().then((res) => {
+    fetchHostelsByOwnerIdAPI().then((res) => {
       setHostels(res)
     })
   }, [])
@@ -78,12 +77,12 @@ function OverviewReport() {
   }
   const hostelIds = hostels?.map(hostel => hostel._id)
   useEffect(() => {
-    if (hostelIds) {
+    if (hostelIds?.length > 0) {
       getListPaymentsAPI({ hostelIds }).then((res) => {
         setLishDataPayment(res)
       })
     }
-  }, [hostels])
+  }, [hostelIds])
   if (selectedHostel === 'all') {
     sumRoom = hostels?.reduce((sum, hostel) => sum + (hostel.rooms?.length || 0), 0)
     sumTenants = hostels?.reduce((sum, hostel) => sum + (hostel.tenantIds?.length || 0), 0)
@@ -213,7 +212,7 @@ function OverviewReport() {
           <StatCard icon={sumTotal >= sumTotalLastMonth ? TrendingUpIcon : TrendingDownIcon}
             label={sumTotal >= sumTotalLastMonth ? 'Tăng trưởng' : 'Giảm'}
             value={sumTotal >= sumTotalLastMonth ?
-              `Tăng ${(sumTotal / (sumTotalLastMonth || 1) * 100).toFixed(2)}% so với tháng trước`
+              `Tăng ${(sumTotal / (sumTotalLastMonth || 1) * 100 - 100).toFixed(2)}% so với tháng trước`
               : `Giảm ${(100 - (sumTotal / sumTotalLastMonth * 100)).toFixed(2)}% so với tháng trước`}
             color="#9c27b0" />
         </Grid>
@@ -233,7 +232,7 @@ function OverviewReport() {
           <Typography variant="h6" gutterBottom fontWeight={700}>
             📈 Doanh thu theo tháng
           </Typography>
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer width="100%" height={320} >
             <LineChart
               data={getMonthlyRevenueByYear(listDataPayments, selectedYear, selectedHostel)}
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
@@ -246,7 +245,11 @@ function OverviewReport() {
               </defs>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
-              <YAxis tickFormatter={(v) => `${v}M`} />
+              <YAxis
+                domain={[0, 5000000]} // Giới hạn tối đa là 7 triệu
+                width={80} // đảm bảo đủ chỗ cho số lớn như "10000000"
+                tick={{ fontSize: 16 }} // nhỏ gọn hơn
+              />
               <Tooltip formatter={(v) => `${v} triệu`} />
               <Line
                 type="monotone"

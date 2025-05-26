@@ -51,9 +51,7 @@ const deleteUtilities = async (ids) => {
 }
 const update = async (utilityId, reqBody) => {
   try {
-    console.log('hostelId', reqBody.hostelId)
     const detailHostel = await hostelModel.findOneById(reqBody.hostelId)
-    console.log('detailHostel', detailHostel)
     const updateData = {
       ...reqBody,
       waterStart: Number(reqBody.waterStart),

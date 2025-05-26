@@ -1,6 +1,6 @@
 /**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
+ * Updated by 0dev.com's author on August 17 2023
+ * YouTube: https://youtube.com/@0dev
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
 import { StatusCodes } from 'http-status-codes'
@@ -20,6 +20,16 @@ const verifyAccount = async (req, res, next) => {
   try {
     const result = await userService.verifyAccount(req.body)
     res.status(StatusCodes.OK).json(result)
+  } catch (error) {
+    next(error)
+  }
+}
+const generatePassword = async (req, res, next) => {
+  try {
+    await userService.generatePassword(req.body)
+    res.status(StatusCodes.OK).json({
+      message: 'Đổi mật khẩu thành công. Vui lòng kiểm tra email để nhận mật khẩu mới.'
+    })
   } catch (error) {
     next(error)
   }
@@ -67,7 +77,7 @@ const refreshToken = async (req, res, next) => {
     res.clearCookie('refreshToken')
     res.status(StatusCodes.OK).json(result)
   } catch (error) {
-    next(new ApiError(StatusCodes.FORBIDDEN, 'Please sign in!( Error from refresh Token'))
+    next(new ApiError(StatusCodes.FORBIDDEN, 'Hãy đăng nhập lại!'))
   }
 }
 const update = async (req, res, next) => {
@@ -102,13 +112,14 @@ const getAllAccounts = async (req, res, next) => {
 const deleteAccount = async (req, res, next) => {
   try {
     const userId = req.jwtDecoded._id
-    const accountIsDeletedId = req.query
+    const accountIsDeletedId = req.params.id
     const updatedUser = await userService.deleteAccount(userId, accountIsDeletedId)
     res.status(StatusCodes.OK).json(updatedUser)
   } catch (error) {
     next(error)
   }
 }
+
 export const userController = {
   createNew,
   verifyAccount,
@@ -118,5 +129,6 @@ export const userController = {
   update,
   getAllAccounts,
   updateByAdmin,
-  deleteAccount
+  deleteAccount,
+  generatePassword
 }

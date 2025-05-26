@@ -42,7 +42,7 @@ function Profiles() {
   const confirmLogout = useConfirm()
   const handleLogout = () => {
     confirmLogout({
-      title: 'Log out your account? ',
+      title: 'Bạn có muốn đăng xuất? ',
       confirmationText: 'Confirm',
       cancellationText: 'Cancel'
     }).then(() => {

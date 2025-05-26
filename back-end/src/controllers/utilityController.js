@@ -15,7 +15,7 @@ const getDetails = async (req, res, next) => {
     const hostel = await utilityService.getDetails(hostelId)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(hostel)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -29,7 +29,7 @@ const getUtilitiesByHostelId = async (req, res, next) => {
     const hostel = await utilityService.getUtilitiesByHostelId(req.query)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(hostel)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -47,7 +47,7 @@ const deleteUtilities = async (req, res, next) => {
       message: 'Các tiện ích này đã được xóa',
       deletedCount: result.deletedCount
     })
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -62,7 +62,7 @@ const update = async (req, res, next) => {
     const result = await utilityService.update(utilityId, req.body)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(result)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

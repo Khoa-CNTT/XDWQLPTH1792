@@ -27,7 +27,7 @@ const getDetails = async (req, res, next) => {
     const conversation = await conversationService.getDetails(conversationId, currentUserId)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(conversation)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

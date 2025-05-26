@@ -5,7 +5,7 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianG
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
-import { getListPaymentsAPI, fetchHostelsAPI } from '~/apis'
+import { getListPaymentsAPI, fetchHostelsByOwnerIdAPI } from '~/apis'
 
 function UtilityReport() {
   const [hostels, setHostels] = useState([])
@@ -15,7 +15,7 @@ function UtilityReport() {
   const [listPayments, setListPayments] = useState([])
 
   useEffect(() => {
-    fetchHostelsAPI().then(res => setHostels(res))
+    fetchHostelsByOwnerIdAPI().then(res => setHostels(res))
   }, [])
 
   const hostelOptions = [{ _id: 'all', hostelName: 'Tất cả nhà trọ' }, ...hostels]
@@ -37,10 +37,11 @@ function UtilityReport() {
   })
 
   const dataByMonth = Array.from({ length: 12 }, (_, i) => {
-    const monthKey = `${i + 1}/${selectedYear}`
+    const monthKey = `${String(i + 1).padStart(2, '0')}/${selectedYear}`
     const monthlyData = filteredPayments.filter(p => p?.utility?.month === monthKey)
-    const totalElectric = monthlyData.reduce((sum, p) => sum + (p?.utility?.electric || 0), 0)
-    const totalWater = monthlyData.reduce((sum, p) => sum + (p?.utility?.water || 0), 0)
+    const totalElectric = monthlyData.reduce((sum, p) => sum + ((p?.utility?.electricEnd - p?.utility?.electricStart) || 0), 0)
+    const totalWater = monthlyData.reduce((sum, p) => sum + ((p?.utility?.waterEnd - p?.utility?.waterStart) || 0), 0)
+    console.log('data', { month: monthKey, electric: totalElectric, water: totalWater })
     return { month: monthKey, electric: totalElectric, water: totalWater }
   })
 

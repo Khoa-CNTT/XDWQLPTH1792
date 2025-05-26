@@ -56,7 +56,7 @@ function AppBar() {
         alignItems: 'center',
         gap: 2
       }}>
-        <TextField
+        {/* <TextField
           id="outlined-basic"
           label="Tìm kiếm nhà trọ"
           type="text"
@@ -106,7 +106,7 @@ function AppBar() {
               }
             }
 
-          }} />
+          }} /> */}
         <ModeSelect />
         <Notifications />
         <Tooltip title="Help" >

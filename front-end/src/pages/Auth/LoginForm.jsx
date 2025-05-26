@@ -120,7 +120,7 @@ function LoginForm() {
               type="submit"
               variant="contained"
               sx={{
-                bgcolor:'#473C8B'
+                bgcolor: '#473C8B'
               }}
               size="large"
               fullWidth
@@ -129,6 +129,9 @@ function LoginForm() {
             </Button>
           </CardActions>
           <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
+            <Link to="/generate-password" style={{ textDecoration: 'none' }}>
+              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Quên mật khẩu!</Typography>
+            </Link>
             <Typography>Bạn cần tạo tài khoản mới ?</Typography>
             <Link to="/register" style={{ textDecoration: 'none' }}>
               <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Tạo tài khoản !</Typography>

@@ -3,7 +3,6 @@ import { Paper, Box, Typography, Button, TextField, Divider } from '@mui/materia
 import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
 import { useTheme } from '@mui/material/styles'
-import { fetchAllAccountsAPI } from '~/apis'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
@@ -21,7 +20,7 @@ import {
 } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { USER_ROLES } from '~/utils/constants'
-import { registerUserAPI } from '~/apis'
+import { registerUserAPI, deleteAccountAPI, fetchAllAccountsAPI } from '~/apis'
 import { toast } from 'react-toastify'
 import ModalUpdateAccount from '~/components/Modal/ModalUpdateAccount'
 import { useConfirm } from 'material-ui-confirm'
@@ -93,14 +92,15 @@ function Accounts() {
     },
     { field: 'displayName', headerName: 'Tên Tài Khoản', flex: 1.5, headerAlign: 'center' },
     { field: 'email', headerName: 'Email', flex: 2, headerAlign: 'center' },
-    { field: 'isActive', headerName: 'Xác thực', flex: 0.7, headerAlign: 'center' },
+    { field: 'isActive', headerName: 'Xác thực', flex: 0.8, headerAlign: 'center' },
+    { field: '_destroy', headerName: 'Đã khóa', flex: 1, headerAlign: 'center' },
     { field: 'role', headerName: 'Quyền', flex: 1, headerAlign: 'center' },
     { field: 'createAt', headerName: 'Ngày Tạo', flex: 0.7, headerAlign: 'center' },
     {
       field: 'actions',
       headerName: 'Hành Động',
       headerAlign: 'center',
-      width: 200, // Tăng chiều rộng để chứa cả hai nút
+      width: 190, // Tăng chiều rộng để chứa cả hai nút
       renderCell: (params) => (
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button variant="outlined" color="primary" onClick={() => {
@@ -109,9 +109,7 @@ function Accounts() {
           }}>
             Cập nhật
           </Button>
-          <Button variant="outlined" color="secondary" onClick={(e) => handleDeleteBill(e.target.value
-
-          )}>
+          <Button variant="outlined" color="secondary" onClick={() => handleDeleteAccount(params.row)}>
             Xóa
           </Button>
         </Box>
@@ -119,15 +117,28 @@ function Accounts() {
     }
   ]
   const confirmDelete = useConfirm()
-  const handleDeleteBill = (data) => {
+  const handleDeleteAccount = (data) => {
+    console.log('dataClick', data)
+    if (data._destroy) return
     confirmDelete({
       title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <DeleteIcon sx={{ color: 'warning.dark' }} /> Xóa tài khoản
       </Box>,
-      description: 'Bạn có chắc chắn muốn xóa tài khoản này không?',
+      description: 'Bạn có chắc chắn muốn khóa tài khoản này không?',
       confirmationText: 'Confirm',
       cancellationText: 'Cancel'
     }).then(() => {
+      const promise = deleteAccountAPI(data.id)
+      toast.promise(
+        promise,
+        { pending: 'Đang khóa tài khoản' }
+      ).then((res) => {
+        if (!res.error) {
+          toast.success('Khóa thành công')
+          setRefresh(prev => !prev)
+        }
+      }
+      )
     })
   }
   return (

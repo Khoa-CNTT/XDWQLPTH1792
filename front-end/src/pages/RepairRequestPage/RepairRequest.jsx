@@ -31,6 +31,7 @@ import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { fetchRequestDetailsAPI, selectCurrentActiveRequest, addActiveRequest } from '~/redux/repairRequest/repairRequestsSlice'
 import { singleFileValidator } from '~/utils/validators'
 import { REQUETS_STATUS } from '~/utils/constants'
+import { socketIoInstance } from '~/socketClient'
 const RepairRequestForm = () => {
   const dispatch = useDispatch()
   const user = useSelector(selectCurrentUser)
@@ -98,6 +99,7 @@ const RepairRequestForm = () => {
         room: rooms?.find(room => room?.memberIds?.includes(user._id))
       }
       dispatch(addActiveRequest(dataUpdate))
+      socketIoInstance.emit('FE_USER_REPAIR_REQUEST', dataUpdate)
       reset({
         hostelId: '',
         roomId: '',

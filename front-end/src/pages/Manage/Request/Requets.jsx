@@ -10,7 +10,7 @@ import {
   fetchRequestDetailsAPI,
   selectCurrentActiveRequest
 } from '~/redux/repairRequest/repairRequestsSlice'
-import { fetchHostelsAPI, fetchRequestByHostelId, updateRequestAPI } from '~/apis'
+import { fetchHostelsByOwnerIdAPI, fetchRequestByHostelId, updateRequestAPI } from '~/apis'
 import { REQUETS_STATUS } from '~/utils/constants'
 const Requests = () => {
   const dispatch = useDispatch()
@@ -21,7 +21,7 @@ const Requests = () => {
 
   useEffect(() => {
     dispatch(fetchRequestDetailsAPI())
-    fetchHostelsAPI().then(res => {
+    fetchHostelsByOwnerIdAPI().then(res => {
       setHostels(res || [])
       if (res.length > 0) {
         setSelectedHostelId(res[0]._id) // Đặt nhà trọ đầu tiên làm mặc định

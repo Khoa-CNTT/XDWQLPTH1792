@@ -31,9 +31,7 @@ function TabPanel({ children, value, index }) {
 const tabList = [
   { label: 'Tổng Quan', icon: <BarChartIcon />, component: <OverviewReport/> },
   { label: 'Doanh Thu', icon: <AttachMoneyIcon />, component: <RevenueReport/> },
-  { label: 'Điện - Nước', icon: <FlashOnIcon />, component: <UtilityReport/> },
-  { label: 'Khách Trọ', icon: <PeopleAltIcon />, component: <TenantReport/> },
-  { label: 'Phòng', icon: <HomeWorkIcon />, component: <RoomReport/> }
+  { label: 'Điện - Nước', icon: <FlashOnIcon />, component: <UtilityReport/> }
 ]
 
 export default function ReportPage() {

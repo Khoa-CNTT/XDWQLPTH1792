@@ -12,8 +12,6 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import FormControl from '@mui/material/FormControl'
 import DialogTitle from '@mui/material/DialogTitle'
-import Checkbox from '@mui/material/Checkbox'
-import FormGroup from '@mui/material/FormGroup'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import AddIcon from '@mui/icons-material/Add'
 import { useState, useEffect } from 'react'
@@ -100,7 +98,7 @@ function Rooms() {
 
   const hostel = useSelector(selectCurrentActiveHostel)
 
-  const uploadAvatar = (e) => {
+  const uploadAvatar = async (e) => {
     // Lấy file thông qua e.target?.files[0] và validate nó trước khi xử lý
     const error = singleFileValidator(e.target?.files[0])
     if (error) {
@@ -112,22 +110,11 @@ function Rooms() {
     let reqData = new FormData()
     reqData.append('images', e.target?.files[0])
     // Gọi API...
-    const promise = uploadImagesAPI(reqData)
-    toast.promise(
-      promise,
-      { pending: 'Đang tải ảnh lên....' }
-    ).then(res => {
-      // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
-      if (!res.error) {
-        toast.success('Tải thành công')
-      }
-      // Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng 1 file liên
-      //tiếp được
-      const url = `${res}`
-      setPreviewUrl(url)
-      setValue('images', url) // Lưu URL vào state hoặc form state nếu cần thiết
-      e.target.value = ''
-    })
+    const promise = await uploadImagesAPI(reqData)
+    const url = `${promise}`
+    setPreviewUrl(url)
+    setValue('images', url) // Lưu URL vào state hoặc form state nếu cần thiết
+    e.target.value = ''
 
   }
   // Danh sách tiêu dề của bảng
@@ -178,7 +165,8 @@ function Rooms() {
       const dataUpdate = {
         ...data,
         length: Number(data.length),
-        width: Number(data.width)
+        width: Number(data.width),
+        price: Number(data.price)
       }
       if (compareData(editingRoom, dataUpdate)) return
       confirmUpdateOrDelete({

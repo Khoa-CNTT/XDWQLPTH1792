@@ -1,4 +1,3 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
 import { Link, useNavigate } from 'react-router-dom'
 import { Box } from '@mui/material'
 import Button from '@mui/material/Button'
@@ -20,22 +19,22 @@ import {
 } from '~/utils/validators'
 
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
-import { registerUserAPI } from '~/apis'
+import { generatePasswordAPI } from '~/apis'
 import { toast } from 'react-toastify'
-function RegisterForm() {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm()
+function GeneratePasswordForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm()
   const navigate = useNavigate()
-  const submitRegister = (data) => {
-    const { email, password } = data
+  const submitGeneratePassword = (data) => {
     toast.promise(
-      registerUserAPI({ email, password }),
-      { pending: 'Registration is in progress....' }
-    ).then(user => {
-      navigate(`/login?registeredEmail=${user.email}`)
+      generatePasswordAPI(data),
+      { pending: 'Đang đổi mật khẩu....' }
+    ).then((res) => {
+      toast.success(`${res.message}`)
+      navigate('/login')
     })
   }
   return (
-    <form onSubmit={handleSubmit(submitRegister)}>
+    <form onSubmit={handleSubmit(submitGeneratePassword)}>
       <Zoom in={true} style={{ transitionDelay: '200ms' }}>
         <MuiCard sx={{ minWidth: 380, maxWidth: 380, marginTop: '6em' }}>
           <Box sx={{
@@ -69,39 +68,6 @@ function RegisterForm() {
               />
               <FieldErrorAlert errors={errors} fieldName={'email'} />
             </Box>
-            <Box sx={{ marginTop: '1em' }}>
-              <TextField
-                fullWidth
-                label="Nhập password..."
-                type="password"
-                variant="outlined"
-                error={!!errors['password']}
-                {...register('password', {
-                  required: FIELD_REQUIRED_MESSAGE,
-                  pattern: {
-                    value: PASSWORD_RULE,
-                    message: PASSWORD_RULE_MESSAGE
-                  }
-                })}
-              />
-              <FieldErrorAlert errors={errors} fieldName={'password'} />
-            </Box>
-            <Box sx={{ marginTop: '1em' }}>
-              <TextField
-                fullWidth
-                label="Nhập lại mật khẩu..."
-                type="password"
-                variant="outlined"
-                error={!!errors['password_comfirmation']}
-                {...register('password_comfirmation', {
-                  validate: (value) => {
-                    if (value === watch('password')) return true
-                    return 'Password comfirmation does not match'
-                  }
-                })}
-              />
-              <FieldErrorAlert errors={errors} fieldName={'password_comfirmation'} />
-            </Box>
           </Box>
           <CardActions sx={{ padding: '0 1em 1em 1em' }}>
             <Button
@@ -114,13 +80,10 @@ function RegisterForm() {
               size="large"
               fullWidth
             >
-              Đăng ký
+              Đổi mật khẩu
             </Button>
           </CardActions>
           <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
-            <Link to="/generate-password" style={{ textDecoration: 'none' }}>
-              <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Quên mật khẩu!</Typography>
-            </Link>
             <Typography>Bạn đã có tài khoản ?</Typography>
             <Link to="/login" style={{ textDecoration: 'none' }}>
               <Typography sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}>Đăng nhập!</Typography>
@@ -132,4 +95,4 @@ function RegisterForm() {
   )
 }
 
-export default RegisterForm
+export default GeneratePasswordForm

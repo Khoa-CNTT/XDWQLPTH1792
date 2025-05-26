@@ -1,6 +1,6 @@
 /**
  * YouTube: TrungQuanDev - Một Lập Trình Viên
- * Created by trungquandev.com's author on Sep 27, 2023
+ * Created by 0dev.com's author on Sep 27, 2023
  */
 
 import { pick } from 'lodash'
@@ -23,5 +23,17 @@ export const slugify = (val) => {
 // Lấy một vài dữ liệu củ thể trong user để tránh việc trẳ các dữ liệu nhạy cảm như hash password
 export const pickUser = (user) => {
   if (!user) return {}
-  return pick(user, ['_id', 'email', 'username', 'displayName', 'avatar', 'role', 'dateOfBirth', 'gender', 'phone', 'address', 'citizenId', 'isActive', 'createdAt', 'updateAt'])
+  return pick(user, ['_id', 'email', 'username', 'displayName', 'avatar', 'role', 'dateOfBirth', 'gender', 'phone', 'address', 'citizenId', 'isActive', 'createdAt', 'updateAt', '_destroy'])
+}
+export const isFutureOrToday = (dateStr) => {
+  const [day, month, year] = dateStr.split('/').map(Number)
+
+  // Tạo đối tượng Date từ input
+  const inputDate = new Date(year, month - 1, day) // Tháng bắt đầu từ 0
+
+  // Lấy ngày hiện tại (reset giờ về 00:00:00 để so sánh chính xác)
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+  return inputDate >= today
 }

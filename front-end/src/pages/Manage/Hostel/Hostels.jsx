@@ -32,7 +32,7 @@ import {
   INPUT_NAME, INPUT_NAME_MESSAGE, FIELD_REQUIRED_MESSAGE, POSITIVE_NUMBER_RULE,
   POSITIVE_NUMBER_RULE_MESSAGE
 } from '~/utils/validators'
-import { uploadImagesAPI, createNewHostelAPI, fetchHostelsAPI, updateHostelAPI, deleteHostelAPI } from '~/apis'
+import { uploadImagesAPI, createNewHostelAPI, fetchHostelsByOwnerIdAPI, updateHostelAPI, deleteHostelAPI } from '~/apis'
 
 import { useConfirm } from 'material-ui-confirm'
 import { useNavigate } from 'react-router-dom'
@@ -98,7 +98,7 @@ function Hostel() {
   // Giúp hiển thị thanh Confirm khi click vào nút "Update hoặc xóa"
   const confirmUpdateOrDelete = useConfirm()
 
-  const uploadAvatar = (e) => {
+  const uploadAvatar = async (e) => {
     // Lấy file thông qua e.target?.files[0] và validate nó trước khi xử lý
     const error = singleFileValidator(e.target?.files[0])
     if (error) {
@@ -109,19 +109,16 @@ function Hostel() {
     let reqData = new FormData()
     reqData.append('images', e.target?.files[0])
     // Gọi API...
-    const promise = uploadImagesAPI(reqData)
-    toast.promise(
-      promise,
-      { pending: 'Đang tải ảnh lên....' }
-    ).then(res => {
-      // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
-      // Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng 1 file liên
-      //tiếp được
-      const url = `${res}`
-      setPreviewUrl(url)
-      setValue('images', url) // Lưu URL vào state hoặc form state nếu cần thiết
-      e.target.value = ''
-    })
+    const promise = await uploadImagesAPI(reqData)
+
+    // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
+    // Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng 1 file liên
+    //tiếp được
+    const url = `${promise}`
+    setPreviewUrl(url)
+    setValue('images', url) // Lưu URL vào state hoặc form state nếu cần thiết
+    e.target.value = ''
+
   }
   const updateAdress = (data) => {
     const { streetAddress, ward, district } = data
@@ -206,7 +203,7 @@ function Hostel() {
     }).catch()
   }
   useEffect(() => {
-    fetchHostelsAPI().then(res => {
+    fetchHostelsByOwnerIdAPI().then(res => {
       const formattedData = res.map((item, index) => (
         {
           ...item,

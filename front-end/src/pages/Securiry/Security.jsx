@@ -29,7 +29,7 @@ function SecurityTab() {
       title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <LogoutIcon sx={{ color: 'warning.dark' }} /> Change Password
       </Box>,
-      description: 'You have to login again after successfully changing your password. Continue?',
+      description: 'Bạn phải đăng nhập lại sau khi đổi mật khẩu. Bạn có muốn tiếp tục?',
       confirmationText: 'Confirm',
       cancellationText: 'Cancel'
     }).then(() => {
@@ -41,7 +41,7 @@ function SecurityTab() {
       ).then(res => {
         // Đoạn này kiểm tra không có lỗi (update thành công) mới thức hiện các hành động cần thiết
         if (!res.error) {
-          toast.success('Successfully changed your password, please login again')
+          toast.success('Đã thay đổi mật khẩu thành công. Hãy đăng nhập lại')
           dispatch(logoutUserAPI(false))
         }
       })

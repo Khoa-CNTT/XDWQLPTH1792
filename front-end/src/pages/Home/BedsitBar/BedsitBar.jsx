@@ -42,7 +42,7 @@ function BedsitBar({ hostel }) {
         </Tooltip>
         <Chip
           sx={MENU_STYLES}
-          icon={<VpnLockIcon />} label={hostel?.type} clickable />
+          icon={<VpnLockIcon />} label={hostel?.type} />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         {user._id === hostel.ownerId &&

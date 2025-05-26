@@ -2,6 +2,7 @@
 import { Box } from '@mui/material'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
+import GeneratePasswordForm from './GeneratePassword'
 import { selectCurrentUser } from '~/redux/user/userSlice'
 import { useSelector } from 'react-redux'
 import { useLocation, Navigate } from 'react-router-dom'
@@ -9,6 +10,7 @@ function Auth() {
   const location = useLocation()
   const isLogin = location.pathname === '/login'
   const isRegister = location.pathname === '/register'
+  const isGeneratePassword = location.pathname === '/generate-password'
 
   const currentUser = useSelector(selectCurrentUser)
   if (currentUser) {
@@ -29,6 +31,7 @@ function Auth() {
     }}>
       {isLogin && <LoginForm />}
       {isRegister && <RegisterForm />}
+      {isGeneratePassword && <GeneratePasswordForm />}
     </Box>
   )
 }

@@ -13,6 +13,7 @@ import BoyIcon from '@mui/icons-material/Boy'
 import AspectRatioIcon from '@mui/icons-material/AspectRatio'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { STATUS_ROOM } from '~/utils/constants'
 function Bedsit({ room }) {
   return (
     <Box sx={{
@@ -47,26 +48,7 @@ function Bedsit({ room }) {
               }}
             >
             </CardMedia>
-            <Badge
-              badgeContent={5}
-              color="secondary"
-              sx={{
-                position: 'absolute',
-                bottom: 10,
-                right: 10,
-                '& .MuiBadge-badge': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.3)', // Chỉnh viền ngoài
-                }
-              }}
-            >
-              <IconButton sx={{ boxShadow: 2 }}>
-                <CameraAltIcon sx={{
-                  '&:hover': {
-                    color: '#CCCCCC'
-                  }
-                }} />
-              </IconButton>
-            </Badge>
+          
           </Box>
           <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Giá phòng */}
@@ -124,7 +106,7 @@ function Bedsit({ room }) {
             <Typography sx={{
               fontWeight: 600,
               fontSize: '1.4rem',
-              color: room?.status === 'available' ? 'green' : 'red'
+              color: room?.status === STATUS_ROOM.AVAILABLE ? 'green' : 'red'
             }}>
               Tình trạng: {room?.status}
             </Typography>

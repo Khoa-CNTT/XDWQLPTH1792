@@ -22,7 +22,6 @@ const checkPayment = async (req, res, next) => {
 const getListPayment = async (req, res, next) => {
   try {
     const { hostelIds } = req.query
-    console.log('hostelId', hostelIds)
     const result = await paymentService.getListPayment(hostelIds)
     res.status(StatusCodes.OK).json(result)
   } catch (error) {

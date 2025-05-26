@@ -16,7 +16,7 @@ import AcUnitIcon from '@mui/icons-material/AcUnit'
 import HotelIcon from '@mui/icons-material/Hotel'
 import WeekendIcon from '@mui/icons-material/Weekend'
 import AddIcon from '@mui/icons-material/Add'
-import { fetchHostelsAPI, createNewFacilityAPI, fetchFacilitiesByHostelId, deleteFacilityAPI, updateFacilityAPI } from '~/apis'
+import { fetchHostelsByOwnerIdAPI, createNewFacilityAPI, fetchFacilitiesByHostelId, deleteFacilityAPI, updateFacilityAPI } from '~/apis'
 import { useTheme } from '@mui/material/styles'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -59,7 +59,7 @@ function FacilityPage() {
   }
   const theme = useTheme()
   useEffect(() => {
-    fetchHostelsAPI().then(res => {
+    fetchHostelsByOwnerIdAPI().then(res => {
       setHostels(res)
       if (res.length > 0) {
         setSelectedHostel(res[0]._id) // Đặt nhà trọ đầu tiên làm mặc định

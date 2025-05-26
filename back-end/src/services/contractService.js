@@ -3,6 +3,7 @@ import { contractModel } from '~/models/contractModel'
 import ApiError from '~/utils/ApiError'
 import { CloudinaryProvider } from '~/providers/Cloudinary'
 import { messageModel } from '~/models/messageModel'
+import { isFutureOrToday } from '~/utils/formmasters'
 
 const createNew = async (userId, data) => {
   try {
@@ -11,7 +12,7 @@ const createNew = async (userId, data) => {
     if (findContractActive) {
       throw new ApiError(StatusCodes.CONFLICT, 'Hợp đồng của bạn và nhà trọ này đã được tạo và còn hiệu lực')
     }
-    const dataCreate= {
+    const dataCreate = {
       ...data,
       ownerId: userId
     }
@@ -34,7 +35,16 @@ const getContracts = async (userId) => {
       tenantInfo: c.tenantInfo[0],
       roomInfo: c.roomInfo[0],
       hostelInfo: c.hostelInfo[0]
-    })) 
+    }))
+    return result
+  } catch (error) {
+    throw error
+  }
+}
+const update = async (contractId, reqBody) => {
+  try {
+    if (!isFutureOrToday(reqBody.dateStart)) throw new ApiError(StatusCodes.CONFLICT, 'Bạn không thể cập nhật hợp đồng nhỏ hơn hôm nay')
+    const result = await contractModel.update(contractId, reqBody)
     return result
   } catch (error) {
     throw error
@@ -43,5 +53,6 @@ const getContracts = async (userId) => {
 
 export const contractService = {
   createNew,
-  getContracts
+  getContracts,
+  update
 }

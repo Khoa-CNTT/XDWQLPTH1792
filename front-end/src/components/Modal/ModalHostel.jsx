@@ -143,7 +143,7 @@ const ModalHostel = ({ open, handleClose, hostel }) => {
 
         {/* Bản đồ & Liên hệ */}
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <Button
               variant='outlined'
               startIcon={<MapIcon />}
@@ -153,8 +153,8 @@ const ModalHostel = ({ open, handleClose, hostel }) => {
             >
               Xem bản đồ
             </Button>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Grid> */}
+          <Grid item xs={12} sm={12}>
             <Button
               variant='contained'
               startIcon={<MessageIcon />}

@@ -22,7 +22,7 @@ import {
   POSITIVE_NUMBER_RULE,
   POSITIVE_NUMBER_RULE_MESSAGE
 } from '~/utils/validators'
-import { districtsInDaNang } from '~/utils/constants'
+import { districtsInDaNang, STATUS_ROOM } from '~/utils/constants'
 import ModalHostel from '~/components/Modal/ModalHostel'
 import { motion } from 'framer-motion'
 function HouesPage() {
@@ -37,7 +37,7 @@ function HouesPage() {
 
   const listData = (data) =>
     data?.map((hostel) => ({
-      price: hostel?.minPrice !== hostel.maxPrice ? `${hostel.minPrice || 0}-${hostel.maxPrice || 0} đồng/tháng` : `${hostel.minPrice} đồng/ tháng`,
+      price: hostel?.minPrice !== hostel.maxPrice ? `${hostel.minPrice || 0}-${hostel.maxPrice || 0} đồng/tháng` : `${hostel.minPrice || 0} đồng/ tháng`,
       ...hostel
     }))
   useEffect(() => {
@@ -50,6 +50,7 @@ function HouesPage() {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm()
 
   const searchHostel = async (data) => {
+    data.price = Number(data.price)
     const result = await findHostelsAPI(data)
     const mockHostels = listData(result)
     setHostels(mockHostels)
@@ -320,10 +321,10 @@ function HouesPage() {
                         Địa điểm: {hostel.address}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        Giá: {hostel.price}
+                        Giá: {hostel.price || 0}
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
-                        Số phòng trống: {hostel.rooms.filter(room => room.status === 'available').length}
+                        Số phòng trống: {hostel.rooms.filter(room => room.status === STATUS_ROOM.AVAILABLE).length}
                       </Typography>
                     </CardContent>
                     <CardActions>

@@ -21,8 +21,20 @@ const getContracts = async (req, res, next) => {
     next(error)
   }
 }
-
+const update = async (req, res, next) => {
+  try {
+    const contractId = req.params.id
+    // Chỉ lấy hostel thuộc về user nào đó thôi
+    const updatedHostel = await contractService.update(contractId, req.body)
+    //kết quả trả về phía CLient
+    res.status(StatusCodes.OK).json(updatedHostel)
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
+  } catch (error) {
+    next(error)
+  }
+}
 export const contractController = {
   createNew,
-  getContracts
+  getContracts,
+  update
 }

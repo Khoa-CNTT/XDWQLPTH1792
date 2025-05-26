@@ -9,7 +9,7 @@ const createNew = async (req, res, next) => {
     const createRoom = await roomService.createNew(req.body)
     //kết quả trả về phía CLient
     res.status(StatusCodes.CREATED).json(createRoom)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -24,7 +24,7 @@ const getDetails = async (req, res, next) => {
     const hostel = await roomService.getDetails(hostelId)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(hostel)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -44,7 +44,7 @@ const deleteRooms = async (req, res, next) => {
       message: 'Rooms deleted successfully',
       deletedCount: result.deletedCount
     })
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -60,7 +60,7 @@ const update = async (req, res, next) => {
     const result = await roomService.update(roomId, data)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(result)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -74,7 +74,7 @@ const pullTenant = async (req, res, next) => {
     const result = await roomService.pullTenant(data)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(result)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
