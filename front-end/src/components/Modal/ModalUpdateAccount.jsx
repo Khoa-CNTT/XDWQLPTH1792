@@ -15,10 +15,15 @@ import Radio from '@mui/material/Radio'
 import { singleFileValidator } from '~/utils/validators'
 import { toast } from 'react-toastify'
 import { updateAccountAPI } from '~/apis'
-import { INPUT_NAME, INPUT_NAME_MESSAGE, PHONE_NUMBER_RULE, NUMBER_RULE_MESSAGE, CITIZEN_NUMBER, FIELD_REQUIRED_MESSAGE, CITIZEN_NUMBER_MESSAGE } from '~/utils/validators';
+import { INPUT_NAME, INPUT_NAME_MESSAGE, PHONE_NUMBER_RULE, NUMBER_RULE_MESSAGE, FIELD_REQUIRED_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useConfirm } from 'material-ui-confirm'
+import Typography from '@mui/material/Typography'
 
+const DESTROY = {
+  TRUE: true,
+  FALSE: false
+}
 function ModalUpdateAccount({ open, handleClose, account, setRefresh }) {
 
   const initialGeneralForm = {
@@ -39,6 +44,8 @@ function ModalUpdateAccount({ open, handleClose, account, setRefresh }) {
     }
   }, [account, reset])
   const handleSave = (data) => {
+    if (data._destroy === 'true') data._destroy = true
+    if (data._destroy === 'false') data._destroy = false
     // So sánh dữ liệu mới với dữ liệu ban đầu
     const isDataUnchanged = JSON.stringify(data) === JSON.stringify(initialGeneralForm)
     if (isDataUnchanged) return
@@ -157,32 +164,82 @@ function ModalUpdateAccount({ open, handleClose, account, setRefresh }) {
           />
           <FieldErrorAlert errors={errors} fieldName={'phone'} />
           {account?.role !== USER_ROLES.ADMIN &&
-            <Controller
-              name="role"
-              defaultValue={USER_ROLES.LANDLORD}
-              control={control}
-              render={({ field }) => (
-                <RadioGroup
-                  {...field}
-                  row
-                  onChange={(event, value) => field.onChange(value)}
-                  value={field.value}
-                >
-                  <FormControlLabel
-                    value={USER_ROLES.LANDLORD}
-                    control={<Radio size="small" />}
-                    label="Chủ trọ"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value={USER_ROLES.CLIENT}
-                    control={<Radio size="small" />}
-                    label="Khách hàng"
-                    labelPlacement="start"
-                  />
-                </RadioGroup>
-              )}
-            />
+            <>
+              <Typography
+                gutterBottom
+                variant="subtitle1"
+                fontWeight={500}
+                color="text.primary"
+                paddingX={2}
+              >
+                Quyền người dùng
+              </Typography>
+              <Controller
+                name="role"
+                defaultValue={USER_ROLES.LANDLORD}
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup
+                    {...field}
+                    row
+                    onChange={(event, value) => field.onChange(value)}
+                    value={field.value}
+                  >
+                    <FormControlLabel
+                      value={USER_ROLES.LANDLORD}
+                      control={<Radio size="small" />}
+                      label="Chủ trọ"
+                      labelPlacement="start"
+                    />
+                    <FormControlLabel
+                      value={USER_ROLES.CLIENT}
+                      control={<Radio size="small" />}
+                      label="Khách hàng"
+                      labelPlacement="start"
+                    />
+                  </RadioGroup>
+                )}
+              />
+            </>
+          }
+          {(account?.role !== USER_ROLES.ADMIN && account?._destroy) &&
+            <>
+              <Typography
+                gutterBottom
+                variant="subtitle1"
+                fontWeight={500}
+                color="text.primary"
+                paddingX={2}
+              >
+                Khóa tài khoản
+              </Typography>
+              <Controller
+                name="_destroy"
+                defaultValue={DESTROY.TRUE}
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup
+                    {...field}
+                    row
+                    onChange={(event, value) => field.onChange(value)}
+                    value={field.value}
+                  >
+                    <FormControlLabel
+                      value={DESTROY.TRUE}
+                      control={<Radio size="small" />}
+                      label="Có"
+                      labelPlacement="start"
+                    />
+                    <FormControlLabel
+                      value={DESTROY.FALSE}
+                      control={<Radio size="small" />}
+                      label="Không"
+                      labelPlacement="start"
+                    />
+                  </RadioGroup>
+                )}
+              />
+            </>
           }
 
         </DialogContent>

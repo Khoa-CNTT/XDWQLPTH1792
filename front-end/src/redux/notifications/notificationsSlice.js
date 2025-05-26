@@ -9,6 +9,7 @@ const initialState = {
 
 // Các hành động gọi api ( bất đồng bộ ) và cập nhật dữ liệu vào redux, dùng middleware và createAsyncThunk đi kèm với extraReducers
 //https://redux-toolkit.js.org/api/createAsyncThunk
+// Lời mời vào nhà trọ
 export const fetchInvitationsAPI = createAsyncThunk(
   'notifications/fetchInvitationAPI',
   async () => {
@@ -19,13 +20,30 @@ export const fetchInvitationsAPI = createAsyncThunk(
 )
 export const updateHostelInvitationAPI = createAsyncThunk(
   'notifications/updateHostelInvitationAPI',
-  async ({ status, invitationId } ) => {
-    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/invitations/hostel/${invitationId}`, {status})
+  async ({ status, invitationId }) => {
+    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/invitations/hostel/${invitationId}`, { status })
     // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
     return response.data
   }
 )
-
+// Thông báo yêu cầu của nhà trọ
+export const fetchRepairRequestsAPI = createAsyncThunk(
+  'notifications/fetchRepairRequestsAPI',
+  async () => {
+    const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/requests/ownerId`)
+    // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
+    return response.data
+  }
+)
+export const updateRequestAPI = createAsyncThunk(
+  'notifications/updateRequestAPI',
+  async ({ status, requestId }) => {
+    console.log('requestId', requestId)
+    const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/requests/${requestId}`, { status })
+    // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
+    return response.data
+  }
+)
 // Khởi tạo một cái Slice trong kho lưu trữ Redux Store
 export const notificationsSlice = createSlice({
   name: 'notifications',
@@ -48,15 +66,44 @@ export const notificationsSlice = createSlice({
   // ExtraReducers: Nơi xử lý dữ liệu bất đồng bộ
   extraReducers: (builder) => {
     builder.addCase(fetchInvitationsAPI.fulfilled, (state, action) => {
-      let incomingInvitations = action.payload
-      // Đoạn này ngược lại với mảng invations nhận được, đơn giản là để hiển thị cái mới nhất lên đầu
-      state.currentNotifications = Array.isArray(incomingInvitations) ? incomingInvitations.reverse() : []
+      const requests = Array.isArray(action.payload) ? action.payload : []
+      const existing = state.currentNotifications || []
+      const combined = [...existing, ...requests]
+
+      const uniqueRequestsMap = new Map()
+      combined.forEach(req => {
+        uniqueRequestsMap.set(req._id, req) // Nếu trùng _id thì ghi đè (mới nhất giữ lại)
+      })
+
+      state.currentNotifications = Array.from(uniqueRequestsMap.values()).sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      )
+    })
+    builder.addCase(fetchRepairRequestsAPI.fulfilled, (state, action) => {
+      const requests = Array.isArray(action.payload) ? action.payload : []
+      const existing = state.currentNotifications || []
+      const combined = [...existing, ...requests]
+
+      const uniqueRequestsMap = new Map()
+      combined.forEach(req => {
+        uniqueRequestsMap.set(req._id, req) // Nếu trùng _id thì ghi đè (mới nhất giữ lại)
+      })
+
+      state.currentNotifications = Array.from(uniqueRequestsMap.values()).sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      )
     })
     builder.addCase(updateHostelInvitationAPI.fulfilled, (state, action) => {
       let incomingInvitations = action.payload
       // Cập nhật lại dữ liệu hostelInvitation ( bên trong nó sẽ có Status mới sau khi update)
       const getInvitation = state.currentNotifications.find(i => i._id === incomingInvitations._id)
       getInvitation.hostelInvitation = incomingInvitations.hostelInvitation
+    })
+    builder.addCase(updateRequestAPI.fulfilled, (state, action) => {
+      let incomingRequest = action.payload
+      // Cập nhật lại dữ liệu hostelInvitation ( bên trong nó sẽ có Status mới sau khi update)
+      const getInvitation = state.currentNotifications.find(i => i._id === incomingRequest._id)
+      getInvitation.status = incomingRequest.status
     })
   }
 })

@@ -10,8 +10,9 @@ import ModalUser from '~/components/Modal/ModalUser'
 import { toast } from 'react-toastify'
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
-import { fetchHostelsAPI } from '~/apis'
+import { fetchHostelsByOwnerIdAPI } from '~/apis'
 import { fetchHostelDetailsAPI, selectCurrentActiveHostel, removeTenantActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
+import { selectCurrentUser } from '~/redux/user/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { createNewConversationAPI, updateHostelAPI } from '~/apis'
 import { useNavigate } from 'react-router-dom'
@@ -27,18 +28,17 @@ function InforUser() {
   const theme = useTheme() // Lấy thông tin theme
   const [hostels, setHostels] = useState([])
   const [user, setUser] = useState(null)
-
   // Mở modal user
   const [open, setOpen] = useState(false)
 
   const [selectedHostel, setSelectedHostel] = useState(null)
   const dispatch = useDispatch()
-
+  const ownerId = useSelector(selectCurrentUser)
   const handleHostelChange = (event) => {
     setSelectedHostel(event.target.value)
   }
   useEffect(() => {
-    fetchHostelsAPI().then(res => {
+    fetchHostelsByOwnerIdAPI().then(res => {
 
       setHostels(res)
       if (res.length > 0) {
@@ -53,7 +53,10 @@ function InforUser() {
       dispatch(fetchHostelDetailsAPI(selectedHostel))
     }
   }, [dispatch, selectedHostel])
-  const hostel = useSelector(selectCurrentActiveHostel)
+  let hostel = useSelector(selectCurrentActiveHostel)
+  if (hostel.ownerId !== ownerId._id) {
+    hostel = null
+  }
   const columns = [
     { field: 'stt', headerName: 'STT', flex: 0.6 },
     {
@@ -175,7 +178,9 @@ function InforUser() {
         >
           Chọn nhà trọ: {hostel?.hostelName}
         </Typography>
-        <InviteHostelUser hostelId={hostel?._id} />
+        {hostel &&
+          <InviteHostelUser hostelId={hostel?._id} />
+        }
         <Select
           value={selectedHostel}
           onChange={handleHostelChange}

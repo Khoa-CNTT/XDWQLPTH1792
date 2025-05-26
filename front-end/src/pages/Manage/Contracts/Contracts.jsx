@@ -26,7 +26,7 @@ import {
   INPUT_NAME, INPUT_NAME_MESSAGE, FIELD_REQUIRED_MESSAGE, POSITIVE_NUMBER_RULE,
   POSITIVE_NUMBER_RULE_MESSAGE
 } from '~/utils/validators'
-import { fetchHostelsAPI, createNewContractAPI, fetchContractsAPI } from '~/apis'
+import { fetchHostelsByOwnerIdAPI, createNewContractAPI, fetchContractsAPI, updateContractAPI } from '~/apis'
 import { fetchHostelDetailsAPI, selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
 import { useConfirm } from 'material-ui-confirm'
 import { useNavigate } from 'react-router-dom'
@@ -35,10 +35,9 @@ import { DatePicker } from '@mui/x-date-pickers'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
-
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import { compareData } from '~/utils/formatters'
 function Contracts() {
-  const [contractType, setContractType] = useState('rent') // Giá trị mặc định là "Thuê phòng"
-  const [filteredRows, setFilteredRows] = useState([])
   const [open, setOpen] = useState(false) // Trạng thái mở/đóng của Dialog
   const [openModal, setOpenModal] = useState(false) // Trạng thái mở/đóng của Dialog
   const [editingContract, setEditingContract] = useState(null) // Lưu thông tin hợp đồng đang chỉnh sửa
@@ -56,18 +55,9 @@ function Contracts() {
     setOpen(true) // Mở Dialog
   }
   const handleClose = () => setOpen(false)
-  // // Lọc dữ liệu khi giá trị contractType thay đổi
-  // useEffect(() => {
-  //   if (contractType === 'rent') {
-  //     setFilteredRows(allRows.filter((row) => row.role.startsWith('Đã thuê')))
-  //   } else if (contractType === 'deposit') {
-  //     setFilteredRows(allRows.filter((row) => row.role.startsWith('Cọc')))
-  //   }
-  // }, [contractType])
-
   // Gọi API  danh sách tất cả hostel của owner
   useEffect(() => {
-    fetchHostelsAPI().then(res => {
+    fetchHostelsByOwnerIdAPI().then(res => {
       setHostels(res)
     }
     )
@@ -100,9 +90,6 @@ function Contracts() {
     })
   }, [refresh])
 
-  const handleContractTypeChange = (event) => {
-    setContractType(event.target.value)
-  }
   const hostel = useSelector(selectCurrentActiveHostel)
 
   const columns = [
@@ -125,9 +112,7 @@ function Contracts() {
           color="primary"
           size="small"
           startIcon={<EditIcon />}
-          onClick={(event) => {
-            event.stopPropagation()
-          }}
+          onClick={() => handleEdit(params.row)}
         >
           Chỉnh sửa
         </Button>
@@ -148,45 +133,64 @@ function Contracts() {
   }
   // Tạo và update hợp đồng
   const createAndUpdateHostel = (data) => {
-    // if (editingHostel) {
-    //   confirmUpdateOrDelete({
-    //     // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
-    //     title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-    //       <SystemUpdateAltIcon sx={{ color: 'warning.dark' }} /> Cập nhật nhà trọ
-    //     </Box>,
-    //     description: 'Bạn có chắc chắn muốn cập nhật nhà trọ này không?',
-    //     confirmationText: 'Confirm',
-    //     cancellationText: 'Cancel'
-    //   }).then(() => {
-    //     // Gọi API cập nhật nhà trọ ở đây
-    //     const promise = updateHostelAPI(editingHostel.id, data)
-    //     toast.promise(
-    //       promise,
-    //       { pending: 'Đang cập nhật....' }
-    //     ).then(res => {
-    //       if (!res.error) {
-    //         toast.success('Cập nhật thành công')
-    //       }
-    //       setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
-    //       handleClose()
-    //     })
-    //   })
-    // } else {
-    //Gọi API tạo mới nhà trọ ở đây
-    const promise = createNewContractAPI(data)
-    toast.promise(
-      promise,
-      { pending: 'Đang tạo....' }
-    ).then(res => {
-      // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
-      if (!res.error) {
-        toast.success('Tạo thành công')
-      }
-      setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
-      handleClose()
-    })
-    // }
+    if (editingContract) {
+      confirmUpdateOrDelete({
+        // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
+        title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <SystemUpdateAltIcon sx={{ color: 'warning.dark' }} /> Cập nhật hợp đồng
+        </Box>,
+        description: 'Bạn có chắc chắn muốn cập nhật hợp đồng này không?',
+        confirmationText: 'Confirm',
+        cancellationText: 'Cancel'
+      }).then(() => {
+        const dataUpdate = {
+          ...data,
+          deposit: Number(data.deposit)
+        }
+        if (compareData(editingContract, dataUpdate)) return
+        // Gọi API cập nhật nhà trọ ở đây
+        const promise = updateContractAPI(editingContract.id, dataUpdate)
+        toast.promise(
+          promise,
+          { pending: 'Đang cập nhật....' }
+        ).then(res => {
+          if (!res.error) {
+            toast.success('Cập nhật thành công')
+          }
+          setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
+          handleClose()
+        })
+      })
+    } else {
+      //Gọi API tạo mới nhà trọ ở đây
+      const promise = createNewContractAPI(data)
+      toast.promise(
+        promise,
+        { pending: 'Đang tạo....' }
+      ).then(res => {
+        // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
+        if (!res.error) {
+          toast.success('Tạo thành công')
+        }
+        setRefresh((prev) => !prev) // Kích hoạt làm mới dữ liệu
+        handleClose()
+      })
+    }
 
+  }
+  // OnClick của nút "Cập nhật"
+  const handleEdit = (contract) => {
+    setEditingContract(contract)
+    setValue('contractName', contract.contractName)
+    setValue('hostelId', contract.hostelId)
+    setValue('tenantId', contract.tenantId)
+    setValue('roomId', contract.roomId)
+
+    setValue('content', contract.content)
+    setValue('dateStart', contract.dateStart)
+    setValue('dateEnd', contract.dateEnd)
+    setValue('deposit', Number(contract.deposit))
+    setOpen(true) // Mở Dialog
   }
   return (
     <Box >
@@ -300,94 +304,98 @@ function Contracts() {
               }}
               {...register('content')}
             />
-            <Box sx={{
-              display: 'flex',
-              gap: 2, // Khoảng cách giữa các trường
-              justifyContent: 'space-between', // Căn giữa theo chiều ngang
-              alignItems: 'center', // Căn giữa theo chiều dọc
-              mt: 2 // Thêm khoảng cách phía trên
-            }}>
-              <Box sx={{
-                width: '43%'
-              }}>
+            {!editingContract &&
+              <>
+                <Box sx={{
+                  display: 'flex',
+                  gap: 2, // Khoảng cách giữa các trường
+                  justifyContent: 'space-between', // Căn giữa theo chiều ngang
+                  alignItems: 'center', // Căn giữa theo chiều dọc
+                  mt: 2 // Thêm khoảng cách phía trên
+                }}>
+                  <Box sx={{
+                    width: '43%'
+                  }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Chọn nhà trọ"
+                      margin="normal"
+                      defaultValue=""
+                      {...register('hostelId', {
+                        required: 'Vui lòng chọn nhà trọ',
+                        onChange: (e) => {
+                          setSelectedHostel(e.target.value)
+                        }
+                      })}
+                      error={!!errors['hostelId']}
+                      sx={{
+                        '& .MuiInputBase-root': {
+                          borderRadius: '8px'
+                        }
+                      }}
+                    >
+                      {hostels?.map((hostel) => (
+                        <MenuItem key={hostel._id} value={hostel._id}>
+                          {hostel.hostelName}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    <FieldErrorAlert errors={errors} fieldName={'hostelId'} />
+                  </Box>
+                  <Box sx={{
+                    width: '46%'
+                  }}>
+                    <TextField
+                      select
+                      fullWidth
+                      label="Chọn phòng trọ"
+                      margin="normal"
+                      defaultValue=""
+                      {...register('roomId', {
+                        required: 'Vui lòng chọn phòng trọ'
+                      })}
+                      error={!!errors['roomId']}
+                      sx={{
+                        '& .MuiInputBase-root': {
+                          borderRadius: '8px'
+                        }
+                      }}
+                    >
+                      {hostel?.rooms?.map((room) => (
+                        <MenuItem key={room._id} value={room._id}>
+                          {room.roomName}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    <FieldErrorAlert errors={errors} fieldName={'roomId'} />
+                  </Box>
+                </Box>
                 <TextField
                   select
                   fullWidth
-                  label="Chọn nhà trọ"
+                  label="Chọn người thuê"
                   margin="normal"
                   defaultValue=""
-                  {...register('hostelId', {
-                    required: 'Vui lòng chọn nhà trọ',
-                    onChange: (e) => {
-                      setSelectedHostel(e.target.value)
-                    }
+                  {...register('tenantId', {
+                    required: 'Vui lòng chọn người thuê '
                   })}
-                  error={!!errors['hostelId']}
+                  error={!!errors['tenantId']}
                   sx={{
                     '& .MuiInputBase-root': {
                       borderRadius: '8px'
                     }
                   }}
                 >
-                  {hostels?.map((hostel) => (
-                    <MenuItem key={hostel._id} value={hostel._id}>
-                      {hostel.hostelName}
+                  {hostel?.tenants?.map((tenant) => (
+                    <MenuItem key={tenant._id} value={tenant._id}>
+                      {tenant.displayName}
                     </MenuItem>
                   ))}
                 </TextField>
-                <FieldErrorAlert errors={errors} fieldName={'hostelId'} />
-              </Box>
-              <Box sx={{
-                width: '46%'
-              }}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Chọn phòng trọ"
-                  margin="normal"
-                  defaultValue=""
-                  {...register('roomId', {
-                    required: 'Vui lòng chọn phòng trọ'
-                  })}
-                  error={!!errors['roomId']}
-                  sx={{
-                    '& .MuiInputBase-root': {
-                      borderRadius: '8px'
-                    }
-                  }}
-                >
-                  {hostel?.rooms?.map((room) => (
-                    <MenuItem key={room._id} value={room._id}>
-                      {room.roomName}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <FieldErrorAlert errors={errors} fieldName={'roomId'} />
-              </Box>
-            </Box>
-            <TextField
-              select
-              fullWidth
-              label="Chọn người thuê"
-              margin="normal"
-              defaultValue=""
-              {...register('tenantId', {
-                required: 'Vui lòng chọn người thuê '
-              })}
-              error={!!errors['tenantId']}
-              sx={{
-                '& .MuiInputBase-root': {
-                  borderRadius: '8px'
-                }
-              }}
-            >
-              {hostel?.tenants?.map((tenant) => (
-                <MenuItem key={tenant._id} value={tenant._id}>
-                  {tenant.displayName}
-                </MenuItem>
-              ))}
-            </TextField>
-            <FieldErrorAlert errors={errors} fieldName={'tenantId'} />
+                <FieldErrorAlert errors={errors} fieldName={'tenantId'} />
+              </>
+            }
             <Box sx={{
               display: 'flex',
               gap: 2, // Khoảng cách giữa các trường
@@ -440,38 +448,6 @@ function Contracts() {
                 <FieldErrorAlert errors={errors} fieldName={'dateEnd'} />
               </Box>
             </Box>
-            {/* <Controller
-              name="status"
-              defaultValue={CONSTRACT_STATUS.ACTIVE}
-              control={control}
-              render={({ field }) => (
-                <RadioGroup
-                  {...field}
-                  row
-                  onChange={(event, value) => field.onChange(value)}
-                  value={field.value}
-                >
-                  <FormControlLabel
-                    value={CONSTRACT_STATUS.CANCELED}
-                    control={<Radio size="small" />}
-                    label="Đã hủy"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value={CONSTRACT_STATUS.EXPIRED}
-                    control={<Radio size="small" />}
-                    label="Hết hạn"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    value={CONSTRACT_STATUS.ACTIVE}
-                    control={<Radio size="small" />}
-                    label="Hoạt động"
-                    labelPlacement="start"
-                  />
-                </RadioGroup>
-              )}
-            /> */}
             <TextField
               fullWidth
               margin="normal"

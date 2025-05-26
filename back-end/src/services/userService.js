@@ -13,8 +13,7 @@ import { JwtProvider } from '~/providers/JwtProvider'
 
 import { CloudinaryProvider } from '~/providers/Cloudinary'
 import { USER_ROLES } from '~/utils/constants'
-import { conversationModel } from '~/models/conversationModel'
-import { hostelModel } from '~/models/hostelModel'
+import { generate } from 'generate-password'
 const createNew = async (reqBody) => {
   try {
     // Kiểm tra xem email đã tồn tại trong hệ thống của chúng ta hay chưa
@@ -84,6 +83,7 @@ const login = async (reqBody) => {
     // Các bước kiểm tra cần thiết
     if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Tài khoản không tồn tại!')
     if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Tài khoản bạn chưa được xác thực!')
+    if (existUser._destroy) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Tài khoản của bạn đã bị khóa!')
     if (!bcryptjs.compareSync(reqBody.password, existUser.password)) { // nó sẽ trả về true hoặc false
       throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Password của bạn không đúng')
     }
@@ -144,8 +144,9 @@ const update = async (userId, reqBody, userAvatarFile) => {
     // Query User và kiểm tra chắc chắn
     const existUser = await userModel.findOneById(userId)
     if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found')
-    if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Tài khoản của bạn chưa được mở khóa')
+    if (!existUser.isActive) throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Tài khoản nãy chưa được xác thực')
     // Khởi tạo kết quả updated User ban đầu is empty
+    reqBody.updatedAt = Date.now()
     let updatedUser = {}
 
     // Trường hợp change password
@@ -186,25 +187,56 @@ const getAllAccounts = async (userId) => {
     throw error
   }
 }
-const deleteAccount = async (userId, accountIdtIsDelete) => {
+const deleteAccount = async (userId, accountIdIsDeleted) => {
   try {
     // Query User và kiểm tra chắc chắn
     const existUser = await userModel.findOneById(userId)
     if (existUser.role !== USER_ROLES.ADMIN) throw new ApiError(StatusCodes.NOT_FOUND, 'Bạn phải là admin mới có quyền truy cập')
-    const account = await userModel.findOneById(accountIdtIsDelete)
+    const account = await userModel.findOneById(accountIdIsDeleted)
     if (account.role === USER_ROLES.ADMIN) throw new ApiError(StatusCodes.NOT_FOUND, 'Bạn không thể xóa tài khoản có quyền này')
-    const conversations = await conversationModel.getConversations(accountIdtIsDelete)
-    const conversationIds = conversations.filter(con => con._id)
-    for (const _id of conversationIds) {
-      await conversationModel.deleteConversation(_id)
+    // const conversations = await conversationModel.getConversations(accountIdsIsDelete)
+    // const conversationIds = conversations.filter(con => con._id)
+    // for (const _id of conversationIds) {
+    //   await conversationModel.deleteConversation(_id)
+    // }
+    // const hostels = hostelModel.getHostels(accountIdsIsDelete)
+    // const hostelIds = hostels.map(hostel => hostel._id)
+    // if (account.role === USER_ROLES.LANDLORD) {
+    //   await hostelService.deleteHostel(account._id, hostelIds)
+    // }
+    // const getAllAccountInSystem = await userModel.getAllAccountInSystem()
+    const dateDelete = {
+      _destroy: true
     }
-    const hostels = hostelModel.getHostels(accountIdtIsDelete)
-    const hostelIds = hostels.filter(hostel => hostel._id)
-    if (account.role === USER_ROLES.LANDLORD) {
-      await hostelModel.deleteHostel(account._id, hostelIds)
-    }
-    const getAllAccountInSystem = await userModel.getAllAccountInSystem()
-    return getAllAccountInSystem
+    const result = await userModel.update(accountIdIsDeleted, dateDelete)
+    return result
+  } catch (error) {
+    throw error
+  }
+}
+const generatePassword = async (data) => {
+  try {
+    // Query User và kiểm tra chắc chắn
+    const existUser = await userModel.findOneByEmail(data.email)
+    if (!existUser) throw new ApiError(StatusCodes.NOT_FOUND, 'Tài khoản không tồn tại')
+    if (existUser.verifyToken) throw new ApiError(StatusCodes.NOT_FOUND, 'Tài khoản chưa được xác thực, vui lòng xác thực tài khoản trước khi đổi mật khẩu')
+    const newPassword = generate({
+      length: 10,
+      numbers: true,
+      uppercase: true,
+      excludeSimilarCharacters: true
+    })
+    const updatedUser = await userModel.update(existUser._id, {
+      password: bcryptjs.hashSync(newPassword, 8)
+    })
+    // Gửi email cho người dùng xác thực tài khoản
+    const customSubject = 'Mật khẩu mới của bạn'
+    const htmlContent = `
+      <h3> Mật khẩu mới của bạn là: ${newPassword}</j3>
+      <h3> Sincerely, <br/> - Lập trình</j3>
+    `
+    await BrevoProvide.sendEmail(existUser.email, customSubject, htmlContent)
+    return pickUser(updatedUser)
   } catch (error) {
     throw error
   }
@@ -216,5 +248,6 @@ export const userService = {
   refreshToken,
   update,
   deleteAccount,
-  getAllAccounts
+  getAllAccounts,
+  generatePassword
 }

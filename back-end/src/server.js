@@ -1,6 +1,4 @@
 /**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
 //client->routers->valication->controler<->service<->model<->database
@@ -52,6 +50,9 @@ const START_SERVER = () => {
     })
     socket.on('FE_USER_MESSAGE', (coversation) => {
       socket.broadcast.emit('BE_USER_MESSAGE', coversation)
+    })
+    socket.on('FE_USER_REPAIR_REQUEST', (request) => {
+      socket.broadcast.emit('BE_USER_REPAIR_REQUEST', request)
     })
   })
   if (env.BUILD_MODE === 'production') {

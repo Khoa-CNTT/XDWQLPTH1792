@@ -61,6 +61,7 @@ function App() {
       {/** Authentication */}
       <Route path='/login' element={<Auth />} />
       <Route path='/register' element={<Auth />} />
+      <Route path='/generate-password' element={<Auth />} />
       <Route path='/account/verification' element={<AccountVerification />} />
       {/** 404 not found page */}
       <Route path='*' element={<NotFound />} />

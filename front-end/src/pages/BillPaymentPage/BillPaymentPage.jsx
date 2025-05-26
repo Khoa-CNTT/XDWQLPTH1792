@@ -26,15 +26,22 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
 import { fetchBillsByRoomIdAPI, selectCurrentBills } from '~/redux/activeBill/activeBillSlice'
 import { BILL_STATUS } from '~/utils/constants'
-
+import { useSearchParams } from 'react-router-dom'
 
 function BillPaymentPage() {
   const dispatch = useDispatch()
+    const [searchParams] = useSearchParams()
+  const hostelId = searchParams.get('hostelId')
+  const billId = searchParams.get('billId')
+  console.log('hostelid', hostelId)
+  console.log('billId', billId)
   const user = useSelector(selectCurrentUser)
-  const [selectedHostelId, setSelectedHostelId] = useState('')
-  const [selectedBillId, setSelectedBillId] = useState('')
+  const [selectedHostelId, setSelectedHostelId] = useState(hostelId || '')
+  const [selectedBillId, setSelectedBillId] = useState(billId || '')
   const [selectedHostel, setSelectedHostel] = useState(null)
   const [hostels, setHostels] = useState(null)
+
+
   useEffect(() => {
     fetchHostelsAPI().then(res =>
       setHostels(res)
@@ -99,7 +106,7 @@ function BillPaymentPage() {
           </CardContent>
         </Card>
 
-        {selectedHostel && (
+        {(selectedHostel || hostelId) && (
           <Card sx={{ borderRadius: 4, boxShadow: 4, mb: 4 }}>
             <CardContent>
               <Grid container spacing={2} alignItems="center">

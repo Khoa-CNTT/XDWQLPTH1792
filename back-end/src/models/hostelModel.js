@@ -1,6 +1,6 @@
 /**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
+ * Updated by 0dev.com's author on August 17 2023
+ * YouTube: https://youtube.com/@0dev
  * "A bit of fragrance clings to the hand that gives flowers!"
  */
 import Joi from 'joi'
@@ -164,6 +164,43 @@ const getHostels = async (userId) => {
     throw new Error(error)
   }
 }
+const getHostelsByOwnerId = async (userId) => {
+  try {
+    const result = await GET_DB().collection(HOSTEL_COLLECTION_NAME).aggregate(
+      [
+        {
+          $match:{ ownerId: new ObjectId(userId) }
+        },
+        {
+          $lookup: {
+            from: userModel.USER_COLLECTION_NAME, // Tên collection của user
+            localField: 'ownerId', // Trường trong hostel để nối
+            foreignField: '_id', // Trường trong user để nối
+            as: 'ownerInfo', // Tên trường chứa thông tin user sau khi lookup
+            pipeline: [{ $project: { password: 0, verifyToken: 0 } }]
+          }
+        },
+        {
+          $addFields: {
+            ownerPhone: { $arrayElemAt: ['$ownerInfo.phone', 0] }, // Lấy số điện thoại từ mảng ownerInfo
+            ownerName: { $arrayElemAt: ['$ownerInfo.displayName', 0] } // Lấy số điện thoại từ mảng ownerInfo
+          }
+        },
+        {
+          $lookup: {
+            from: roomModel.ROOM_COLLECTION_NAME,
+            localField: '_id',
+            foreignField: 'hostelId',
+            as: 'rooms'
+          }
+        }
+      ]
+    ).toArray()
+    return result || null
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 
 const update = async (hostelId, updateData) => {
   try {
@@ -283,7 +320,7 @@ const getHostelsPublic = async (find) => {
       .collection(HOSTEL_COLLECTION_NAME)
       .aggregate(pipeline)
       .toArray()
-
+    console.log('result', result)
     return result
   } catch (error) {
     throw new Error(error)
@@ -301,5 +338,6 @@ export const hostelModel = {
   deleteHostel,
   deleteRoomOrderIds,
   pushTenantIds,
-  getHostelsPublic
+  getHostelsPublic,
+  getHostelsByOwnerId
 }

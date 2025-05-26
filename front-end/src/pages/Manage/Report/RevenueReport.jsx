@@ -10,7 +10,7 @@ import {
   Stack
 } from '@mui/material'
 import { useSelector } from 'react-redux'
-import { fetchHostelsAPI, getListPaymentsAPI } from '~/apis'
+import { fetchHostelsByOwnerIdAPI, getListPaymentsAPI } from '~/apis'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
@@ -23,13 +23,13 @@ function RevenueReportPage() {
   const [roomList, setRoomList] = useState([])
   const [listDataPayments, setLishDataPayment] = useState([])
   useEffect(() => {
-    fetchHostelsAPI().then((res) => {
+    fetchHostelsByOwnerIdAPI().then((res) => {
       setHostels(res)
     })
   }, [])
   const hostelIds = hostels?.map(hostel => hostel._id)
   useEffect(() => {
-    if (hostelIds) {
+    if (hostelIds?.length > 0) {
       getListPaymentsAPI({ hostelIds }).then((res) => {
         setLishDataPayment(res)
       })

@@ -24,6 +24,18 @@ const createNew = async (req, res, next) => {
     next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message))// console.log(error)
   }
 }
+const generatePassword = async (req, res, next) => {
+  const correctCondition = Joi.object({ // biến tên điều kiện đúng
+    email: Joi.string().required().pattern(EMAIL_RULE).message(EMAIL_RULE_MESSAGE)
+  })
+  try {
+    await correctCondition.validateAsync(req.body, { abortEarly: false })
+    next()
+
+  } catch (error) {
+    next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message))// console.log(error)
+  }
+}
 const verifyAccount = async (req, res, next) => {
   const correctCondition = Joi.object({ // biến tên điều kiện đúng
     email: Joi.string().required().pattern(EMAIL_RULE).message(EMAIL_RULE_MESSAGE),
@@ -70,9 +82,11 @@ const update = async (req, res, next) => {
     next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message))// console.log(error)
   }
 }
+
 export const userValidation = {
   createNew,
   verifyAccount,
   login,
-  update
+  update,
+  generatePassword
 }

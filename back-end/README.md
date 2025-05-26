@@ -19,7 +19,6 @@
 
 👉 Link bài viết: 👇
 
-🌐 https://trungquandev.com/khoa-hoc-lap-trinh-full-stack-mern-100-du-an-thuc-te-chat-luong/
 
 **🥉 FREE PACK (No Sponsor)**
 
@@ -41,7 +40,6 @@
 
 **🏆 HOẶC NẾU BẠN KHÔNG CÓ THẺ VISA THANH TOÁN QUỐC TẾ THÌ CÓ THỂ LIÊN HỆ TRỰC TIẾP VỚI MÌNH TẠI ĐÂY ĐỂ LẤY TÀI NGUYÊN HỌC TẬP NHÉ 👇**
 
-**🌐 Facebook TrungQuanDev: 👉 https://facebook.com/trungquandev**
 
 **👑 Lưu ý: Video hướng dẫn chi tiết cách Install Source Code (Pro & Advanced) đều đã có trong 2 Playlists của khóa học rồi nhé.**
 

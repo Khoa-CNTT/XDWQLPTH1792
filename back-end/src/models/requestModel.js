@@ -113,11 +113,56 @@ const getRequests = async (data) => {
     throw new Error(error)
   }
 }
+const getRequestsByOwnerId = async (ownerId) => {
+  try {
+    const results = await GET_DB().collection(REQUEST_COLLECTION_NAME).aggregate([
+      {
+        $lookup: {
+          from: hostelModel.HOSTEL_COLLECTION_NAME,
+          localField: 'hostelId',
+          foreignField: '_id',
+          as: 'hostel'
+        }
+      },
+      {
+        $unwind: '$hostel' // Vì mỗi request chỉ gắn với 1 hostel
+      },
+      {
+        $match: {
+          'hostel.ownerId': new ObjectId(ownerId)
+        }
+      },
+      {
+        $lookup: {
+          from: userModel.USER_COLLECTION_NAME,
+          localField: 'tenantId',
+          foreignField: '_id',
+          as: 'tenant',
+          pipeline: [
+            { $project: { password: 0, verifyToken: 0 } }
+          ]
+        }
+      },
+      {
+        $lookup: {
+          from: roomModel.ROOM_COLLECTION_NAME,
+          localField: 'roomId',
+          foreignField: '_id',
+          as: 'room'
+        }
+      }
+    ]).toArray()
+    return results
+  } catch (error) {
+    throw new Error(error)
+  }
+}
 export const requestModel = {
   REQUEST_COLLECTION_NAME,
   REQUEST_COLLECTION_SCHEMA,
   createNewRepairRequest,
   findOneById,
   update,
-  getRequests
+  getRequests,
+  getRequestsByOwnerId
 }

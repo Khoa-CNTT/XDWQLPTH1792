@@ -38,8 +38,17 @@ const uploadImages = async (userAvatarFile) => {
 }
 const getHostels = async (userId) => {
   try {
-    const hostel = await hostelModel.getHostels(userId)
-    return hostel
+    const hostels = await hostelModel.getHostels(userId)
+
+    return hostels
+  } catch (error) {
+    throw error
+  }
+}
+const getHostelsByOwnerId = async (userId) => {
+  try {
+    const hostels = await hostelModel.getHostelsByOwnerId(userId)
+    return hostels
   } catch (error) {
     throw error
   }
@@ -121,5 +130,6 @@ export const hostelService = {
   update,
   deleteHostel,
   getHostelsPublic,
-  findHostels
+  findHostels,
+  getHostelsByOwnerId
 }

@@ -1,6 +1,6 @@
 /**
- * Updated by trungquandev.com's author on August 17 2023
- * YouTube: https://youtube.com/@trungquandev
+ * Updated by 0dev.com's author on August 17 2023
+ * YouTube: https://youtube.com/@0dev
  * 'A bit of fragrance clings to the hand that gives flowers!'
  */
 import Joi from 'joi'
@@ -16,7 +16,7 @@ const INVALID_UPDATE_FIELDS = ['_id', 'createdAt']
 const PAYMENT_STATUS_COLLECTION_NAME = 'payments'
 const PAYMENT_COLLECTION_SCHEMA = Joi.object({
   billId: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
-  txnRef: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
+  txnRef: Joi.string().required(),
   amount: Joi.number().required(),
   bankCode: Joi.string().required(),
   transactionNo: Joi.string().required(),

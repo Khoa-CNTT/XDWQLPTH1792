@@ -13,4 +13,6 @@ Router.route('/hostelId')
   .get(authMiddleware.isAuthorized, requestController.getRequestsByHostelId)
 Router.route('/:id')
   .put(authMiddleware.isAuthorized, requestValidation.update, requestController.updateRequest)
+Router.route('/ownerId')
+  .get(authMiddleware.isAuthorized, requestController.getRequestsByOwnerId)
 export const requestRoute = Router

@@ -4,7 +4,6 @@ import { messageService } from '~/services/messageService'
 const createNew = async (req, res, next) => {
   try {
     const senderId = req.jwtDecoded._id
-    console.log('res', req.body)
     const createMessage = await messageService.createNew(senderId, req.body)
     res.status(StatusCodes.CREATED).json(createMessage)
 
@@ -30,19 +29,16 @@ const deleteMessage = async (req, res, next) => {
   try {
     const userId = req.jwtDecoded._id
     const ids = req.query.ids // Lấy dữ liệu từ query string
-    // Chỉ lấy board thuộc về user nào đó thôi
+    // Chỉ lấy  thuộc về user nào đó thôi
     const result = await messageService.deletemessage(userId, ids)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json({
       message: 'messages deleted successfully',
       deletedCount: result.deletedCount
     })
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
-    // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    //     errors: new Error(error).message
-    // })
   }
 }
 const getMessages = async (req, res, next) => {

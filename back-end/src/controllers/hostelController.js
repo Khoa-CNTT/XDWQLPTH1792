@@ -3,14 +3,11 @@ import { hostelService } from '~/services/hostelService'
 
 const createNew = async (req, res, next) => {
   try {
-    // console.log('req.body=', req.body)
-    // console.log('req.query=', req.query)
-    // console.log('req.params=', req.params)
     const userId = req.jwtDecoded._id
     const createHostel = await hostelService.createNew(userId, req.body)
     //kết quả trả về phía CLient
     res.status(StatusCodes.CREATED).json(createHostel)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -25,7 +22,6 @@ const getDetails = async (req, res, next) => {
     const hostel = await hostelService.getDetails(hostelId)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(hostel)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -47,6 +43,16 @@ const getHostels = async (req, res, next) => {
     next(error)
   }
 }
+const getHostelsByOwnerId = async (req, res, next) => {
+  try {
+    const userId = req.jwtDecoded._id
+    console.log(userId)
+    const results = await hostelService.getHostelsByOwnerId(userId)
+    res.status(StatusCodes.OK).json(results)
+  } catch (error) {
+    next(error)
+  }
+}
 const getHostelsPublic = async (req, res, next) => {
   try {
     const results = await hostelService.getHostelsPublic()
@@ -59,16 +65,13 @@ const getHostelsPublic = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const hostelId = req.params.id
-    // Chỉ lấy board thuộc về user nào đó thôi
+    // Chỉ lấy hostel thuộc về user nào đó thôi
     const updatedHostel = await hostelService.update(hostelId, req.body)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(updatedHostel)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
+    // throw new ApiError(StatusCodes.BAD_GATEWAY,'0dev test error')
   } catch (error) {
     next(error)
-    // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    //     errors: new Error(error).message
-    // })
   }
 }
 const deleteHostel = async (req, res, next) => {
@@ -82,7 +85,6 @@ const deleteHostel = async (req, res, next) => {
       message: 'Nhà trọ đã xóa thành công',
       deletedCount: result.deletedCount
     })
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -95,7 +97,6 @@ const findHostels = async (req, res, next) => {
     const result = await hostelService.findHostels(req.body)
     //kết quả trả về phía CLient
     res.status(StatusCodes.OK).json(result)
-    // throw new ApiError(StatusCodes.BAD_GATEWAY,'trungquandev test error')
   } catch (error) {
     next(error)
     // res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -111,6 +112,6 @@ export const hostelController = {
   update,
   deleteHostel,
   getHostelsPublic,
-  findHostels
-
+  findHostels,
+  getHostelsByOwnerId
 }

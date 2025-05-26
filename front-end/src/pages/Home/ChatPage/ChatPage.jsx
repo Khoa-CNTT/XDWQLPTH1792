@@ -9,12 +9,13 @@ import { useTheme } from '@mui/material/styles'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchConversationDetailsAPI, selectCurrentConversation, updateCurrentConversation } from '~/redux/conversation/conversationSlice'
-import { createNewMessaggeAPI, fetchMessagesAPI } from '~/apis'
+import { createNewMessaggeAPI, fetchMessagesAPI, uploadImagesAPI } from '~/apis'
 import { DEFAULT_MESSAGES, DEFAULT_ITEMS_PER_MESSAGES } from '~/utils/constants'
 import { useForm } from 'react-hook-form'
 import CircularProgress from '@mui/material/CircularProgress'
-
+import { singleFileValidator } from '~/utils/validators'
 import { socketIoInstance } from '~/socketClient'
+import { toast } from 'react-toastify'
 const EmojiPanel = ({ onSelectEmoji }) => {
   const emojis = [
     '😀', '😂', '😍', '😎', '😭', '😡', '👍', '👎', '🎉', '❤️', '🔥', '✨', '🎂', '🍕', '⚽', '🏀'
@@ -57,12 +58,15 @@ function ChatPage({ refreshConversations }) {
   const [offset, setOffset] = useState(1)
   const [messages, setMessages] = useState([])
   const [hasMore, setHasMore] = useState(true)
-
+  const [previewUrl, setPreviewUrl] = useState(null)
   // Gọi lấy thông tin của conversation
   useEffect(() => {
     // Call API
     if (conversationId) {
       dispatch(fetchConversationDetailsAPI(conversationId))
+      setOffset(1)
+      setHasMore(true)
+      setMessages([])
     }
     const handleReceiveMessage = (conversationFromSocket) => {
       // Cập nhật Redux với conversation mới (lastMessage, updatedAt...)
@@ -113,6 +117,7 @@ function ChatPage({ refreshConversations }) {
     dispatch(updateCurrentConversation(result))
     fetchMessagesAPI(dataMessages).then(updateStateData)
     reset({ content: '' })
+    setPreviewUrl(null)
     setOffset(1)
     setHasMore(true)
 
@@ -122,6 +127,9 @@ function ChatPage({ refreshConversations }) {
     }
   }
 
+  const isImageUrl = (url) => {
+    return typeof url === 'string' && url.match(/\.(jpeg|jpg|gif|png|webp)$/i)
+  }
   // Hiển thị tin nhắn sau khi gởi
 
   const otherUserConversation = conversation?.inforUsers?.filter(user => user._id !== conversation.currentUser)[0]
@@ -132,13 +140,9 @@ function ChatPage({ refreshConversations }) {
     setAnchorEl(null) // Đặt anchor về null để đóng Popover
   }
 
-  const handleSelectEmoji = (emoji) => {
-    handleCloseEmojiPanel() // Đóng bảng emoji sau khi chọn
-  }
-
   const isEmojiPanelOpen = Boolean(anchorEl) // Kiểm tra xem Popover có đang mở không
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm()
+  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm()
 
   const loadMoreMessages = async () => {
     if (isLoading || !hasMore) return // Ngăn việc gọi API nhiều lần
@@ -161,12 +165,33 @@ function ChatPage({ refreshConversations }) {
     } finally {
       setIsLoading(false)
     }
-  };
+  }
+  // Thanh kéo
   const handleScroll = (event) => {
     const { scrollTop } = event.target
     if (scrollTop === 0) {
       loadMoreMessages() // Gọi hàm tải thêm tin nhắn
     }
+  }
+  const uploadAvatar = async (e) => {
+    // Lấy file thông qua e.target?.files[0] và validate nó trước khi xử lý
+    const error = singleFileValidator(e.target?.files[0])
+    if (error) {
+      return
+    }
+    // Sử dụng FormData để xử lý dữ liệu liên quan tới file khi gọi API
+    let reqData = new FormData()
+    reqData.append('images', e.target?.files[0])
+    // Gọi API...
+    const promise = await uploadImagesAPI(reqData)
+
+    // Đoạn này kiểm tra không có lỗi (update thành công) mới thực hiện các hành động cần thiết
+    // Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng 1 file liên
+    //tiếp được
+    const url = `${promise}`
+    setPreviewUrl(url)
+    setValue('content', url)
+    e.target.value = ''
   }
   return (
     <>
@@ -255,7 +280,7 @@ function ChatPage({ refreshConversations }) {
               >
                 <Paper
                   sx={{
-                    p: 1,
+                    p: isImageUrl(message?.content) ? 0 : 1,
                     backgroundColor:
                       message?.senderId === conversation.currentUser
                         ? theme.palette.mode === 'dark'
@@ -269,7 +294,29 @@ function ChatPage({ refreshConversations }) {
                     maxWidth: '60%'
                   }}
                 >
-                  {message?.content}
+                  {
+                    isImageUrl(message?.content)
+                      ? <Box
+                        component="img"
+                        src={message.content}
+                        alt="Hình ảnh"
+                        sx={{
+                          display: 'block',
+                          maxWidth: '100%',
+                          maxHeight: 150,// giới hạn chiều cao ảnh
+                          borderRadius: 1,
+                          objectFit: 'cover'
+                        }}
+                      />
+                      : <Box
+                        sx={{
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-word'
+                        }}
+                      >
+                        {message?.content}
+                      </Box>
+                  }
                 </Paper>
               </Box>
             ))}
@@ -279,6 +326,31 @@ function ChatPage({ refreshConversations }) {
           {/* Input */}
           <form onSubmit={handleSubmit(sentMessage)}>
             <Paper elevation={1} sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
+              {/* Hiển thị ảnh preview */}
+              {previewUrl && (
+                <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+                  <Box
+                    component="img"
+                    src={previewUrl}
+                    alt="Ảnh đã chọn"
+                    sx={{
+                      width: 150,
+                      height: 100,
+                      objectFit: 'cover',
+                      borderRadius: 1,
+                      border: '1px solid #ccc'
+                    }}
+                  />
+                  <IconButton
+                    aria-label="xóa ảnh"
+                    onClick={() => setPreviewUrl('')}
+                    size="small"
+                    sx={{ ml: 0.5 }}
+                  >
+                    ✕
+                  </IconButton>
+                </Box>
+              )}
               <TextField
                 fullWidth
                 placeholder="Nhập tin nhắn..."
@@ -303,10 +375,22 @@ function ChatPage({ refreshConversations }) {
                   horizontal: 'center'
                 }}
               >
-                <EmojiPanel onSelectEmoji={handleSelectEmoji} />
+                <EmojiPanel />
               </Popover>
-              <IconButton>
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="label"
+              >
                 <PhotoCameraIcon />
+                <input
+                  type="file"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files[0]
+                    uploadAvatar(e)
+                  }}
+                />
               </IconButton>
               <Button variant="contained" color="primary" endIcon={<SendIcon />} type='submit' >
                 Gửi

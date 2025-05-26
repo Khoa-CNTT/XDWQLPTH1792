@@ -53,9 +53,6 @@ const getRequests = async (data) => {
 }
 const updateRequest = async (userId, requestId, status) => {
   try {
-    console.log('userId', userId)
-    console.log('requestId', requestId)
-    console.log('status', status)
     const getRequest = await requestModel.findOneById(requestId)
     if (!getRequest) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Yêu cầu không tìm thấy')
@@ -74,8 +71,24 @@ const updateRequest = async (userId, requestId, status) => {
     throw error
   }
 }
+const getRequestsByOwnerId = async (userId ) => {
+  try {
+    const result = await requestModel.getRequestsByOwnerId(userId)
+    const resRequests = result.map(i => ({
+      ...i,
+      tenant: i.tenant[0] || {},
+      room: i.room[0] || {},
+      hostel: i.hostel[0] || {}
+    }
+    ))
+    return resRequests
+  } catch (error) {
+    throw error
+  }
+}
 export const requestService = {
   createNew,
   getRequests,
-  updateRequest
+  updateRequest,
+  getRequestsByOwnerId
 }

@@ -11,6 +11,10 @@ export const fetchHostelsAPI = async () => {
   const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/hostel`)
   return response.data
 }
+export const fetchHostelsByOwnerIdAPI = async () => {
+  const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/hostel/owner`)
+  return response.data
+}
 
 export const uploadImagesAPI = async (data) => {
   const respone = await authorizeAxiosInstance.post(`${API_ROOT}/v1/hostel/uploadImages`, data)
@@ -82,6 +86,14 @@ export const updateAccountAPI = async (userId, updateData) => {
   const respone = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/${userId}`, updateData)
   return respone.data
 }
+export const deleteAccountAPI = async (userId) => {
+  const respone = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/deletAccount/${userId}`)
+  return respone.data
+}
+export const generatePasswordAPI = async (data) => {
+  const respone = await authorizeAxiosInstance.put(`${API_ROOT}/v1/users/generatePassword`, data)
+  return respone.data
+}
 // Invite API
 export const inviteUserToHostelAPI = async (data) => {
   const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/invitations/hostel`, data)
@@ -115,6 +127,10 @@ export const createNewContractAPI = async (data) => {
 }
 export const fetchContractsAPI = async () => {
   const response = await authorizeAxiosInstance.get(`${API_ROOT}/v1/contracts`)
+  return response.data
+}
+export const updateContractAPI = async (contractId, data) => {
+  const response = await authorizeAxiosInstance.put(`${API_ROOT}/v1/contracts/${contractId}`, data)
   return response.data
 }
 // Utilities API

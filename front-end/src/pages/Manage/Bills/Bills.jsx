@@ -9,7 +9,7 @@ import Select from '@mui/material/Select'
 import { useTheme } from '@mui/material/styles'
 import { fetchHostelDetailsAPI, selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchHostelsAPI, fetchBillsByHostelIdAPI, fetchUtilitiesByRoomIdAPI, createNewBillAPI, updateBillAPI, deleteBillAPI } from '~/apis'
+import { fetchHostelsByOwnerIdAPI, fetchBillsByHostelIdAPI, fetchUtilitiesByRoomIdAPI, createNewBillAPI, updateBillAPI, deleteBillAPI } from '~/apis'
 import {
   FIELD_REQUIRED_MESSAGE, POSITIVE_NUMBER_RULE,
   POSITIVE_NUMBER_RULE_MESSAGE
@@ -41,7 +41,7 @@ function Bills() {
   useEffect(() => {
   }, [refresh])
   useEffect(() => {
-    fetchHostelsAPI().then(res => {
+    fetchHostelsByOwnerIdAPI().then(res => {
       setHostels(res)
       if (res.length > 0) {
         setSelectedHostel(res[0]._id) // Đặt nhà trọ đầu tiên làm mặc định

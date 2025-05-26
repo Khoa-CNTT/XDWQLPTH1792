@@ -15,7 +15,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import { toast } from 'react-toastify'
 import { useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
-import { fetchHostelsAPI } from '~/apis'
+import { fetchHostelsByOwnerIdAPI } from '~/apis'
 import { fetchHostelDetailsAPI, selectCurrentActiveHostel } from '~/redux/activeHostel/activeHostelSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { createNewUtilityAPI, deleteUtilityAPI } from '~/apis'
@@ -62,7 +62,7 @@ function Utility() {
     setSelectedHostel(event.target.value)
   }
   useEffect(() => {
-    fetchHostelsAPI().then(res => {
+    fetchHostelsByOwnerIdAPI().then(res => {
 
       setHostels(res)
       if (res.length > 0) {

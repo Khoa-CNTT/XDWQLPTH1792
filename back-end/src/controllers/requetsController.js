@@ -40,9 +40,17 @@ const updateRequest = async (req, res, next) => {
     const userId = req.jwtDecoded._id
     const requestId = req.params.id
     const { status } = req.body
-    console.log('sta', status)
-
     const updatedRequest = await requestService.updateRequest(userId, requestId, status)
+    res.status(StatusCodes.OK).json(updatedRequest)
+  }
+  catch (error) {
+    next(error)
+  }
+}
+const getRequestsByOwnerId = async (req, res, next) => {
+  try {
+    const userId = req.jwtDecoded._id
+    const updatedRequest = await requestService.getRequestsByOwnerId(userId)
     res.status(StatusCodes.OK).json(updatedRequest)
   }
   catch (error) {
@@ -54,5 +62,6 @@ export const requestController = {
   createNewRequest,
   getRequestsByTenantId,
   getRequestsByHostelId,
-  updateRequest
+  updateRequest,
+  getRequestsByOwnerId
 }

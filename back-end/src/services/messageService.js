@@ -8,7 +8,6 @@ const createNew = async (senderId, reqBody) => {
   try {
     // Kiểm tra xem mảng conversation đã tồn tại trong database hay chưa
     const { conversationId } = reqBody
-    console.log('con', reqBody)
     const existingConversation = await conversationModel.findOneById(conversationId)
     if (!existingConversation) {
       throw new ApiError(StatusCodes.CONFLICT, 'Cuộc thoại không tồn tại ')
