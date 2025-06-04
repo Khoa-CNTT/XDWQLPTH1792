@@ -205,7 +205,7 @@ function BillPaymentPage() {
                     sx={{ borderRadius: 3 }}
                     onClick={() => createNewPayment(selectedBill)}
                   >
-                    Thanh toán
+                    Thanh toán VNPay
                   </Button>
                 </Box>
               }

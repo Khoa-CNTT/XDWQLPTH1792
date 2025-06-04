@@ -10,7 +10,7 @@ import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Grid'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
-import { useRef } from 'react'
+import React, { useRef } from 'react'
 function ModalContract({ open, handleClose, contract }) {
   const printRef = useRef(null)
   const handleDownloadPdf = async () => {
@@ -37,7 +37,12 @@ function ModalContract({ open, handleClose, contract }) {
     pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight)
     pdf.save('examplePDF.pdf')
   }
-
+  const contentLines = contract?.content?.split('-').map((line, index) => (
+    <React.Fragment key={index}>
+      {index !== 0 && <br />} {/* Không thêm <br> trước dòng đầu tiên */}
+      {line.trim()}
+    </React.Fragment>
+  ));
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
       <DialogTitle textAlign='center'>HỢP ĐỒNG THUÊ PHÒNG TRỌ</DialogTitle>
@@ -112,7 +117,7 @@ function ModalContract({ open, handleClose, contract }) {
             <Typography>- Bên B thanh toán đúng hạn, tuân thủ nội quy khu trọ.</Typography>
             <Typography>- Bên A cung cấp dịch vụ đầy đủ, đúng thỏa thuận.</Typography>
             <Typography>- Hai bên tự nguyện và cam kết thực hiện đầy đủ các điều khoản.</Typography>
-            <Typography>- {contract?.content}</Typography>
+            <Typography> {contract?.content}</Typography>
           </Box>
 
           <Box mt={2}>

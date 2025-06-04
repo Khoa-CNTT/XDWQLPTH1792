@@ -158,7 +158,7 @@ function Utility() {
       confirmDelete({
         // Title, Description, Content...vv của gói material-ui-confirm đều có type là ReactNode nên có thể thoải sử dụng MUI components, rất tiện lợi khi cần custom styles
         title: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <SystemUpdateAltIcon sx={{ color: 'warning.dark' }} /> Cập nhật nhà trọ
+          <SystemUpdateAltIcon sx={{ color: 'warning.dark' }} /> Cập nhật tiện ích
         </Box>,
         description: 'Bạn có chắc chắn muốn cập nhật tiện ích này không?',
         confirmationText: 'Confirm',
